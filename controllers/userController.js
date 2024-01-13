@@ -1,11 +1,11 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const twilio = require('twilio');
+const twilio = require("twilio");
 
 // Twilio credentials from your Twilio account
-const accountSid = 'AC4a06a3e04068ce265df2997734e5215f';
-const authToken = '074501e2bf40ab69647d1a2c26e7e1e8';
-const twilioPhoneNumber = '+17178644442';
+const accountSid = "AC4a06a3e04068ce265df2997734e5215f";
+const authToken = "074501e2bf40ab69647d1a2c26e7e1e8";
+const twilioPhoneNumber = "+17178644442";
 
 const client = twilio(accountSid, authToken);
 
@@ -17,12 +17,11 @@ function sendSMS(toPhoneNumber, message) {
       from: twilioPhoneNumber,
       to: toPhoneNumber,
     })
-    .then(message => console.log(`SMS sent: ${message.sid}`))
-    .catch(error => console.error(`Error sending SMS: ${error.message}`));
+    .then((message) => console.log(`SMS sent: ${message.sid}`))
+    .catch((error) => console.error(`Error sending SMS: ${error.message}`));
 }
 
-
-// const recipientPhoneNumber = '+919048727372'; 
+// const recipientPhoneNumber = '+919048727372';
 // const messageToSend = 'Hello from Twilio!';
 
 // sendSMS(recipientPhoneNumber, messageToSend);
@@ -112,13 +111,12 @@ const loadUserHome = async (req, res) => {
   }
 };
 
-const verifyUserLoad = async(req, res) => {
-  const recipientPhoneNumber = '+919048727372'; 
+const verifyUserLoad = async (req, res) => {
+  const recipientPhoneNumber = "+919048727372";
   const messageToSend = 123456;
   req.session.otp = messageToSend;
   sendSMS(recipientPhoneNumber, messageToSend);
   res.render("user/verifyOtp");
-  
 };
 
 const verifiedLogUser = async (req, res) => {
@@ -126,7 +124,7 @@ const verifiedLogUser = async (req, res) => {
   const uotp = Number.parseInt(otp);
 
   if (uotp === req.session.otp) {
-    console.log("entered")
+    console.log("entered");
     res.redirect("/user/home");
   } else {
     console.log("Not working");
