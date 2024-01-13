@@ -91,10 +91,9 @@ const verifyUserLoad = (req, res) => {
 };
 
 const verifiedLogUser = async (req, res) => {
-  console.log("entered")
-  const { otp } = await req.body;
-  console.log(otp);
-  if (otp === req.session.otp) {
+  const otp = req.body.otp;
+  const uotp = Number.parseInt(otp);
+  if (uotp === req.session.otp) {
     // res.redirect('/user/userhome');
     res.send("Verified");
   }
