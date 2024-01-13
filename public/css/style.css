@@ -1,0 +1,181 @@
+body {
+  font-family: "Roboto Slab", serif;
+  background-color: rgb(144, 71, 71);
+}
+
+/* Center the logo in the navbar */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#loginForm > div.mt-3 > a:hover{
+color: blue;
+}
+#loginForm > div.d-grid.gap-2 > button:hover{
+  background-color: #b0acac;
+  font-weight: 800;
+}
+
+
+.footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e7e7e7; /* Add a top border line */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar-brand {
+    flex-direction: column;
+  }
+}
+/* Footer custom styles */
+.footer {
+  background: #ffffff;
+  color: #000000;
+  padding: 50px 0;
+  font-size: 16px;
+}
+body > main > div > div > div{
+  background: #000000;
+}
+body > main > div > div > div > div{
+  background: #000000;
+}
+
+.footer-logo {
+  margin-bottom: 10px;
+}
+
+.footer-brand {
+  margin-bottom: 30px;
+}
+
+.footer-description {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.footer-social-links a {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.footer-social-links img {
+  height: 20px;
+}
+
+.footer h5 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.footer-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-nav ul li a {
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer-payment-methods img {
+  height: 24px;
+  margin-right: 10px;
+}
+
+.footer p {
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 30px;
+  font-size: 12px;
+}
+
+/* Responsive adjustments for the footer */
+@media (max-width: 767px) {
+  .footer-brand,
+  .footer-nav,
+  .footer-payment-methods {
+    text-align: center;
+  }
+
+  .footer-social-links {
+    justify-content: center;
+    display: flex;
+    margin-bottom: 20px;
+  }
+
+  .footer-payment-methods img {
+    margin: 0 5px 10px 5px; /* Adjust spacing for mobile */
+  }
+}
+body
+  > footer
+  > div
+  > div:nth-child(1)
+  > div.col-md-4.footer-brand
+  > div
+  > a:nth-child(2)
+  > img {
+  height: 40px;
+  width: 40px;
+}
+body
+  > footer
+  > div
+  > div:nth-child(1)
+  > div.col-md-4.footer-brand
+  > div
+  > a:nth-child(1)
+  > img {
+  height: 40px;
+  width: 40px;
+}
+body
+  > footer
+  > div
+  > div:nth-child(1)
+  > div.col-md-4.footer-brand
+  > div
+  > a:nth-child(3)
+  > img {
+  height: 40px;
+  width: 40px;
+}
+body
+  > footer
+  > div
+  > div:nth-child(1)
+  > div.col-md-4.footer-brand
+  > div
+  > a:nth-child(4)
+  > img {
+  height: 40px;
+  width: 40px;
+}
+body > footer > div > div.row.footer-payment-methods > div > img:nth-child(1){
+  height: 50px;
+  width: 50px;
+}
+body > footer > div > div.row.footer-payment-methods > div > img:nth-child(2){
+  height: 50px;
+  width: 50px;
+}
+body > footer > div > div.row.footer-payment-methods > div > img:nth-child(3){
+  height: 50px;
+  width: 50px;
+}
+body > footer > div > div.row.footer-payment-methods > div > img:nth-child(4){
+  height: 50px;
+  width: 50px;
+}
+
+
