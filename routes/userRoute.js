@@ -4,7 +4,9 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 
 router.get("/verify", userController.verifyUserLoad);
+router.post('/verify', userController.verifiedLogUser);
 router.get("/", userController.loadUserHome);
+
 
 
 

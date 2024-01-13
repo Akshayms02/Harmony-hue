@@ -56,37 +56,39 @@
             >
               <div class="card-body">
                 <h1 class="card-title text-center mb-4">Verify OTP</h1>
-                <form id="logform" action="/" method="post">
+                <form id="verifyform" action="/user/verify" method="post">
                   <div class="form-floating mb-2">
                     <input
-                      type="email"
+                      type="text"
                       class="form-control"
                       style="border-radius: 25px; margin-top: 40px"
-                      id="typeEmailX"
+                      id="typeOtpX"
                       name="email"
-                      placeholder="Email address"
+                      placeholder="OTP"
                     />
-                    <label for="typeEmailX" class="text-dark"
-                      >Email address</label
+                    <label for="typeOtpX" class="text-dark"
+                      >OTP</label
                     >
                   </div>
+                  
                   <p><span id="error1" style="display: none"></span></p>
 
                   <div class="d-grid gap-2">
                     <button
-                      class="btn btn-light w-50 mt-2"
-                      style="margin-left: 50%; border-radius: 49px"
+                      class="btn btn-light w-50 mx-auto"
+                      style="margin-left: 50%; border-radius: 49px; margin-top: 20px;"
                       type="submit"
                     >
-                      Send
+                     Verify
                     </button>
                     <div style="text-align: center; display: flex;">
-                      <div class="w-50"></div>
+                      
                       <a
                         style="
                           text-align: center;
                           text-decoration: none;
-                          width: 50%;
+                          width: 100%;
+                          margin-top: 10px;
                         "
                         href=""
                         >Resend OTP</a

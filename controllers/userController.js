@@ -85,9 +85,20 @@ const loadUserHome = async (req, res) => {
   }
 };
 
-const verifyUserLoad = (req,res) => {
-  res.render('user/verifyOtp');
-}
+const verifyUserLoad = (req, res) => {
+  req.session.otp = 123456;
+  res.render("user/verifyOtp");
+};
+
+const verifiedLogUser = async (req, res) => {
+  console.log("entered")
+  const { otp } = await req.body;
+  console.log(otp);
+  if (otp === req.session.otp) {
+    // res.redirect('/user/userhome');
+    res.send("Verified");
+  }
+};
 
 module.exports = {
   loginLoad,
@@ -95,5 +106,6 @@ module.exports = {
   insertUser,
   logUser,
   loadUserHome,
-  verifyUserLoad
+  verifyUserLoad,
+  verifiedLogUser,
 };

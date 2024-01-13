@@ -4,6 +4,8 @@ const error1 = document.getElementById("error1");
 const error2 = document.getElementById("error2");
 const logform = document.getElementById("logform");
 
+
+
 function emailvalidate(e) {
   const emailval = emailid.value;
   const emailpattern = /^([a-zA-Z0-9._-]+)@([a-zA-Z.-]+).([a-zA-z]{2,4})$/;
