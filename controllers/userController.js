@@ -1,5 +1,32 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const twilio = require('twilio');
+
+// Twilio credentials from your Twilio account
+const accountSid = 'AC4a06a3e04068ce265df2997734e5215f';
+const authToken = '074501e2bf40ab69647d1a2c26e7e1e8';
+const twilioPhoneNumber = '+17178644442';
+
+const client = twilio(accountSid, authToken);
+
+// Function to send an SMS using Twilio
+function sendSMS(toPhoneNumber, message) {
+  client.messages
+    .create({
+      body: message,
+      from: twilioPhoneNumber,
+      to: toPhoneNumber,
+    })
+    .then(message => console.log(`SMS sent: ${message.sid}`))
+    .catch(error => console.error(`Error sending SMS: ${error.message}`));
+}
+
+
+// const recipientPhoneNumber = '+919048727372'; 
+// const messageToSend = 'Hello from Twilio!';
+
+// sendSMS(recipientPhoneNumber, messageToSend);
+
 const securePassword = async (password) => {
   try {
     const sPassword = await bcrypt.hash(password, 10);
@@ -85,17 +112,24 @@ const loadUserHome = async (req, res) => {
   }
 };
 
-const verifyUserLoad = (req, res) => {
-  req.session.otp = 123456;
+const verifyUserLoad = async(req, res) => {
+  const recipientPhoneNumber = '+919048727372'; 
+  const messageToSend = 123456;
+  req.session.otp = messageToSend;
+  sendSMS(recipientPhoneNumber, messageToSend);
   res.render("user/verifyOtp");
+  
 };
 
 const verifiedLogUser = async (req, res) => {
-  const otp = req.body.otp;
+  const otp = await req.body.otp;
   const uotp = Number.parseInt(otp);
+
   if (uotp === req.session.otp) {
-    // res.redirect('/user/userhome');
-    res.send("Verified");
+    console.log("entered")
+    res.redirect("/user/home");
+  } else {
+    console.log("Not working");
   }
 };
 

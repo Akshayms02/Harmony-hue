@@ -8,6 +8,7 @@
     "mongoose": "^8.0.4",
     "nocache": "^4.0.0",
     "nodemon": "^3.0.2",
+    "twilio": "^5.0.0-rc.1",
     "uuid": "^9.0.1"
   },
   "scripts": {
