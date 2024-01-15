@@ -1,12 +1,25 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const twilio = require("twilio");
+const nodemailer = require("nodemailer");
+
+// Nodemailer OTP verification Auth-start
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+//Nodemailer OTP verification Auth-End
+
+//Twilio Mobile OTP verification function-start
 
 // Twilio credentials from your Twilio account
 const accountSid = "AC4a06a3e04068ce265df2997734e5215f";
-const authToken = "074501e2bf40ab69647d1a2c26e7e1e8";
+const authToken = "d89fb0290951ace59728e7bae26730a0";
 const twilioPhoneNumber = "+17178644442";
-
 const client = twilio(accountSid, authToken);
 
 // Function to send an SMS using Twilio
@@ -20,11 +33,7 @@ function sendSMS(toPhoneNumber, message) {
     .then((message) => console.log(`SMS sent: ${message.sid}`))
     .catch((error) => console.error(`Error sending SMS: ${error.message}`));
 }
-
-// const recipientPhoneNumber = '+919048727372';
-// const messageToSend = 'Hello from Twilio!';
-
-// sendSMS(recipientPhoneNumber, messageToSend);
+//Twilio Mobile OTP verification function-end
 
 const securePassword = async (password) => {
   try {
@@ -112,22 +121,49 @@ const loadUserHome = async (req, res) => {
 };
 
 const verifyUserLoad = async (req, res) => {
-  const recipientPhoneNumber = "+919048727372";
-  const messageToSend = 123456;
-  req.session.otp = messageToSend;
-  sendSMS(recipientPhoneNumber, messageToSend);
-  res.render("user/verifyOtp");
+  if (req.query.message) {
+    res.render("user/verifyOtp", { message: req.query.message });
+  } else {
+    const message = (() => {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    })();
+    const messageToSend = message;
+    req.session.otp = message;
+
+    const userData = await userModel.findOne({ _id: req.session.user });
+    const toEmail = userData.email;
+    const toMobile = userData.mobile;
+    const recipientPhoneNumber = `+91${toMobile}`;
+
+    const mailOptions = {
+      from: "ratedr@12345678910@gmail.com",
+      to: toEmail,
+      subject: "Your OTP",
+      text: `Your one-time password (OTP) is: ${messageToSend}`,
+    };
+    // Send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log("Message sent: %s", info.messageId);
+    });
+    sendSMS(recipientPhoneNumber, messageToSend);
+
+    res.render("user/verifyOtp");
+  }
 };
 
 const verifiedLogUser = async (req, res) => {
   const otp = await req.body.otp;
-  const uotp = Number.parseInt(otp);
-
-  if (uotp === req.session.otp) {
+  console.log(req.session.otp);
+  console.log(req.session.otp.value);
+  if (otp === req.session.otp.value) {
     console.log("entered");
     res.redirect("/user/home");
   } else {
-    console.log("Not working");
+    // res.render("user/verifyOtp", { message: "Invalid OTP" });
+    res.redirect(`/user/verify?message=${"Invalid OTP"}`);
   }
 };
 

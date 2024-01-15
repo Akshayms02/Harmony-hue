@@ -54,8 +54,10 @@
               class="card shadow-lg p-4 mb-5"
               style="background-color: black; color: white; border-radius: 70px"
             >
+            <div style="display: block; text-align: center; color: rgb(206, 218, 30);" id="otpExpiryTimer"></div>
               <div class="card-body">
                 <h1 class="card-title text-center mb-4">Verify OTP</h1>
+
                 <form id="verifyform" action="/user/verify" method="post">
                   <div class="form-floating mb-2">
                     <input
@@ -66,24 +68,26 @@
                       name="otp"
                       placeholder="OTP"
                     />
-                    <label for="typeOtpX" class="text-dark"
-                      >OTP</label
-                    >
+                    <label for="typeOtpX" class="text-dark">OTP</label>
                   </div>
-                  
-                  <p><span id="error1" style="display: none"></span></p>
+                  <% if (locals.message) { %>
+                  <div class="ms-2 text-danger"><%= message %></div>
+                  <% } %>
 
                   <div class="d-grid gap-2">
                     <button
                       class="btn btn-light w-50 mx-auto"
-                      style="margin-left: 50%; border-radius: 49px; margin-top: 20px;"
+                      style="
+                        margin-left: 50%;
+                        border-radius: 49px;
+                        margin-top: 20px;
+                      "
                       type="submit"
                     >
-                     Verify
+                      Verify
                     </button>
-                    <div style="text-align: center; display: flex;">
-                      
-                      <a
+                    <div style="text-align: center; display: flex">
+                      <a id="resendOtp" type="button"
                         style="
                           text-align: center;
                           text-decoration: none;
@@ -91,8 +95,9 @@
                           margin-top: 10px;
                         "
                         href=""
-                        >Resend OTP</a
+                        >Resend OTP <span id="timer" style="color: white; margin-left: 5px;"></span></a
                       >
+                      
                     </div>
                   </div>
                 </form>

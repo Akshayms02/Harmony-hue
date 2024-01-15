@@ -4,7 +4,67 @@ const error1 = document.getElementById("error1");
 const error2 = document.getElementById("error2");
 const logform = document.getElementById("logform");
 
+//Timer for the resend button to be displayed;
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Get the link element
+  let resendOtp = document.getElementById("resendOtp");
+  let timerSpan = document.getElementById("timer");
+  let otpExpiryTimer = document.getElementById("otpExpiryTimer");
+  // Disable the link on page load (calling the function)
+  disableLink(resendOtp, timerSpan, 5);
+  otpExpiry(otpExpiryTimer,20);
+
+  // Function for disabling the link
+  function disableLink(link, timer, durationInSeconds) {
+    link.classList.add("disabled");
+    link.removeAttribute("href");
+    let countdown = durationInSeconds;
+    let upDateTimer = () => {
+      //Function for updating the text for the timer
+      timer.innerText = `00:0${countdown}`;
+    };
+    upDateTimer();
+
+    let countdownInterval = setInterval(() => {
+      countdown--;
+
+      if (countdown <= 0) {
+        // Enabling the link after the countdown
+        link.classList.remove("disabled");
+        link.setAttribute("href", "/user/verify");
+        clearInterval(countdownInterval);
+        timer.innerText = ""; //Clearing the text inside the timer
+      } else {
+        upDateTimer();
+      }
+    }, 1000);
+  }
+
+  // Function for otp expiry
+  function otpExpiry(timer,duration) {
+    
+    let expiryCountdown = duration;
+    let OtpUpDateTimer = () => {
+      //Function for updating the text for the timer
+      const minutes = Math.floor(expiryCountdown/ 60);
+      const seconds = expiryCountdown % 60;
+      timer.innerText = `Your OTP will be expired in: ${minutes}m ${seconds}s`;
+    };
+    OtpUpDateTimer();
+
+    let countdownIntervalForOtpExpiry = setInterval(() => {
+      expiryCountdown--;
+
+      if (expiryCountdown<= 0) {
+        clearInterval(countdownIntervalForOtpExpiry);
+        timer.innerHTML = ""; //Clearing the text inside the timer
+      } else {
+        OtpUpDateTimer();
+      }
+    }, 1000);
+  }
+});
 
 function emailvalidate(e) {
   const emailval = emailid.value;

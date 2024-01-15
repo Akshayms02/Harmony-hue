@@ -177,5 +177,9 @@ body > footer > div > div.row.footer-payment-methods > div > img:nth-child(4){
   height: 50px;
   width: 50px;
 }
-
+.disabled {
+  pointer-events: none;
+  color: gray; /* Change the color to indicate it's disabled */
+  text-decoration: none; /* Remove underline */
+}
 
