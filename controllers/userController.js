@@ -2,13 +2,14 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const twilio = require("twilio");
 const nodemailer = require("nodemailer");
+const otpGenerator=require('../helper/otpGenerator')
 
 // Nodemailer OTP verification Auth-start
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "ratedr12345678910@gmail.com",
+    pass: "jwpu ddgw puss fsnh",
   },
 });
 
@@ -17,9 +18,9 @@ const transporter = nodemailer.createTransport({
 //Twilio Mobile OTP verification function-start
 
 // Twilio credentials from your Twilio account
-const accountSid = "AC4a06a3e04068ce265df2997734e5215f";
-const authToken = "d89fb0290951ace59728e7bae26730a0";
-const twilioPhoneNumber = "+17178644442";
+const accountSid = "AC4b43fa74b607a2e8dcd0a16a216074dd";
+const authToken = "a4d1f93b99cdc17ac61ba194dd6ed2ff";
+const twilioPhoneNumber = "+14432963010";
 const client = twilio(accountSid, authToken);
 
 // Function to send an SMS using Twilio
@@ -83,6 +84,8 @@ const insertUser = async (req, res) => {
 };
 
 const logUser = async (req, res) => {
+  const { email } = req.body;
+  req.session.email = email;
   const logEmail = req.body.email;
   const logPass = req.body.password;
   try {
@@ -93,11 +96,10 @@ const logUser = async (req, res) => {
       const sPassword = await bcrypt.compare(logPass, loggedUser.password);
       if (sPassword) {
         if (loggedUser.isAdmin === 1) {
-          req.session.admin = loggedUser._id;
-          res.redirect("/admin/verify");
+          // req.session.admin = loggedUser._id;
+          res.redirect("/verify");
         } else {
-          req.session.user = loggedUser._id;
-          res.redirect("/user/verify");
+          res.redirect("/verify");
         }
       } else {
         // res.render("login", { errorMessage: "Invalid Password" });
@@ -113,24 +115,36 @@ const logUser = async (req, res) => {
 };
 
 const loadUserHome = async (req, res) => {
+
   if (req.session.user) {
     // const userData = await userModel.findOne({ _id: req.session.user });
     // res.render("userHome", { user: userData });
-    res.send("Hello welcome");
+    res.render("user/userHome");
+  }
+  else {
+    res.redirect('/')
   }
 };
 
 const verifyUserLoad = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   if (req.query.message) {
     res.render("user/verifyOtp", { message: req.query.message });
   } else {
-    const message = (() => {
-      return Math.floor(100000 + Math.random() * 900000).toString();
-    })();
+    const message = otpGenerator.otpGenerator
+    console.log(message);
     const messageToSend = message;
-    req.session.otp = message;
+    req.session.otp = messageToSend;
+    setTimeout(() => {
+      console.log("OTP Expired" + req.session.otp);
+      req.session.destroy()
+      if (req.session)
+      {
+      console.log(req.session.otp)
+        }
+    }, 20000);
 
-    const userData = await userModel.findOne({ _id: req.session.user });
+    const userData = await userModel.findOne({ email: req.session.email });
     const toEmail = userData.email;
     const toMobile = userData.mobile;
     const recipientPhoneNumber = `+91${toMobile}`;
@@ -155,12 +169,13 @@ const verifyUserLoad = async (req, res) => {
 };
 
 const verifiedLogUser = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   const otp = await req.body.otp;
-  console.log(req.session.otp);
-  console.log(req.session.otp.value);
-  if (otp === req.session.otp.value) {
+  if (otp === req.session.otp) {
     console.log("entered");
-    res.redirect("/user/home");
+    const userData = await userModel.findOne({ email: req.session.email });
+    req.session.user = userData._id;
+    res.redirect("/userHome");
   } else {
     // res.render("user/verifyOtp", { message: "Invalid OTP" });
     res.redirect(`/user/verify?message=${"Invalid OTP"}`);

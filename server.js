@@ -3,21 +3,10 @@ const session = require("express-session");
 const path = require("path");
 const mongoose = require("mongoose");
 const nocache = require("nocache");
-const userAuthRoute = require("./routes/userAuth");
+
 const userRoute = require("./routes/userRoute");
-// const MongoStore = require('connect-mongo')(session);
 
 // const adminRoute = require("./routes/adminRoute");
-
-const app = express();
-const PORT = process.env.PORT || 3002;
-
-app.use(express.urlencoded({ extended: true }));
-app.use("/public", express.static(path.join(__dirname, "/public")));
-
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname,"views"));
-
 
 mongoose.connect("mongodb://127.0.0.1:27017/HarmonyHue");
 
@@ -33,16 +22,25 @@ mongoose.connection.on("error", () => {
   console.log("error");
 });
 
+const app = express();
+const PORT = process.env.PORT || 3002;
+
+app.use(express.urlencoded({ extended: true }));
+app.use("/public", express.static(path.join(__dirname, "/public")));
+app.use("/assets", express.static(path.join(__dirname, "/public/assets")));
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 app.use(
   session({
     secret: "1231fdsdfssg33433",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
   })
 );
-app.use("/", nocache());
-app.use("/", userAuthRoute);
-app.use("/user", userRoute);
+app.use('/',nocache());
+
+app.use("/", userRoute);
 // app.use("/admin", adminRoute);
 
 app.listen(PORT, () => {

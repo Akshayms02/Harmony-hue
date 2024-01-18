@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let otpExpiryTimer = document.getElementById("otpExpiryTimer");
   // Disable the link on page load (calling the function)
   disableLink(resendOtp, timerSpan, 5);
-  otpExpiry(otpExpiryTimer,20);
+  otpExpiry(otpExpiryTimer, 20);
 
   // Function for disabling the link
   function disableLink(link, timer, durationInSeconds) {
@@ -40,14 +40,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 1000);
   }
+  function otpExpiry(timer, duration) {
+    let expiryCountdown;
+    let storedExpiryCountdown = sessionStorage.getItem("expiryCountdown");
 
-  // Function for otp expiry
-  function otpExpiry(timer,duration) {
-    
-    let expiryCountdown = duration;
+    if (storedExpiryCountdown) {
+      expiryCountdown = parseInt(storedExpiryCountdown, 10);
+    } else {
+      expiryCountdown = duration;
+      sessionStorage.setItem("expiryCountdown", expiryCountdown);
+    }
+
     let OtpUpDateTimer = () => {
-      //Function for updating the text for the timer
-      const minutes = Math.floor(expiryCountdown/ 60);
+      const minutes = Math.floor(expiryCountdown / 60);
       const seconds = expiryCountdown % 60;
       timer.innerText = `Your OTP will be expired in: ${minutes}m ${seconds}s`;
     };
@@ -56,11 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let countdownIntervalForOtpExpiry = setInterval(() => {
       expiryCountdown--;
 
-      if (expiryCountdown<= 0) {
+      if (expiryCountdown <= 0) {
         clearInterval(countdownIntervalForOtpExpiry);
-        timer.innerHTML = ""; //Clearing the text inside the timer
+        timer.innerHTML = ""; // Clearing the text inside the timer
+        sessionStorage.removeItem("expiryCountdown"); // Clear the stored countdown on expiration
       } else {
         OtpUpDateTimer();
+        sessionStorage.setItem("expiryCountdown", expiryCountdown); // Update the stored countdown
       }
     }, 1000);
   }
