@@ -21,63 +21,7 @@ const userSchema = new mongoose.Schema({
     type: "Number",
     required: true,
   },
-  country: {
-    type: "string",
-    required: false},
-  state: {
-    type: "string",
-    required: false,
-  },
-  pincode: {
-    type: "string",
-    required: false,
-  },
-  status: {
-    type: "boolean",
-    required: false,
-  },
-  address: [
-    {
-      firstName: {
-        type: "string",
-        required: false,
-      },
-      lastName: {
-        type: "string",
-        required: false,
-      },
-      house: {
-        type: "string",
-        required: false,
-      },
-      country: {
-        type: "string",
-        required: false,
-      },
-      city: {
-        type: "string",
-        required: false,
-      },
-      state: {
-        type: "string",
-        required: false,
-      },
-      pincode: {
-        type: "string",
-        required: false,
-      },
-    },
-  ],
-  wallet: {
-    amount: {
-      type: "Number",
-      required:false,
-    },
-    paymentMethods: {
-      type: "string",
-      required:false,
-    }
-  }
+  
 });
 
 const User = mongoose.model("User", userSchema);
