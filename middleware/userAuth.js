@@ -24,7 +24,7 @@ const isLogout = (req, res, next) => {
 
 const otpAuthenticator = (req, res, next) => {
   
-  if (Date.now() >= req.session.otpExpirationTime) {
+  if (Date.now() >= req.session.otpExpiryTime) {
     res.redirect(`/verify?message=${"Invalid OTP"}`);
   } else {
     next();
