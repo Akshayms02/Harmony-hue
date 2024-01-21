@@ -160,6 +160,7 @@ const verifySignUpLoad = (req, res) => {
   if (req.query.message) {
     res.render('user/verifyOtp', { message: req.query.message });
   } else {
+    
     res.render("user/verifyOtp");
   }
 };

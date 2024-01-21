@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (countdown <= 0) {
         // Enabling the link after the countdown
         link.classList.remove("disabled");
-        link.setAttribute("href", "/user/verify");
+        link.setAttribute("href", "/verify");
         clearInterval(countdownInterval);
         timer.innerText = ""; //Clearing the text inside the timer
       } else {
