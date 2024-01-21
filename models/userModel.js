@@ -19,9 +19,12 @@ const userSchema = new mongoose.Schema({
   },
   isAdmin: {
     type: "Number",
-    required: true,
+    default: 0,
   },
-  
+  isActive:{
+    type:Boolean,
+    default:true
+},
 });
 
 const User = mongoose.model("User", userSchema);
