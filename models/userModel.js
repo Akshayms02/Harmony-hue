@@ -2,29 +2,29 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: {
-    type: "string",
+    type: String,
     required: true,
   },
   email: {
-    type: "string",
+    type: String,
     required: true,
   },
   mobile: {
-    type: "Number",
+    type: Number,
     required: true,
   },
   password: {
-    type: "string",
+    type: String,
     required: true,
   },
   isAdmin: {
-    type: "Number",
+    type: Number,
     default: 0,
   },
-  isActive:{
-    type:Boolean,
-    default:true
-},
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
