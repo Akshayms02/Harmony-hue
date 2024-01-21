@@ -6,32 +6,11 @@ const otpHelper = require("../helper/otpHelper");
 const passwordHelper = require("../helper/passwordHelper");
 const userHelper = require("../helper/userHelper");
 
-//Twilio Mobile OTP verification function-start
-
-// Twilio credentials from your Twilio account
-const accountSid = "AC4b43fa74b607a2e8dcd0a16a216074dd";
-const authToken = "a4d1f93b99cdc17ac61ba194dd6ed2ff";
-const twilioPhoneNumber = "+14432963010";
-const client = twilio(accountSid, authToken);
-
-// Function to send an SMS using Twilio
-function sendSMS(toPhoneNumber, message) {
-  client.messages
-    .create({
-      body: message,
-      from: twilioPhoneNumber,
-      to: toPhoneNumber,
-    })
-    .then((message) => console.log(`SMS sent: ${message.sid}`))
-    .catch((error) => console.error(`Error sending SMS: ${error.message}`));
-}
-//Twilio Mobile OTP verification function-end
-
 const registerLoad = (req, res) => {
   if (req.session.user) {
     res.redirect("/userhome");
   } else if (req.session.admin) {
-    res.redirect("/adminhome");
+    res.redirect("/admin");
   } else {
     res.render("user/register");
   }
@@ -50,7 +29,7 @@ const loginLoad = (req, res) => {
 
 const signUpUser = async (req, res) => {
   try {
-    const response = await userHelper.signupHelper(req.body);
+    const response = await userHelper.signupHelper(req.session.userData);
     if (!response.userExist) {
       req.flash("message", "Registration Successful. Continue to login");
       res.redirect("/");
@@ -63,7 +42,6 @@ const signUpUser = async (req, res) => {
     console.log(error);
     res.redirect("/register");
   }
-  
 };
 
 const logUser = async (req, res) => {
@@ -127,61 +105,95 @@ const loadUserHome = async (req, res) => {
   }
 };
 
-const verifyUserLoad = async (req, res) => {
+// const verifyUserLoad = async (req, res) => {
+//   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+//   if (req.query.message) {
+//     res.render("user/verifyOtp", { message: req.query.message });
+//   } else {
+//     //Generating OTP
+//     const messageToSend = otpGenerator.otpGenerator;
+//     console.log(messageToSend);
+
+//     req.session.otp = messageToSend;
+//     req.session.otpExpirationTime = Date.now() + 20 * 1000;
+//     setTimeout(() => {
+//       req.session.otp = null;
+//       console.log("OTP Expired");
+//     }, 20 * 1000);
+//     console.log("OTP Created");
+
+//     const userData = await userModel.findOne({ email: req.session.email });
+//     const toEmail = userData.email;
+//     const toMobile = userData.mobile;
+//     const recipientPhoneNumber = `+91${toMobile}`;
+
+//     //Sending OTP to Mobile Number using Twilio
+//     otpHelper.sendSMS(recipientPhoneNumber, messageToSend);
+
+//     // Sending OTP to the user's mail ID
+//     otpHelper.transporter.sendMail(otpHelper.mailOptions, (error, info) => {
+//       if (error) {
+//         return console.log(error);
+//       }
+//       console.log("Message sent: %s", info.messageId);
+//     });
+//     res.render("user/verifyOtp");
+//   }
+// };
+
+const sendOtp = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  if (req.query.message) {
-    res.render("user/verifyOtp", { message: req.query.message });
-  } else {
-    //Generating OTP
-    const messageToSend = otpGenerator.otpGenerator;
-    console.log(messageToSend);
-
-    req.session.otp = messageToSend;
-    req.session.otpExpirationTime = Date.now() + 20 * 1000;
-    setTimeout(() => {
-      req.session.otp = null;
-      console.log("OTP Expired");
-    }, 20 * 1000);
-    console.log("OTP Created");
-
-    const userData = await userModel.findOne({ email: req.session.email });
-    const toEmail = userData.email;
-    const toMobile = userData.mobile;
-    const recipientPhoneNumber = `+91${toMobile}`;
-
-    //Sending OTP to Mobile Number using Twilio
-    sendSMS(recipientPhoneNumber, messageToSend);
-
-    //Setting the mail options
-    const mailOptions = {
-      from: "ratedr@12345678910@gmail.com",
-      to: toEmail,
-      subject: "Your OTP",
-      text: `Your one-time password (OTP) is: ${messageToSend}`,
-    };
-    // Sending OTP to the user's mail ID
-    otpHelper.transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return console.log(error);
-      }
-      console.log("Message sent: %s", info.messageId);
+  const userData = req.body;
+  await otpHelper
+    .otpSender(userData)
+    .then((response) => {
+      req.session.otpExpiryTime = response.otpTimer;
+      req.session.userData = response.user;
+    })
+    .catch((error) => {
+      console.log(error);
     });
+  res.redirect("/verify");
+};
+
+const verifySignUpLoad = (req, res) => {
+  if (req.query.message) {
+    res.render('user/verifyOtp', { message: req.query.message });
+  } else {
     res.render("user/verifyOtp");
   }
 };
 
-const verifiedLogUser = async (req, res) => {
+// const verifiedLogUser = async (req, res) => {
+//   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+//   const otp = await req.body.otp;
+//   if (otp === req.session.otp) {
+//     console.log("entered");
+//     const userData = await userModel.findOne({ email: req.session.email });
+//     req.session.user = userData._id;
+//     res.redirect("/userHome");
+//   } else {
+//     // res.render("user/verifyOtp", { message: "Invalid OTP" });
+//     res.redirect(`/verify?message=${"Invalid OTP"}`);
+//   }
+// };
+
+const forgotPasswordLoad = (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  const otp = await req.body.otp;
-  if (otp === req.session.otp) {
-    console.log("entered");
-    const userData = await userModel.findOne({ email: req.session.email });
-    req.session.user = userData._id;
-    res.redirect("/userHome");
-  } else {
-    // res.render("user/verifyOtp", { message: "Invalid OTP" });
-    res.redirect(`/verify?message=${"Invalid OTP"}`);
-  }
+  res.render("user/forgotPasswordPage");
+};
+
+const forgotPasswordChange = async (req, res) => {
+  await passwordHelper
+    .forgotPassword(req.body.password, req.body.email)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  req.flash("message", "Your password has been changed");
+  res.redirect("/");
 };
 
 module.exports = {
@@ -190,6 +202,10 @@ module.exports = {
   signUpUser,
   logUser,
   loadUserHome,
-  verifyUserLoad,
-  verifiedLogUser,
+  // verifyUserLoad,
+  // verifiedLogUser,
+  forgotPasswordLoad,
+  forgotPasswordChange,
+  sendOtp,
+  verifySignUpLoad,
 };
