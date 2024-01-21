@@ -1,4 +1,5 @@
 const userModel = require("../models/userModel");
+const passwordHelper=require('../helper/passwordHelper')
 const bcrypt = require("bcrypt");
 
 const loginHelper = (userData) => {
@@ -14,16 +15,16 @@ const loginHelper = (userData) => {
             response.loggedIn = true;
             resolve(response);
           } else {
-            response.logginMessage = "Invalid username or password";
+            response.errorMessage = "Invalid username or password";
             resolve(response);
           }
         });
       } else {
-        response.logginMessage = "blocked user";
+        response.errorMessage = "blocked user";
         resolve(response);
       }
     } else {
-      response.logginMessage = "Invalid username or password";
+      response.errorMessage = "Invalid username or password";
       resolve(response);
     }
   });
@@ -31,16 +32,15 @@ const loginHelper = (userData) => {
 
 const signupHelper = (userData) => {
   return new Promise(async (resolve, reject) => {
-    const isUserExist = await userModel.findOne({
-      $or: [{ email: userData.email }, { phone: userData.phone }],
+    const userExist = await userModel.findOne({
+      $or: [{ email: userData.email }, { mobile: userData.mobile }],
     });
-    if (!isUserExist) {
-      userData.password = await bcrypt.hash(userData.password, 10);
-
-      User.create({
+    if (!userExist) {
+      userData.password = await passwordHelper.securePassword(userData.password);
+      userModel.create({
         name: userData.name,
         email: userData.email,
-        phone: userData.phone,
+        mobile: userData.mobile,
         password: userData.password,
       })
         .then((data) => {
@@ -56,18 +56,9 @@ const signupHelper = (userData) => {
   });
 };
 
-const forgotPassword = (newPassword, Mobile) => {
-  return new Promise(async (resolve, reject) => {
-    newPassword = await bcrypt.hash(newPassword, 10);
-    let user = await userModel.findOne({ Mobile: Mobile });
-    user.password = newPassword;
-    await user.save();
-    resolve(user);
-  });
-};
+
 
 module.exports = {
   loginHelper,
   signupHelper,
-  forgotPassword,
 };

@@ -2,7 +2,9 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const twilio = require("twilio");
 const nodemailer = require("nodemailer");
-const otpGenerator = require("../helper/otpGenerator");
+const otpHelper = require("../helper/otpHelper");
+const passwordHelper = require("../helper/passwordHelper");
+const userHelper = require("../helper/userHelper");
 
 //Twilio Mobile OTP verification function-start
 
@@ -25,15 +27,6 @@ function sendSMS(toPhoneNumber, message) {
 }
 //Twilio Mobile OTP verification function-end
 
-const securePassword = async (password) => {
-  try {
-    const sPassword = await bcrypt.hash(password, 10);
-    return sPassword;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const registerLoad = (req, res) => {
   if (req.session.user) {
     res.redirect("/userhome");
@@ -48,62 +41,83 @@ const loginLoad = (req, res) => {
   if (req.session.user) {
     res.redirect("/userhome");
   } else if (req.session.admin) {
-    res.redirect("/adminhome");
+    res.redirect("/admin");
   } else {
-    res.render("user/login");
+    const message = req.flash("message");
+    res.render("user/login", { message });
   }
 };
 
-const insertUser = async (req, res) => {
+const signUpUser = async (req, res) => {
   try {
-    const sPassword = await securePassword(req.body.password);
-    console.log("data entered");
-    const userIn = {
-      name: req.body.name,
-      email: req.body.email,
-      mobile: req.body.mobile,
-      password: sPassword,
-      isAdmin: 0,
-    };
-    const result = await userModel.create(userIn);
-    console.log("data stored");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const logUser = async (req, res) => {
-  const { email } = req.body;
-  req.session.email = email;
-  const logEmail = req.body.email;
-  const logPass = req.body.password;
-  try {
-    const loggedUser = await userModel.findOne({
-      email: logEmail,
-    });
-    if (loggedUser) {
-      const sPassword = await bcrypt.compare(logPass, loggedUser.password);
-      if (sPassword) {
-        if (loggedUser.isAdmin === 1) {
-          req.session.admin = loggedUser._id;
-          res.redirect("/admin");
-        } else {
-          res.redirect("/verify");
-        }
-      } else {
-        // res.render("login", { errorMessage: "Invalid Password" });
-        res.send("Invalid password");
-      }
+    const response = await userHelper.signupHelper(req.body);
+    if (!response.userExist) {
+      req.flash("message", "Registration Successful. Continue to login");
+      res.redirect("/");
     } else {
-      // res.render("login", { errorMessage: "Login Failed" });
-      res.send("login failed");
+      req.flash("message", "You are an existing user. Please log in.");
+
+      res.redirect("/");
     }
   } catch (error) {
     console.log(error);
+    res.redirect("/register");
   }
+  
 };
 
+const logUser = async (req, res) => {
+  await userHelper
+    .loginHelper(req.body)
+    .then((response) => {
+      if (response.loggedIn) {
+        if (response.user.isAdmin === 1) {
+          req.session.admin = response.user._id;
+          res.redirect("/admin");
+        } else {
+          req.session.user = response.user._id;
+          res.redirect("/userHome");
+        }
+      } else {
+        res.render("user/login", { errorMessage: response.errorMessage });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+//   const { email } = req.body;
+//   req.session.email = email;
+//   const logEmail = req.body.email;
+//   const logPass = req.body.password;
+//   try {
+//     const loggedUser = await userModel.findOne({
+//       email: logEmail,
+//     });
+//     if (loggedUser) {
+//       const sPassword = await bcrypt.compare(logPass, loggedUser.password);
+//       if (sPassword) {
+//         if (loggedUser.isAdmin === 1) {
+//           req.session.admin = loggedUser._id;
+//           res.redirect("/admin");
+//         } else {
+//           res.redirect("/verify");
+//         }
+//       } else {
+//         // res.render("login", { errorMessage: "Invalid Password" });
+//         res.send("Invalid password");
+//       }
+//     } else {
+//       // res.render("login", { errorMessage: "Login Failed" });
+//       res.send("login failed");
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
 const loadUserHome = async (req, res) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   if (req.session.user) {
     // const userData = await userModel.findOne({ _id: req.session.user });
     // res.render("userHome", { user: userData });
@@ -127,7 +141,7 @@ const verifyUserLoad = async (req, res) => {
     setTimeout(() => {
       req.session.otp = null;
       console.log("OTP Expired");
-    }, 20*1000);
+    }, 20 * 1000);
     console.log("OTP Created");
 
     const userData = await userModel.findOne({ email: req.session.email });
@@ -146,7 +160,7 @@ const verifyUserLoad = async (req, res) => {
       text: `Your one-time password (OTP) is: ${messageToSend}`,
     };
     // Sending OTP to the user's mail ID
-    otpGenerator.transporter.sendMail(mailOptions, (error, info) => {
+    otpHelper.transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         return console.log(error);
       }
@@ -173,7 +187,7 @@ const verifiedLogUser = async (req, res) => {
 module.exports = {
   loginLoad,
   registerLoad,
-  insertUser,
+  signUpUser,
   logUser,
   loadUserHome,
   verifyUserLoad,

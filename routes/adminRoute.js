@@ -3,8 +3,9 @@ const userAuth = require("../middleware/adminAuth");
 const router = express.Router();
 // const userController = require("../controllers/userController");
 const adminController = require("../controllers/adminController");
+const adminAuth=require('../middleware/adminAuth')
 
-router.get('/', adminController.loadAdminHome);
+router.get('/', adminAuth.isLogout,adminController.loadAdminHome);
 
 
 
