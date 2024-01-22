@@ -12,8 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let timerSpan = document.getElementById("timer");
   let otpExpiryTimer = document.getElementById("otpExpiryTimer");
   // Disable the link on page load (calling the function)
-  disableLink(resendOtp, timerSpan, 5);
-  otpExpiry(otpExpiryTimer, 20);
+  disableLink(resendOtp, timerSpan, 15);
+
+  
+  otpExpiry(otpExpiryTimer, 90);
+
+
 
   // Function for disabling the link
   function disableLink(link, timer, durationInSeconds) {
@@ -22,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let countdown = durationInSeconds;
     let upDateTimer = () => {
       //Function for updating the text for the timer
-      timer.innerText = `00:0${countdown}`;
+      timer.innerText = `00:${countdown}`;
     };
     upDateTimer();
 
