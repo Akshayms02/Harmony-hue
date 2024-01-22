@@ -29,14 +29,18 @@ const loginLoad = (req, res) => {
 
 const signUpUser = async (req, res) => {
   try {
-    const response = await userHelper.signupHelper(req.session.userData);
-    if (!response.userExist) {
-      req.flash("message", "Registration Successful. Continue to login");
-      res.redirect("/");
-    } else {
-      req.flash("message", "You are an existing user. Please log in.");
+    if (req.session.otp === req.body.otp) {
+      const response = await userHelper.signupHelper(req.session.userData);
+      if (!response.userExist) {
+        req.flash("message", "Registration Successful. Continue to login");
+        res.redirect("/");
+      } else {
+        req.flash("message", "You are an existing user. Please log in.");
 
-      res.redirect("/");
+        res.redirect("/");
+      }
+    } else {
+      res.redirect(`/verify?message=${"Invalid OTP"}`);
     }
   } catch (error) {
     console.log(error);
@@ -57,89 +61,25 @@ const logUser = async (req, res) => {
           res.redirect("/userHome");
         }
       } else {
-        res.render("user/login", { errorMessage: response.errorMessage });
+        req.flash('message',response.errorMessage)
+        res.redirect('/');
       }
     })
     .catch((error) => {
       console.log(error);
     });
 };
-//   const { email } = req.body;
-//   req.session.email = email;
-//   const logEmail = req.body.email;
-//   const logPass = req.body.password;
-//   try {
-//     const loggedUser = await userModel.findOne({
-//       email: logEmail,
-//     });
-//     if (loggedUser) {
-//       const sPassword = await bcrypt.compare(logPass, loggedUser.password);
-//       if (sPassword) {
-//         if (loggedUser.isAdmin === 1) {
-//           req.session.admin = loggedUser._id;
-//           res.redirect("/admin");
-//         } else {
-//           res.redirect("/verify");
-//         }
-//       } else {
-//         // res.render("login", { errorMessage: "Invalid Password" });
-//         res.send("Invalid password");
-//       }
-//     } else {
-//       // res.render("login", { errorMessage: "Login Failed" });
-//       res.send("login failed");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   if (req.session.user) {
-    // const userData = await userModel.findOne({ _id: req.session.user });
-    // res.render("userHome", { user: userData });
-    res.render("user/userHome");
+    const userData = await userModel.findOne({ _id: req.session.user });
+    res.render("user/userHome", { user: userData });
+
   } else {
     res.redirect("/");
   }
 };
-
-// const verifyUserLoad = async (req, res) => {
-//   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-//   if (req.query.message) {
-//     res.render("user/verifyOtp", { message: req.query.message });
-//   } else {
-//     //Generating OTP
-//     const messageToSend = otpGenerator.otpGenerator;
-//     console.log(messageToSend);
-
-//     req.session.otp = messageToSend;
-//     req.session.otpExpirationTime = Date.now() + 20 * 1000;
-//     setTimeout(() => {
-//       req.session.otp = null;
-//       console.log("OTP Expired");
-//     }, 20 * 1000);
-//     console.log("OTP Created");
-
-//     const userData = await userModel.findOne({ email: req.session.email });
-//     const toEmail = userData.email;
-//     const toMobile = userData.mobile;
-//     const recipientPhoneNumber = `+91${toMobile}`;
-
-//     //Sending OTP to Mobile Number using Twilio
-//     otpHelper.sendSMS(recipientPhoneNumber, messageToSend);
-
-//     // Sending OTP to the user's mail ID
-//     otpHelper.transporter.sendMail(otpHelper.mailOptions, (error, info) => {
-//       if (error) {
-//         return console.log(error);
-//       }
-//       console.log("Message sent: %s", info.messageId);
-//     });
-//     res.render("user/verifyOtp");
-//   }
-// };
 
 const sendOtp = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -149,6 +89,7 @@ const sendOtp = async (req, res) => {
     .then((response) => {
       req.session.otpExpiryTime = response.otpTimer;
       req.session.userData = response.user;
+      req.session.otp = response.otp;
     })
     .catch((error) => {
       console.log(error);
@@ -158,26 +99,11 @@ const sendOtp = async (req, res) => {
 
 const verifySignUpLoad = (req, res) => {
   if (req.query.message) {
-    res.render('user/verifyOtp', { message: req.query.message });
+    res.render("user/verifyOtp", { message: req.query.message });
   } else {
-    
     res.render("user/verifyOtp");
   }
 };
-
-// const verifiedLogUser = async (req, res) => {
-//   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-//   const otp = await req.body.otp;
-//   if (otp === req.session.otp) {
-//     console.log("entered");
-//     const userData = await userModel.findOne({ email: req.session.email });
-//     req.session.user = userData._id;
-//     res.redirect("/userHome");
-//   } else {
-//     // res.render("user/verifyOtp", { message: "Invalid OTP" });
-//     res.redirect(`/verify?message=${"Invalid OTP"}`);
-//   }
-// };
 
 const forgotPasswordLoad = (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -203,10 +129,9 @@ module.exports = {
   signUpUser,
   logUser,
   loadUserHome,
-  // verifyUserLoad,
-  // verifiedLogUser,
   forgotPasswordLoad,
   forgotPasswordChange,
   sendOtp,
   verifySignUpLoad,
+ 
 };

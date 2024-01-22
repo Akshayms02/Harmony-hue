@@ -1,5 +1,5 @@
 const userModel = require("../models/userModel");
-const passwordHelper=require('../helper/passwordHelper')
+const passwordHelper = require("../helper/passwordHelper");
 const bcrypt = require("bcrypt");
 
 const loginHelper = (userData) => {
@@ -36,13 +36,16 @@ const signupHelper = (userData) => {
       $or: [{ email: userData.email }, { mobile: userData.mobile }],
     });
     if (!userExist) {
-      userData.password = await passwordHelper.securePassword(userData.password);
-      userModel.create({
-        name: userData.name,
-        email: userData.email,
-        mobile: userData.mobile,
-        password: userData.password,
-      })
+      userData.password = await passwordHelper.securePassword(
+        userData.password
+      );
+      userModel
+        .create({
+          name: userData.name,
+          email: userData.email,
+          mobile: userData.mobile,
+          password: userData.password,
+        })
         .then((data) => {
           console.log(data);
           resolve(data);
@@ -55,8 +58,6 @@ const signupHelper = (userData) => {
     }
   });
 };
-
-
 
 module.exports = {
   loginHelper,

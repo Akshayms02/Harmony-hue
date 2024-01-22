@@ -42,6 +42,7 @@ const otpSender = (userData) => {
 
     let response = {};
     response.user = userData;
+    response.otp = otp;
     response.otpTimer = otpCreationTimer+90*1000;
     //Sending SMS through Twilio
     const toEmail = userData.email;

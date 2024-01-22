@@ -1,0 +1,255 @@
+<%- include('../layouts/adminLayout/admin-header') %>
+<!-- SweetAlert CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css"
+/>
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Category Management</h2>
+      <p>Add, edit, or delete (Soft delete) a category</p>
+    </div>
+    <div>
+      <input
+        type="text"
+        placeholder="Search Categories"
+        class="form-control bg-white"
+      />
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3">
+          <form action="/admin/addCategory" method="post" id="myForm" onsubmit="return namevalidate(e)">
+            <div class="mb-2">
+              <label for="product_name" class="form-label">Name</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                name="categoryName"
+                class="form-control"
+                id="category"
+              />
+            </div>
+            <span
+              id="error1"
+              class="text-danger mt-0"
+              style="display: none"
+            ></span>
+            <div class="mb-4">
+              <label class="form-label">Description</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                name="categoryDescription"
+                class="form-control"
+                id="categoryDescription"
+              />
+            </div>
+            <span
+              id="error2"
+              class="text-danger text-center"
+              style="display: none"
+            ></span>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit">
+                Create category
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-9">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th class="text-end" style="padding-right: 6rem">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let i = 0; i < categories.length; i++) { %>
+                <tr>
+                  <td><b><%= i+1 %></b></td>
+                  <td><b><%= categories[i].name %></b></td>
+                  <td><b><%= categories[i].description %></b></td>
+                  <td width="20%">
+                    <% if (categories[i].status) { %>
+                    <button
+                      id="delete-category<%= categories[i]._id %>"
+                      class="btn btn-sm btn-success rounded font-sm mt-15"
+                      onclick="deleteACategory('<%= categories[i]._id %>')"
+                    >
+                      Listed
+                    </button>
+                    <% } else { %>
+                    <button
+                      id="delete-category<%= categories[i]._id %>"
+                      class="btn btn-sm btn-danger rounded font-sm mt-15"
+                      onclick="deleteACategory('<%= categories[i]._id %>')"
+                    >
+                      Unlisted
+                    </button>
+                    <% } %>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- .col// -->
+      </div>
+      <!-- .row // -->
+    </div>
+    <!-- card body .// -->
+  </div>
+  <!-- card .// -->
+</section>
+<!-- content-main end// -->
+
+<!-- jQuery CDN -->
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha384-Kyknw4N7ia1rB4MPl1+Ttw6C2l8LhEZv7YVkIdkyyPyaSX8r+trFb/R7I4C13ycY"
+  crossorigin="anonymous"
+></script>
+
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+
+<script>
+  const category = document.getElementById("category");
+  const categoryDescription = document.getElementById("categoryDescription");
+  const error1 = document.getElementById("error1");
+  const myForm = document.getElementById("myForm");
+  function namevalidate(e) {
+    e.preventDefault();
+    const nameval = category.value;
+    const nameRegex = /^[A-Za-z]+([- ]?[A-Za-z]+)*$/;
+    if (nameval.trim() === "") {
+      error1.style.display = "block";
+      error1.style.marginLeft = "18px";
+      error1.innerHTML = "Please Enter a valid Name.";
+      return false;
+    } else if (!nameRegex.test(nameval)) {
+      error1.style.display = "block";
+      error1.innerHTML = "Name contains Numbers";
+      return false;
+    } else {
+      error1.style.display = "none";
+      error1.innerHTML = "";
+      return true;
+    }
+  }
+  category.addEventListener("blur", namevalidate);
+  
+</script>
+
+<script>
+  function deleteACategory(categoryId) {
+    swal("Are you sure you want to delete this", {
+      buttons: ["cancel", "ok"],
+    }).then((response) => {
+      if (response) {
+        $.ajax({
+          url: "/admin/delete-category/" + categoryId,
+          type: "get",
+        }).then((response) => {
+          if (response) {
+            if (response.listed) {
+              //to show green button and green toast message
+
+              Toastify({
+                text: `${response.message}`,
+                duration: 3000,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "green",
+                },
+              }).showToast();
+
+              const button = document.getElementById(
+                "delete-category" + categoryId
+              );
+              document
+                .getElementById("delete-category" + categoryId)
+                .classList.remove("btn-danger");
+              document
+                .getElementById("delete-category" + categoryId)
+                .classList.add("btn-success");
+              button.innerHTML = "Listed";
+            } else {
+              Toastify({
+                text: `${response.message}`,
+                duration: 3000,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "linear-gradient(to right, #00b09b, #96c93d)",
+                },
+              }).showToast();
+
+              const button = document.getElementById(
+                "delete-category" + categoryId
+              );
+              document
+                .getElementById("delete-category" + categoryId)
+                .classList.add("btn-danger");
+              document
+                .getElementById("delete-category" + categoryId)
+                .classList.remove("btn-success");
+              button.innerHTML = "UnListed";
+            }
+            console.log(response.listed);
+          }
+        });
+      }
+    });
+  }
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#myForm").submit(function (event) {
+      event.preventDefault();
+      var formData = $(this).serialize();
+      $.ajax({
+        type: "POST",
+        url: "/admin/addCategory",
+        data: formData,
+        success: function (response) {
+          if (response.status) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Category added",
+              showConfirmButton: false,
+              timer: 1600,
+            }).then(function () {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Category already exists",
+            });
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+        },
+      });
+    });
+  });
+</script>
+
+<%- include('../layouts/adminLayout/admin-footer') %>
