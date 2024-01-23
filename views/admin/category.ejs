@@ -23,7 +23,7 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-3">
-          <form action="/admin/addCategory" method="post" id="myForm" onsubmit="return namevalidate(e)">
+          <form action="/admin/addCategory" method="post" id="myForm">
             <div class="mb-2">
               <label for="product_name" class="form-label">Name</label>
               <input
@@ -129,22 +129,22 @@
   const error1 = document.getElementById("error1");
   const myForm = document.getElementById("myForm");
   function namevalidate(e) {
-    e.preventDefault();
+    
     const nameval = category.value;
     const nameRegex = /^[A-Za-z]+([- ]?[A-Za-z]+)*$/;
     if (nameval.trim() === "") {
       error1.style.display = "block";
       error1.style.marginLeft = "18px";
       error1.innerHTML = "Please Enter a valid Name.";
-      return false;
+      
     } else if (!nameRegex.test(nameval)) {
       error1.style.display = "block";
       error1.innerHTML = "Name contains Numbers";
-      return false;
+      
     } else {
       error1.style.display = "none";
       error1.innerHTML = "";
-      return true;
+      
     }
   }
   category.addEventListener("blur", namevalidate);
