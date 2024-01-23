@@ -1,0 +1,117 @@
+<%- include('../layouts/adminLayout/admin-header') %>
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Products List</h2>
+                  
+                </div>
+                <div>
+
+                   
+                    <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row align-items-center">
+                        
+                    </div>
+                </header> 
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="prodTable">
+                            <thead>
+                                <tr class="text-left">
+                                    <th  style="padding-left: 1.5rem;">Image</th>
+                                    <th style="padding-left: 2rem;">Name</th>
+                                    <th style="padding-left: 1.5rem;">Category</th>
+                                    <th style="padding-left: 1.5rem;">Price</th>
+                                    <th style="padding-left: 1.5rem;">Quantity</th>
+                                    <th style="padding-left: 1.5rem;">Discount</th>
+                                    <th style="padding-left: 1.5rem;">Update</th>
+                                    <th style="padding-left: 1.5rem;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        
+                               <% for( let i = 0; i < products.length; i++ ) { %>
+                            
+                                    <tr>
+                                        <td style="vertical-align: middle; " width="10%">
+                                            <% if (Array.isArray(products[i].image) && products[i].image.length > 0) { %>
+                                              <img class="img-thumbnail" width="80" src="/uploads/product-images/<%= products[i].image[0] %>" alt="no image available">
+                                            <% } else if (products[i].image) { %>
+                                              <img class="img-thumbnail" width="80" src="/uploads/product-images/<%= products[i].image %>" alt="no image available">
+                                            <% } else { %>
+                                              <span>No image available</span>
+                                            <% } %>
+                                          </td>
+                                          
+                                        <td style="vertical-align: middle; padding-left: 1.5rem;" width="17%"><%= products[i].product_name %></td>
+                                        <% if (!products[i].category[0]) { %>
+                                            <td style="vertical-align: middle; padding-left: 1.5rem;" class="text-danger" width="15%" >No Category</td>
+                                        <% }else{ %>
+                                        <td style="vertical-align: middle; padding-left: 1.5rem;" width="12%"><%= products[i].category[0].name  %></td>
+                                        <% } %>
+                                        <td style="vertical-align: middle; padding-left: 2rem;" width="12%">₹<%= products[i].product_price %></td>
+                                        <td style="vertical-align: middle; padding-left: 2.5rem;" width="12%"><%= products[i].product_quantity %></td>
+                                        <td style="vertical-align: middle; padding-left: 2rem;" width="12%"><%= products[i].product_discount %></td>
+                                       
+                                        <td style="vertical-align: middle; padding-left: 1.5rem;" width="10%"><a href="/admin/edit-product/<%= products[i]._id %>" class="btn btn-success btn-sm rounded font-sm mt-15">Edit</a></td>
+            
+                                        <% if (products[i].product_status) { %>
+                                        <td style="vertical-align: middle; padding-left: 1.5rem;" > <button onclick="changeProductStatus('<%= products[i]._id %>')" class="btn btn-sm btn-danger rounded font-sm mt-15">Unlist</button> </td>
+                                         
+                                        <% } else {%>
+                                            <td style="vertical-align: middle; padding-left: 1.5rem;" > <button onclick="changeProductStatus('<%= products[i]._id %>')" class="btn btn-sm btn-success rounded font-sm mt-15">List</button> </td>
+                                        
+                                        <% } %>
+            
+                                    </tr>
+                                
+        
+                                <% } %>
+                                
+                            </tbody>
+                        </table> <!-- table-responsive.// -->
+                    </div>
+                </div> 
+            </div> 
+        </section> 
+
+        <!-- sweetalert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+       
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+        <script>
+           
+            function changeProductStatus(productId){
+                console.log("clicked",productId);
+                swal("Are you sure you want to do this?",{
+                    buttons:["NO","YES"]
+                }).then((res) =>{
+                    if(res){
+                        $.ajax({
+                            url:"/admin/delete-product/"+productId,
+                            type:'get'
+                        }).done((res)=>{
+                            swal("successful",`${res.message}`,"success").then(() =>{
+                                location.reload();
+                            })
+                        })
+                        .fail((res) =>{
+                            swal("successful",`${res.message}`,"success").then(() =>{
+                                location.reload();
+                            })
+                        })
+                    }
+                })
+            }
+        </script>
+
+<%- include('../layouts/adminLayout/admin-footer') %>

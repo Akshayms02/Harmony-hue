@@ -1,0 +1,111 @@
+<%- include('../layouts/adminLayout/admin-header') %>
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Users list</h2>
+       
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                
+            </div>
+        </header> 
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="userTable">
+                    <thead>
+                        <tr>
+
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Status</th>
+
+                            <th class="text-end"> Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <% for( let i=0; i < users.length; i++ ) { %>
+
+                            <tr>
+                                <td width="10%">
+                                    <%= i+1 %>
+                                </td>
+                                <td width="20%">
+                                    <%= users[i].name %>
+                                </td>
+                                <td width="20%">
+                                    <%= users[i].email %>
+                                </td>
+                                <td width="15%">
+                                    <%= users[i].phone%>
+                                </td>
+                                <% if (users[i].isActive) { %>
+                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                    <% }else{ %>
+                                        <td><span class="badge rounded-pill alert-danger">InActive</span></td>
+                                        <% } %>
+
+                                            <td class="text-end" width="25%">
+                                                <% if (users[i].isActive) { %>
+                                                    <button id="status-button-<%= users[i]._id %>"
+                                                        onclick="changeUserStatus('<%= users[i]._id %>')" type="button"
+                                                        class="btn btn-sm btn-danger rounded font-sm mt-15 ps-3 pe-3">Block</button>
+
+                                                    <a href="/admin/userProfile/<%= users[i]._id %>"
+                                                        class="btn btn-sm btn-brand rounded font-sm mt-15">View
+                                                        Details</a>
+                                                    <% }else{%>
+
+                                                        <button id="status-button-<%= users[i]._id %>"
+                                                            onclick="changeUserStatus('<%= users[i]._id %>')"
+                                                            type="button"
+                                                            class="btn btn-sm btn-success rounded font-sm mt-15 ps-3 pe-3">UnBlock</button>
+
+                                                        <a href="/admin/userProfile/<%= users[i]._id %>"
+                                                            class="btn btn-sm btn-brand rounded font-sm mt-15">View
+                                                            Details</a>
+                                                        <% } %>
+
+                                            </td>
+
+                            </tr>
+                            <% } %>
+
+                    </tbody>
+                </table> 
+            </div>
+        </div> 
+    </div> 
+</section> 
+
+
+<script>
+    function changeUserStatus(userId) {
+        console.log('clicked', userId);
+
+        swal("Are you sure you want to do this?", {
+            buttons: ["NO", "YES"]
+        }).then((response) => {
+            console.log(response);
+            if (response) {
+                $.ajax({
+                    url: '/admin/block-unblock-user/' + userId,
+                    type: 'get'
+                }).done(response => {
+                    swal("Successfull", `${response.message}`, "success").then(() => {
+                        location.reload();
+                    })
+                }).fail((error) => {
+                    swal("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+                        location.reload()
+                    })
+                })
+            }
+        })
+    }
+</script>
+
+<%- include('../layouts/adminLayout/admin-footer') %>

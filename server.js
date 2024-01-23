@@ -7,6 +7,7 @@ require("dotenv").config();
 const adminRoute = require("./routes/adminRoute");
 const mongoose = require("mongoose");
 const flash = require("express-flash");
+const methodOverride = require('method-override');
 
 mongoose.connect("mongodb://127.0.0.1:27017/HarmonyHue");
 mongoose.connection.on("connected", () => {
@@ -22,12 +23,14 @@ mongoose.connection.on("error", () => {
 });
 
 const app = express();
-// connectDB();
+
 const PORT = process.env.PORT || 3002;
 
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "/public")));
 app.use("/assets", express.static(path.join(__dirname, "/public/assets")));
+
+app.use(methodOverride('_method'));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));

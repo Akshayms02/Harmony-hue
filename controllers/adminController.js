@@ -1,4 +1,5 @@
 const categoryHelper = require("../helper/categoryHelper");
+const Category = require("../models/categoryModel");
 
 const loadAdminHome = (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -21,8 +22,8 @@ const adminLogout = (req, res) => {
   }
 };
 
-const loadCategory = async (req, res) => {
-  await categoryHelper.getAllcategory().then((response) => {
+const loadCategory = (req, res) => {
+   categoryHelper.getAllcategory().then((response) => {
     res.render("admin/category", { categories: response });
   });
 };
@@ -39,11 +40,40 @@ const deleteCategory = async (req, res) => {
     if (response.status) {
       res.json({ error: false, message: "Category is listed", listed: true });
     } else {
-      res.json({ error: false, message: "Category is Unlisted", listed: false });
+      res.json({
+        error: false,
+        message: "Category is Unlisted",
+        listed: false,
+      });
     }
-
   });
 };
+
+const editCategoryLoad = async (req, res) => {
+  const catId = req.query.catId;
+
+  const catDetails = await Category.findById({ _id: catId });
+
+  res.render("admin/editCategory", { details: catDetails });
+};
+
+const editCategoryPost = async (req, res) => {
+  const { categoryName, categoryDescription } = req.body;
+
+  const catData = {
+    categoryName: categoryName,
+    description:categoryDescription,
+  }
+
+  const data = await Category.findOneAndUpdate({ _id: req.params.id }, { $set: catData });
+  
+
+  res.redirect("/admin/category");
+};
+
+const productListLoad = (req,res) => {
+  
+}
 
 module.exports = {
   loadAdminHome,
@@ -51,4 +81,6 @@ module.exports = {
   adminLogout,
   loadCategory,
   deleteCategory,
+  editCategoryLoad,
+  editCategoryPost,productListLoad,
 };

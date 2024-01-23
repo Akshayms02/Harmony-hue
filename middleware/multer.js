@@ -11,7 +11,7 @@ const productStorage = multer.diskStorage({
 
 const productUpload = multer({
   storage: productStorage,
-}).array("image", 6);
+}).array("image", 4);
 
 module.exports = {
   productUpload,

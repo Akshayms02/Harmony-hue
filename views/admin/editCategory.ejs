@@ -16,75 +16,27 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-3">
-            <form action="/admin/addCategory" method="post" id="myForm">
+            <form action="/admin/editCategory/<%= details._id %>?_method=PUT" method="POST" id="myForm">
+              <input type="hidden" value="PUT" name="_method" >
               <div class="mb-2">
                 <label for="product_name" class="form-label">Name</label>
-                <input type="text" placeholder="Type here" name="categoryName" class="form-control" id="category" />
+                <input type="text" placeholder="Type here" name="categoryName" class="form-control" id="category" value="<%= details.categoryName %>"/>
               </div>
               <span id="error1" class="text-danger mt-0" style="display: none"></span>
               <div class="mb-4">
                 <label class="form-label">Description</label>
                 <input type="text" placeholder="Type here" name="categoryDescription" class="form-control"
-                  id="categoryDescription" />
+                  id="categoryDescription" value="<%= details.description %>" />
               </div>
               <span id="error2" class="text-danger text-center" style="display: none"></span>
               <div class="d-grid">
                 <button class="btn btn-primary" type="submit">
-                  Create category
+                  Edit category
                 </button>
               </div>
             </form>
           </div>
-          <div class="col-md-9">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th class="text-end" style="padding-right: 6rem">Action</th>
-                    <th>Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for (let i=0; i < categories.length; i++) { %>
-                    <tr>
-                      <td><b>
-                          <%= i+1 %>
-                        </b></td>
-                      <td><b>
-                          <%= categories[i].categoryName %>
-                        </b></td>
-                      <td><b>
-                          <%= categories[i].description %>
-                        </b></td>
-                      <td width="20%">
-                        <% if (categories[i].status) { %>
-                          <button id="delete-category<%= categories[i]._id %>"
-                            class="btn btn-sm btn-success rounded font-sm mt-15"
-                            onclick="deleteACategory('<%= categories[i]._id %>')">
-                            Listed
-                          </button>
-                          <% } else { %>
-                            <button id="delete-category<%= categories[i]._id %>"
-                              class="btn btn-sm btn-danger rounded font-sm mt-15"
-                              onclick="deleteACategory('<%= categories[i]._id %>')">
-                              Unlisted
-                            </button>
-                            <% } %>
-                      </td>
-                      <td>
-                        <a href="/admin/editCategory?catId=<%= categories[i]._id %>" id="editCategory<%= categories[i]._id %>"
-                          class="btn btn-sm btn-dark rounded font-sm mt-15" value="Edit">Edit</a>
-
-                      </td>
-                    </tr>
-                    <% } %>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        
           <!-- .col// -->
         </div>
         <!-- .row // -->
@@ -129,12 +81,12 @@
       return true;
     }
     category.addEventListener("blur", namevalidate);
-    // myForm.addEventListener("submit", (e) => {
-    //   const nameval = namevalidate(e);
-    //   if (nameval) {
-    //     e.preventDefault();
-    //   }
-    // })
+    myForm.addEventListener("submit", (e) => {
+      const nameval = namevalidate(e);
+      if (nameval) {
+        e.preventDefault();
+      }
+    })
 
   </script>
 
@@ -204,63 +156,6 @@
     }
   </script>
 
-  <script>
-
-    $(document).ready(function () {
-      $("#myForm").submit(function (event) {
-        if (!namevalidate()) {
-          console.log("false");
-          return false;
-        }
-        event.preventDefault();
-        var formData = $(this).serialize();
-        $.ajax({
-          type: "POST",
-          url: "/admin/addCategory",
-          data: formData,
-          success: function (response) {
-            if (response.status) {
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Category added",
-                showConfirmButton: false,
-                timer: 1600,
-              }).then(function () {
-                window.location.reload();
-              });
-            } else {
-              Swal.fire({
-                icon: "warning",
-                title: "Category already exists",
-              });
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error(error);
-          },
-        });
-      });
-    });
-
-    function namevalidate(e) {
-
-      const nameval = category.value;
-      const nameRegex = /^[A-Za-z]+([- ]?[A-Za-z]+)*$/;
-      if (nameval.trim() === "") {
-        console.log("entered1");
-        error1.style.display = "block";
-        error1.style.marginLeft = "18px";
-        error1.innerHTML = "Please Enter a valid Name.";
-        return false;
-      } else if (!nameRegex.test(nameval)) {
-        console.log("entered2");
-        error1.style.display = "block";
-        error1.innerHTML = "Name contains Numbers";
-        return false;
-      }
-      return true;
-    }
-  </script>
+  
 
   <%- include('../layouts/adminLayout/admin-footer') %>

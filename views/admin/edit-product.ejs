@@ -1,0 +1,135 @@
+<%- include('../layouts/adminLayout/admin-header') %>
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Product</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+
+                    <div class="card-body">
+                        <form action="/admin/edit-product/<%= product._id %>" method="post"
+                            enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Product Name</label>
+                                <input type="text" name="product_name" value="<%= product.product_name %>"
+                                    placeholder="Type here" class="form-control" id="product_name">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product description</label>
+                                <textarea placeholder="Type here" id="product_description" name="product_description"
+                                    class="form-control" rows="4"></textarea>
+                            </div>
+
+
+                            <div class="mb-4">
+                                <label class="form-label" for="product_price">Price</label>
+                                <input type="text" value="<%= product.product_price %>" placeholder="price"
+                                    name="product_price" class="form-control" id="product_price">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label for="product_quantity" class="form-label">Quantity</label>
+                                        <input type="text" name="product_quantity"
+                                            value="<%= product.product_quantity%>" placeholder="nos"
+                                            class="form-control" id="product_quantity">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label for="product_discount" class="form-label">Discount</label>
+                                        <input type="text" name="product_discount"
+                                            value="<%= product.product_discount %>" placeholder="%" class="form-control"
+                                            id="product_discount">
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <label class="form-label">Image</label>
+                            <% if(typeof product.image==='string' ) { %>
+                                <img src="/uploads/product-images/<%= product.image %>"
+                                    style="width: 100px; height: 72px;" alt="">
+                                <% } else if(Array.isArray(product.image) && product.image.length> 0) { %>
+                                    <img src="/uploads/product-images/<%= product.image[0] %>"
+                                        style="width: 100px; height: 72px;" alt="">
+                                    <% } %>
+                                        <input class="form-control" type="file" name="img" multiple>
+                                        <input type="hidden" value="<%= product.image %> " name="old_image">
+                                        <% if(Array.isArray(product.image)) { %>
+                                            <p>
+                                                <%= product.image.length %> out of 4 images available
+                                            </p>
+                                            <% } %>
+                        </div>
+
+                    </div>
+                    <div class="card mb-4">
+
+                        <div class="card-body">
+                            <div class="row">
+                                <% if(Array.isArray(product.image) && product.image.length> 0) { %>
+                                    <% for(let i=0; i<product.image.length; i++) { %>
+                                        <div class="col-3">
+                                            <img src="/uploads/product-images/<%= product.image[i] %>"
+                                                style="width: 100px; height: 72px;" alt="">
+                                        </div>
+                                        <% } %>
+                                            <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="card mb-4">
+
+                    <div class="card-body">
+                        <div class="row gx-2">
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" style="width: auto;" name="product_category">
+                                    <% for (let i=0; i < categories.length; i++) { %>
+                                        <% if (categories[i]._id.equals(product.product_category._id)) { %>
+                                            <option value="<%= categories[i]._id %>" selected>
+                                                <%= categories[i].name %>
+                                            </option>
+                                            <% } else { %>
+                                                <option value="<%= categories[i]._id %>">
+                                                    <%= categories[i].name %>
+                                                </option>
+                                                <% } %>
+                                                    <% } %>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Edit
+                        Product</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </section>
+
+
+    <script>
+        document.getElementById("product_description").value = "<%= product.product_description || '' %>";
+    </script>
+    <%- include('../layouts/adminLayout/admin-footer') %>
