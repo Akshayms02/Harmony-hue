@@ -10,6 +10,7 @@ router.get(
   userAuth.isLogin,
   userController.forgotPasswordLoad
 );
+router.get('/logout', userAuth.isLogout,userController.userLogout);
 router.post("/forgot-password", userController.forgotPasswordChange);
 router.get("/register", userAuth.isLogin, userController.registerLoad);
 router.post("/register", userController.sendOtp);

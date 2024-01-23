@@ -70,6 +70,26 @@ const logUser = async (req, res) => {
     });
 };
 
+const userLogout = (req, res) => {
+  try {
+    res.setHeader("Cache-control", "no-cache", "no-store", "must-revalidate");
+
+    if (req.session.user) {
+      req.session.destroy((error) => {
+        if (error) {
+          res.redirect("/userHome");
+        } else {
+          res.redirect("/");
+        }
+      });
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   if (req.session.user) {
@@ -133,5 +153,6 @@ module.exports = {
   forgotPasswordChange,
   sendOtp,
   verifySignUpLoad,
+  userLogout,
  
 };

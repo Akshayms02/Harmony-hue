@@ -34,7 +34,7 @@ const sendSMS = (toPhoneNumber, message) => {
 };
 //Twilio Mobile OTP verification function-end
 
-const otpSender = (userData) => {
+const  otpSender = (userData) => {
   const otp = otpGenerator();
   const otpCreationTimer = Date.now();
   console.log(otp);
