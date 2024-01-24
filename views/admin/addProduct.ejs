@@ -1,0 +1,98 @@
+<%- include('../layouts/adminLayout/admin-header') %>
+<section class="content-main">
+  <div class="row">
+      <div class="col-9">
+          <div class="content-header">
+              <h2 class="content-title">Add New Product</h2>
+          </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="card mb-4">
+              <div class="card-header">
+                  <h4>Basic</h4>
+              </div>
+              <div class="card-body">
+                  <form action="/admin/addproduct" method="post" enctype="multipart/form-data">
+                      <div class="mb-4">
+                          <label for="product_name" class="form-label">Product Name</label>
+                          <input type="text" name="name" placeholder="Type here" class="form-control"
+                              id="productName">
+                      </div>
+                      <div class="mb-4">
+                          <label class="form-label">Product description</label>
+                          <textarea placeholder="Type here" name="description" class="form-control"
+                              rows="4"></textarea>
+                      </div>
+                      <div class="mb-4">
+                          <label class="form-label" for="product_price">Price</label>
+                          <input type="text" placeholder="price" name="price" class="form-control" id="productPrice">
+                      </div>
+                      <div class="row">
+                          <div class="col-lg-6">
+                              <div class="mb-4">
+                                  <label for="product_quantity" class="form-label">Quantity</label>
+                                  <input type="text" name="quantity" placeholder="nos" class="form-control"
+                                      id="productQuantity">
+                              </div>
+                          </div>
+                          <div class="col-lg-6">
+                              <div class="mb-4">
+                                  <label for="product_discount" class="form-label">Discount</label>
+                                  <input type="text" name="discount" placeholder="%" class="form-control"
+                                      id="productDiscount">
+                              </div>
+                          </div>
+
+                        
+                      </div>
+
+              </div>
+          </div> 
+      </div>
+
+      <div class="col-lg-3">
+          <div class="card mb-4">
+             
+              <div class="card-body">
+                  <div class="input-upload">
+                      <label class="form-label">Image</label>
+                      <input class="form-control" type="file" name="images" multiple>
+                  </div>
+              </div>
+          </div> 
+
+          <div class="card mb-4">
+            
+              <div class="card-body">
+                  <div class="row gx-2">
+                      <div class="col-sm-6 mb-3">
+                          <label class="form-label">Category</label>
+                          <select class="form-select" style="width: auto;" name="productCategory">
+
+                              <% for( let i=0; i < category.length; i++ ) { %>
+                                  <% if (category[i].status) { %>
+                                      <option value="<%= category[i]._id %>">
+                                          <%= category[i].categoryName %>
+                                      </option>
+                                      <% } %>
+                                          <% } %>
+
+
+
+                          </select>
+                      </div>
+                      
+                  </div> 
+              </div>
+          </div> 
+          <div>
+              <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Add
+                  Product</button> 
+          </div>
+      </div>
+
+      </form>
+  </div>
+</section> 
+
+<%- include('../layouts/adminLayout/admin-footer') %>

@@ -5,7 +5,7 @@ const getAllProducts= () => {
   return new Promise(async(resolve,reject) =>{
       const product = await productModel.aggregate([{
           $lookup:{
-              from:'Category',
+              from:'categories',
               localField:"productCategory",
               foreignField:"_id",
               as:"category"
@@ -32,9 +32,9 @@ const addProduct= (data, files) => {
     }
 
     await productModel.create({
-      productName: data.product_name,
-      productDescription: data.product_description,
-      productCategory: data.product_category,
+      productName: data.name,
+      productDescription: data.description,
+      productCategory: data.productCategory,
       productPrice: data.price,
       productQuantity: data.quantity,
       productDiscount: data.discount,

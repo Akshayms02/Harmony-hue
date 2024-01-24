@@ -76,8 +76,25 @@ const editCategoryPost = async (req, res) => {
 
 const productListLoad = async (req, res) => {
   const products = await productHelper.getAllProducts();
-  res.render('admin/productList', { products: products });
+  res.render("admin/productList", { products: products });
 };
+
+const addProductLoad = (req, res) => {
+  categoryHelper.getAllcategory().then((response) => {
+    console.log(response);
+    res.render("admin/addProduct", { category: response });
+  });
+};
+
+const addProductPost = (req, res) => {
+  const body = req.body;
+  const files = req.files;
+  productHelper.addProduct(body, files).then((response) => {
+    res.redirect('/admin/productList');
+  }).catch((error) => {
+    console.log(error);
+  })
+}
 
 module.exports = {
   loadAdminHome,
@@ -88,4 +105,6 @@ module.exports = {
   editCategoryLoad,
   editCategoryPost,
   productListLoad,
+  addProductLoad,
+  addProductPost,
 };
