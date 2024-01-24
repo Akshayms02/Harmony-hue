@@ -1,4 +1,5 @@
 const categoryHelper = require("../helper/categoryHelper");
+const productHelper = require("../helper/productHelper");
 const Category = require("../models/categoryModel");
 
 const loadAdminHome = (req, res) => {
@@ -23,7 +24,7 @@ const adminLogout = (req, res) => {
 };
 
 const loadCategory = (req, res) => {
-   categoryHelper.getAllcategory().then((response) => {
+  categoryHelper.getAllcategory().then((response) => {
     res.render("admin/category", { categories: response });
   });
 };
@@ -62,18 +63,21 @@ const editCategoryPost = async (req, res) => {
 
   const catData = {
     categoryName: categoryName,
-    description:categoryDescription,
-  }
+    description: categoryDescription,
+  };
 
-  const data = await Category.findOneAndUpdate({ _id: req.params.id }, { $set: catData });
-  
+  const data = await Category.findOneAndUpdate(
+    { _id: req.params.id },
+    { $set: catData }
+  );
 
   res.redirect("/admin/category");
 };
 
-const productListLoad = (req,res) => {
-  
-}
+const productListLoad = async (req, res) => {
+  const products = await productHelper.getAllProducts();
+  res.render('admin/productList', { products: products });
+};
 
 module.exports = {
   loadAdminHome,
@@ -82,5 +86,6 @@ module.exports = {
   loadCategory,
   deleteCategory,
   editCategoryLoad,
-  editCategoryPost,productListLoad,
+  editCategoryPost,
+  productListLoad,
 };

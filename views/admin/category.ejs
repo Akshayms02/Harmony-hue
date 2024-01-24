@@ -75,8 +75,9 @@
                             <% } %>
                       </td>
                       <td>
-                        <a href="/admin/editCategory?catId=<%= categories[i]._id %>" id="editCategory<%= categories[i]._id %>"
-                          class="btn btn-sm btn-dark rounded font-sm mt-15" value="Edit">Edit</a>
+                        <a href="/admin/editCategory?catId=<%= categories[i]._id %>"
+                          id="editCategory<%= categories[i]._id %>" class="btn btn-sm btn-dark rounded font-sm mt-15"
+                          value="Edit">Edit</a>
 
                       </td>
                     </tr>
@@ -119,7 +120,7 @@
         return false;
       } else if (!nameRegex.test(nameval)) {
         error1.style.display = "block";
-        error1.innerHTML = "Name contains Numbers";
+        error1.innerHTML = "Numbers are not allowed";
         return false;
       } else {
         error1.style.display = "none";
@@ -129,12 +130,7 @@
       return true;
     }
     category.addEventListener("blur", namevalidate);
-    // myForm.addEventListener("submit", (e) => {
-    //   const nameval = namevalidate(e);
-    //   if (nameval) {
-    //     e.preventDefault();
-    //   }
-    // })
+
 
   </script>
 
@@ -167,11 +163,9 @@
                   "delete-category" + categoryId
                 );
                 document
-                  .getElementById("delete-category" + categoryId)
-                  .classList.remove("btn-danger");
+                button.classList.remove("btn-danger");
                 document
-                  .getElementById("delete-category" + categoryId)
-                  .classList.add("btn-success");
+                button.classList.add("btn-success");
                 button.innerHTML = "Listed";
               } else {
                 Toastify({
@@ -188,12 +182,8 @@
                 const button = document.getElementById(
                   "delete-category" + categoryId
                 );
-                document
-                  .getElementById("delete-category" + categoryId)
-                  .classList.add("btn-danger");
-                document
-                  .getElementById("delete-category" + categoryId)
-                  .classList.remove("btn-success");
+                button.classList.add("btn-danger");
+                button.classList.remove("btn-success");
                 button.innerHTML = "UnListed";
               }
               console.log(response.listed);

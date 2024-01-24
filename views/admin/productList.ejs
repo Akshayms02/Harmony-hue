@@ -54,9 +54,9 @@
                                         <% }else{ %>
                                         <td style="vertical-align: middle; padding-left: 1.5rem;" width="12%"><%= products[i].category[0].name  %></td>
                                         <% } %>
-                                        <td style="vertical-align: middle; padding-left: 2rem;" width="12%">₹<%= products[i].product_price %></td>
-                                        <td style="vertical-align: middle; padding-left: 2.5rem;" width="12%"><%= products[i].product_quantity %></td>
-                                        <td style="vertical-align: middle; padding-left: 2rem;" width="12%"><%= products[i].product_discount %></td>
+                                        <td style="vertical-align: middle; padding-left: 2rem;" width="12%">₹<%= products[i].productPrice %></td>
+                                        <td style="vertical-align: middle; padding-left: 2.5rem;" width="12%"><%= products[i].productQuantity %></td>
+                                        <td style="vertical-align: middle; padding-left: 2rem;" width="12%"><%= products[i].productDiscount %></td>
                                        
                                         <td style="vertical-align: middle; padding-left: 1.5rem;" width="10%"><a href="/admin/edit-product/<%= products[i]._id %>" class="btn btn-success btn-sm rounded font-sm mt-15">Edit</a></td>
             
@@ -74,7 +74,7 @@
                                 <% } %>
                                 
                             </tbody>
-                        </table> <!-- table-responsive.// -->
+                        </table> 
                     </div>
                 </div> 
             </div> 
@@ -82,7 +82,7 @@
 
         <!-- sweetalert -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+
        
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
