@@ -28,4 +28,6 @@ router.post(
   adminController.addProductPost
 );
 
+router.patch('/deleteproduct/:id', adminController.deleteProduct);
+
 module.exports = router;

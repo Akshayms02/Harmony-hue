@@ -89,12 +89,31 @@ const addProductLoad = (req, res) => {
 const addProductPost = (req, res) => {
   const body = req.body;
   const files = req.files;
-  productHelper.addProduct(body, files).then((response) => {
-    res.redirect('/admin/productList');
-  }).catch((error) => {
-    console.log(error);
-  })
-}
+  productHelper
+    .addProduct(body, files)
+    .then((response) => {
+      res.redirect("/admin/productList");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const deleteProduct = (req, res) => {
+  const id = req.params.id;
+  productHelper
+    .productListUnlist(id)
+    .then((response) => {
+      if (response.productStatus) {
+        res.json({ message: "Listed Successfuly" });
+      } else {
+        res.json({ message: "Unlisted Succesfuly" });
+      }
+    })
+    .catch((error) => {
+      res.json({ error: "Failed" });
+    });
+};
 
 module.exports = {
   loadAdminHome,
@@ -107,4 +126,5 @@ module.exports = {
   productListLoad,
   addProductLoad,
   addProductPost,
+  deleteProduct,
 };

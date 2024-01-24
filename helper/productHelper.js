@@ -47,7 +47,16 @@ const addProduct= (data, files) => {
   });
 }
 
+const productListUnlist = (id) => {
+  return new Promise(async(resolve, reject) => {
+    const result = await productModel.findOne({ _id: id });
+    result.productStatus = !result.productStatus;
+    result.save();
+    resolve(result);
+  })
+
+}
 
 module.exports = {
-  getAllProducts,addProduct,
+  getAllProducts,addProduct,productListUnlist
 }

@@ -60,7 +60,7 @@
                                        
                                         <td style="vertical-align: middle; padding-left: 1.5rem;" width="10%"><a href="/admin/edit-product/<%= products[i]._id %>" class="btn btn-success btn-sm rounded font-sm mt-15">Edit</a></td>
             
-                                        <% if (products[i].product_status) { %>
+                                        <% if (products[i].productStatus) { %>
                                         <td style="vertical-align: middle; padding-left: 1.5rem;" > <button onclick="changeProductStatus('<%= products[i]._id %>')" class="btn btn-sm btn-danger rounded font-sm mt-15">Unlist</button> </td>
                                          
                                         <% } else {%>
@@ -98,14 +98,14 @@
                     if(res){
                         $.ajax({
                             url:"/admin/deleteproduct/"+productId,
-                            type:'get'
+                            type:'PATCH'
                         }).done((res)=>{
                             swal("successful",`${res.message}`,"success").then(() =>{
                                 location.reload();
                             })
                         })
                         .fail((res) =>{
-                            swal("Something went wrong",`${res.message}`,"warning").then(() =>{
+                            swal("Something went wrong",`${res.error}`,"warning").then(() =>{
                                 location.reload();
                             })
                         })
