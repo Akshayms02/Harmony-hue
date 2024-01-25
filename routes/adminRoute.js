@@ -30,4 +30,12 @@ router.post(
 
 router.patch('/deleteproduct/:id', adminController.deleteProduct);
 
+router.get('/editProduct/:id', adminController.editProductLoad);
+
+router.put('/editProduct/:id', multer.productUpload.array('images'), adminController.editProductPost);
+
+router.get('/userList', adminController.userListLoad);
+
+router.patch('/blockUnblockuser/:id', adminController.userBlockUnblock);
+
 module.exports = router;

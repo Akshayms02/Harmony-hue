@@ -59,7 +59,14 @@ const signupHelper = (userData) => {
   });
 };
 
+const getAllUsers = () => {
+  return new Promise(async (resolve, reject) => {
+    const users = await userModel.find({ isAdmin: 0 });
+    resolve(users);
+  });
+};
+
 module.exports = {
   loginHelper,
-  signupHelper,
+  signupHelper,getAllUsers
 };

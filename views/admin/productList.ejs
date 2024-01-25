@@ -58,7 +58,7 @@
                                         <td style="vertical-align: middle; padding-left: 2.5rem;" width="12%"><%= products[i].productQuantity %></td>
                                         <td style="vertical-align: middle; padding-left: 2rem;" width="12%"><%= products[i].productDiscount %></td>
                                        
-                                        <td style="vertical-align: middle; padding-left: 1.5rem;" width="10%"><a href="/admin/edit-product/<%= products[i]._id %>" class="btn btn-success btn-sm rounded font-sm mt-15">Edit</a></td>
+                                        <td style="vertical-align: middle; padding-left: 1.5rem;" width="10%"><a href="/admin/editProduct/<%= products[i]._id %>" class="btn btn-success btn-sm rounded font-sm mt-15">Edit</a></td>
             
                                         <% if (products[i].productStatus) { %>
                                         <td style="vertical-align: middle; padding-left: 1.5rem;" > <button onclick="changeProductStatus('<%= products[i]._id %>')" class="btn btn-sm btn-danger rounded font-sm mt-15">Unlist</button> </td>
