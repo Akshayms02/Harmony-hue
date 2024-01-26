@@ -31,6 +31,15 @@ const otpAuthenticator = (req, res, next) => {
   }
 }
 
+const isRegistered = (req, res, next) => {
+  if (req.session.registered) {
+    delete req.session.registered;
+    res.redirect('/');
+  } else {
+    next();
+  }
+}
+
 module.exports = {
-  isLogin,isLogout,otpAuthenticator
+  isLogin,isLogout,otpAuthenticator,isRegistered,
 };

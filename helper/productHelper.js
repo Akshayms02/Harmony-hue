@@ -1,5 +1,5 @@
 const productModel = require("../models/productModel");
-const fs = require('fs');
+const fs = require("fs");
 
 const getAllProducts = () => {
   return new Promise(async (resolve, reject) => {
@@ -21,6 +21,37 @@ const getAllProducts = () => {
       .catch((error) => {
         console.log(error);
       });
+  });
+};
+
+const getAllActiveProducts = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await productModel.aggregate([
+        {
+          $lookup: {
+            from: "categories",
+            localField: "productCategory",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+      ]);
+
+      const activeProducts = result.map((item) => {
+        const category = item.category[0];
+        if (category && category.status) {
+          return item;
+        }
+        return null; 
+      }).filter(Boolean); 
+
+      // console.log(activeProducts);
+      resolve(activeProducts);
+    } catch (error) {
+      console.error(error);
+      reject(error);
+    }
   });
 };
 
@@ -95,4 +126,5 @@ module.exports = {
   addProduct,
   productListUnlist,
   editImages,
+  getAllActiveProducts,
 };

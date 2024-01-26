@@ -1268,11 +1268,11 @@
             <!--End nav-tabs-->
             <div class="tab-content wow fadeIn animated" id="myTabContent">
               <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
-                <div class="row product-grid-4"></div>
+                <div class="row product-grid-4">
                 <% for( let i = 0; i < products.length; i++ ) { %>
-                  <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-                    <div class="product-cart-wrap mb-30">
-                      <div class="product-img-action-wrap">
+                <div class="col-lg-4 col-md-4  col-sm-6">
+                  <div class="product-cart-wrap mb-30">
+                    <div class="product-img-action-wrap">
                         <div class="product-img product-img-zoom">
                           <a href="/userHome/productView/<%= products[i]._id %>">
                             <img class="default-img" src="/public/uploads/<%= products[i].image[i] %>" alt="" />
@@ -1315,6 +1315,7 @@
                     </div>
                   </div>
                 <% } %>
+              </div>
                 
                   
                   <!-- <div class="col-lg-4 col-md-4 col-12 col-sm-6">

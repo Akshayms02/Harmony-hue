@@ -3,6 +3,7 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const adminAuth = require("../middleware/adminAuth");
 const multer = require("../middleware/multer");
+const sharp=require('../middleware/sharp');
 
 router.get("/logout", adminAuth.isLogout, adminController.adminLogout);
 
@@ -24,7 +25,7 @@ router.get("/addProduct", adminController.addProductLoad);
 
 router.post(
   "/addProduct",
-  multer.productUpload.array('images'),
+  multer.productUpload.array('images'),sharp.cropImages,
   adminController.addProductPost
 );
 

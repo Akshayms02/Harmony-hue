@@ -20,11 +20,13 @@ const registerLoad = (req, res) => {
 };
 
 const loginLoad = (req, res) => {
+  res.setHeader("Cache-control", "no-cache", "no-store", "must-revalidate")
   if (req.session.user) {
     res.redirect("/userhome");
   } else if (req.session.admin) {
     res.redirect("/admin");
   } else {
+    
     const message = req.flash("message");
     res.render("user/login", { message });
   }
@@ -36,6 +38,7 @@ const signUpUser = async (req, res) => {
       const response = await userHelper.signupHelper(req.session.userData);
       if (!response.userExist) {
         req.flash("message", "Registration Successful. Continue to login");
+        req.session.registered = "Registered";
         res.redirect("/");
       } else {
         req.flash("message", "You are an existing user. Please log in.");
@@ -100,7 +103,7 @@ const loadUserHome = async (req, res) => {
 
     const category = await categoryHelper.getAllcategory();
 
-    const products = await productHelper.getAllProducts();
+    const products = await productHelper.getAllActiveProducts();
 
     res.render("user/userHome", {
       user: userData,
