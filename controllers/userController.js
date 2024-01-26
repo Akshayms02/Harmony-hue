@@ -1,10 +1,13 @@
 const userModel = require("../models/userModel");
+const productModel = require("../models/productModel");
 const bcrypt = require("bcrypt");
 const twilio = require("twilio");
 const nodemailer = require("nodemailer");
 const otpHelper = require("../helper/otpHelper");
 const passwordHelper = require("../helper/passwordHelper");
 const userHelper = require("../helper/userHelper");
+const categoryHelper = require("../helper/categoryHelper");
+const productHelper = require("../helper/productHelper");
 
 const registerLoad = (req, res) => {
   if (req.session.user) {
@@ -61,8 +64,8 @@ const logUser = async (req, res) => {
           res.redirect("/userHome");
         }
       } else {
-        req.flash('message',response.errorMessage)
-        res.redirect('/');
+        req.flash("message", response.errorMessage);
+        res.redirect("/");
       }
     })
     .catch((error) => {
@@ -88,14 +91,22 @@ const userLogout = (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   if (req.session.user) {
     const userData = await userModel.findOne({ _id: req.session.user });
-    res.render("user/userHome", { user: userData });
 
+    const category = await categoryHelper.getAllcategory();
+
+    const products = await productHelper.getAllProducts();
+
+    res.render("user/userHome", {
+      user: userData,
+      categories: category,
+      products: products,
+    });
   } else {
     res.redirect("/");
   }
@@ -143,6 +154,14 @@ const forgotPasswordChange = async (req, res) => {
   res.redirect("/");
 };
 
+const productViewLoad = async(req, res) => {
+  const id = req.params.id;
+
+  const result = await productModel.findById({ _id: id });
+
+  res.render("user/viewProduct", { product: result });
+};
+
 module.exports = {
   loginLoad,
   registerLoad,
@@ -154,5 +173,5 @@ module.exports = {
   sendOtp,
   verifySignUpLoad,
   userLogout,
- 
+  productViewLoad,
 };

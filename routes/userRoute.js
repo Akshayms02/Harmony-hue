@@ -2,6 +2,7 @@ const express = require("express");
 const userAuth = require("../middleware/userAuth");
 const router = express.Router();
 const userController = require("../controllers/userController");
+const sharp=require('../middleware/sharp')
 
 router.get("/", userAuth.isLogin, userController.loginLoad);
 router.post("/", userController.logUser);
@@ -19,5 +20,7 @@ router.post("/verify", userAuth.otpAuthenticator, userController.signUpUser);
 
 
 router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
+
+router.get('/userHome/productView/:id', userController.productViewLoad);
 
 module.exports = router;
