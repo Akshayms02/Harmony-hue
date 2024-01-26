@@ -94,7 +94,7 @@ const editImages = async (oldImages, newImages) => {
         let imageUrl = image.filename;
         imageUrls.push(imageUrl);
       }
-      // delete old images if they exist
+      // delete old images
       if (oldImages && oldImages.length > 0) {
         for (let i = 0; i < oldImages.length; i++) {
           fs.unlink("public/uploads/" + oldImages[i], (err) => {
@@ -106,7 +106,7 @@ const editImages = async (oldImages, newImages) => {
       }
       resolve(imageUrls);
     } else {
-      // use old images if new images are not uploaded
+      // using old images
       resolve(oldImages);
     }
   });
