@@ -5,7 +5,6 @@ const productSchema = new mongoose.Schema(
     productName: {
       type: String,
       required: true,
-      unique: true,
     },
     productDescription: {
       type: String,
@@ -14,7 +13,6 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
-      unique: true,
     },
     productPrice: {
       type: Number,

@@ -40,18 +40,18 @@
         </div>
         <nav class="navBar" >
             <ul class="menu-aside nav-bar-ul">
-                <li class="menu-item ">
+                <!-- <li class="menu-item ">
                     <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
-                </li>
+                </li> -->
                 <br>
                 <li class="menu-item 
                 <%# 
                 has-submenu
                 %>
                 ">
-                    <a class="menu-link" href="/admin/userList"> <i class="icon material-icons md-person"></i>
+                    <a class="menu-link" href="/admin/userList"> <i class="icon material-icons md-person" style="color: black;"></i>
                         <span class="text">Users</span>
                     </a>
                     <!-- <div class="submenu">
@@ -63,13 +63,13 @@
                 </li>
                 <br>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-shopping_cart" style="color: black;"></i>
                         <span class="text">Category</span>
                     </a>
                 </li>
                 <br>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/productList"> <i class="icon material-icons  md-shopping_bag"></i>
+                    <a class="menu-link" href="/admin/productList"> <i class="icon material-icons  md-shopping_bag" style="color: black;"></i>
                         <span class="text">Products</span>
                     </a>
                     <!-- <div class="submenu">
@@ -79,16 +79,16 @@
                     </div> -->
                 </li>
                 <br>
-                <li class="menu-item ">
+                <!-- <li class="menu-item ">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-store"></i>
                         <span class="text">Orders</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-sellers-cards.html">Sellers cards</a>
                         <a href="page-sellers-list.html">Sellers list</a>
                         <a href="page-seller-detail.html">Seller profile</a>
                     </div> -->
-                </li>
+                <!-- </li> -->
                 <br>
                 <!-- <li class="menu-item "> -->
                     <!-- <a class="menu-link" href="/admin/banner"> <i class="icon material-icons md-add_box"></i>
@@ -102,15 +102,15 @@
                     </div> -->
                 <!-- </li> -->
                 <!-- <br> -->
-                <li class="menu-item ">
+                <!-- <li class="menu-item ">
                     <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Coupons</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-transactions-1.html">Transaction 1</a>
                         <a href="page-transactions-2.html">Transaction 2</a>
                     </div> -->
-                </li>
+                <!-- </li> -->
                 <!-- <li class="menu-item ">
                     <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
                         <span class="text">Account</span>
@@ -132,11 +132,11 @@
                 </li>
                  -->
                  <br>
-                <li class="menu-item">
+                <!-- <li class="menu-item">
                     <a class="menu-link" href="/admin/sales-report-page"> <i class="icon material-icons md-pie_chart"></i>
                         <span class="text">Sales Report</span>
                     </a>
-                </li>
+                </li> -->
             </ul>
            
             
@@ -209,15 +209,11 @@
 
         <script>
             const activePage = window.location.pathname;
-            console.log(activePage,'aaactttttttttttt');
+          
             const navLinks = document.querySelectorAll('.menu-link').forEach((link) => {
                 
                 const linkPath = new URL(link.href).pathname;
                 
-                
-                // let linkpathDashBoard = new URL(link.href).pathname
-                
-                // linkpathDashBoard=linkpathDashBoard+"/dashboard"
         
                 if (linkPath === activePage ) {
                     

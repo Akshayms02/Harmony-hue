@@ -40,7 +40,7 @@ const getAllActiveProducts = () => {
 
       const activeProducts = result.map((item) => {
         const category = item.category[0];
-        if (category && category.status) {
+        if (category && category.status&&item.productStatus) {
           return item;
         }
         return null; 
