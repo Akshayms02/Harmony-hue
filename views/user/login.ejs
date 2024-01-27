@@ -53,5 +53,14 @@
   </div>
 </main>
 <script src="/public/js/loginScript.js"></script>
+<script>
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted) {
+    // Page is shown from the bfcache (Back-Forward Cache)
+    // You can trigger a reload here or perform any necessary actions
+    window.location.reload();
+  }
+});
+</script>
 
 <%- include('../layouts/userLayout/footer') %>

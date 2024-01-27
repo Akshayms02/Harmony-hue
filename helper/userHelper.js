@@ -20,7 +20,7 @@ const loginHelper = (userData) => {
           }
         });
       } else {
-        response.errorMessage = "blocked user";
+        response.errorMessage = "Your Account has been Blocked";
         resolve(response);
       }
     } else {

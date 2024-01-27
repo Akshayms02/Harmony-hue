@@ -9,19 +9,19 @@ router.get("/logout", adminAuth.isLogout, adminController.adminLogout);
 
 router.get("/", adminAuth.isLogout, adminController.loadAdminHome);
 
-router.get("/category", adminController.loadCategory);
+router.get("/category",adminAuth.isLogout ,adminController.loadCategory);
 
-router.post("/addCategory", adminController.addCategory);
+router.post("/addCategory",adminAuth.isLogout, adminController.addCategory);
 
-router.get("/editCategory", adminController.editCategoryLoad);
+router.get("/editCategory",adminAuth.isLogout, adminController.editCategoryLoad);
 
 router.put("/editCategory/:id", adminController.editCategoryPost);
 
 router.get("/delete-category/:id", adminController.deleteCategory);
 
-router.get("/productList", adminController.productListLoad);
+router.get("/productList", adminAuth.isLogout,adminController.productListLoad);
 
-router.get("/addProduct", adminController.addProductLoad);
+router.get("/addProduct",adminAuth.isLogout, adminController.addProductLoad);
 
 router.post(
   "/addProduct",
@@ -35,7 +35,7 @@ router.get('/editProduct/:id', adminController.editProductLoad);
 
 router.put('/editProduct/:id', multer.productUpload.array('images'), adminController.editProductPost);
 
-router.get('/userList', adminController.userListLoad);
+router.get('/userList',adminAuth.isLogout ,adminController.userListLoad);
 
 router.patch('/blockUnblockuser/:id', adminController.userBlockUnblock);
 

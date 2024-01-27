@@ -1,7 +1,7 @@
 const categoryHelper = require("../helper/categoryHelper");
 const productHelper = require("../helper/productHelper");
 const categoryModel = require("../models/categoryModel");
-const userModel=require('../models/userModel')
+const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
 const userHelper = require("../helper/userHelper");
 
@@ -14,13 +14,9 @@ const adminLogout = (req, res) => {
   res.setHeader("Cache-control", "no-cache", "no-store", "must-revalidate");
 
   if (req.session.admin) {
-    req.session.destroy((error) => {
-      if (error) {
-        res.redirect("/admin");
-      } else {
-        res.redirect("/");
-      }
-    });
+    delete req.session.admin;
+    req.flash("message", "Logged Out Successfully");
+    res.redirect("/");
   } else {
     res.redirect("/");
   }
@@ -156,26 +152,22 @@ const editProductPost = async (req, res) => {
 
 const userListLoad = async (req, res) => {
   const users = await userHelper.getAllUsers();
-  res.render('admin/usersList', { users: users });
+  res.render("admin/usersList", { users: users });
 };
 
-const userBlockUnblock = async(req, res) => {
+const userBlockUnblock = async (req, res) => {
   const id = req.params.id;
   const result = await userModel.findOne({ _id: id });
   result.isActive = !result.isActive;
   result.save();
   let message;
   if (result.isActive) {
-     message = "User Unblocked";
+    message = "User Unblocked";
   } else {
-     message = "User Blocked";
+    message = "User Blocked";
   }
   res.json({ message: message });
-
-
-}
-
-
+};
 
 module.exports = {
   loadAdminHome,

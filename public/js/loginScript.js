@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let resendOtp = document.getElementById("resendOtp");
   let timerSpan = document.getElementById("timer");
   let otpExpiryTimer = document.getElementById("otpExpiryTimer");
+  
   // Disable the link on page load (calling the function)
   disableLink(resendOtp, timerSpan, 15);
 

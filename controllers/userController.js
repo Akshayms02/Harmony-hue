@@ -10,6 +10,11 @@ const categoryHelper = require("../helper/categoryHelper");
 const productHelper = require("../helper/productHelper");
 
 const registerLoad = (req, res) => {
+  res.setHeader(
+    "Cache-control",
+    "no-store, no-cache, must-revalidate, private"
+  );
+
   if (req.session.user) {
     res.redirect("/userhome");
   } else if (req.session.admin) {
@@ -20,13 +25,15 @@ const registerLoad = (req, res) => {
 };
 
 const loginLoad = (req, res) => {
-  res.setHeader("Cache-control", "no-cache", "no-store", "must-revalidate")
+  res.setHeader(
+    "Cache-control",
+    "no-store, no-cache, must-revalidate, private"
+  );
   if (req.session.user) {
     res.redirect("/userhome");
   } else if (req.session.admin) {
     res.redirect("/admin");
   } else {
-    
     const message = req.flash("message");
     res.render("user/login", { message });
   }
@@ -64,6 +71,7 @@ const logUser = async (req, res) => {
           res.redirect("/admin");
         } else {
           req.session.user = response.user._id;
+          console.log("user session created");
           res.redirect("/userHome");
         }
       } else {
@@ -81,13 +89,9 @@ const userLogout = (req, res) => {
     res.setHeader("Cache-control", "no-cache", "no-store", "must-revalidate");
 
     if (req.session.user) {
-      req.session.destroy((error) => {
-        if (error) {
-          res.redirect("/userHome");
-        } else {
-          res.redirect("/");
-        }
-      });
+      delete req.session.user;
+      req.flash("message", "Logged out succesfully");
+      res.redirect("/");
     } else {
       res.redirect("/");
     }
@@ -157,7 +161,7 @@ const forgotPasswordChange = async (req, res) => {
   res.redirect("/");
 };
 
-const productViewLoad = async(req, res) => {
+const productViewLoad = async (req, res) => {
   const id = req.params.id;
 
   const result = await productModel.findById({ _id: id });
