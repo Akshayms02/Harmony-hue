@@ -59,7 +59,7 @@ const getAllActiveProducts = () => {
   });
 };
 
-const addProduct = (data, files) => {
+const  addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
     let imageUrls = [];
 
