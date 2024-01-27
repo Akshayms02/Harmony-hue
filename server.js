@@ -59,5 +59,5 @@ app.use("/", userRoute);
 app.use("/admin", adminRoute);
 
 app.listen(PORT, () => {
-  console.log("Server started on http://localhost:3002/");
+  console.log("Server started on http://localhost:3002");
 });

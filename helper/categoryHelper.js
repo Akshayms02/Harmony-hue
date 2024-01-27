@@ -6,7 +6,9 @@ const addCategory = (body) => {
       let name = body.categoryName;
       let description = body.categoryDescription;
 
-      let existingCategory = await categoryModel.findOne({ categoryName: name });
+      let existingCategory = await categoryModel.findOne({
+        categoryName: name,
+      });
 
       if (existingCategory) {
         resolve({ status: false });
@@ -43,8 +45,11 @@ const softDeleteCategory = async (categoryId) => {
   });
 };
 
+
+
 module.exports = {
   getAllcategory,
   softDeleteCategory,
   addCategory,
+  
 };

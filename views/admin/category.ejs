@@ -7,6 +7,9 @@
       <div>
         <h2 class="content-title card-title">Category Management</h2>
         <p>Add, edit, or delete (Soft delete) a category</p>
+        <% if (locals.message) { %>
+         <span style="color: red;"><%= message %></span>
+        <% } %>
       </div>
       <div>
         <input type="text" placeholder="Search Categories" class="form-control bg-white" />

@@ -24,7 +24,8 @@ const adminLogout = (req, res) => {
 
 const loadCategory = (req, res) => {
   categoryHelper.getAllcategory().then((response) => {
-    res.render("admin/category", { categories: response });
+    const message = req.flash("message");
+    res.render("admin/category", { categories: response, message: message });
   });
 };
 
@@ -58,19 +59,29 @@ const editCategoryLoad = async (req, res) => {
 };
 
 const editCategoryPost = async (req, res) => {
-  const { categoryName, categoryDescription } = req.body;
+  const check = await categoryModel.findOne({
+    categoryName: req.body.categoryName,
+  });
 
-  const catData = {
-    categoryName: categoryName,
-    description: categoryDescription,
-  };
+  const checks = await categoryModel.findOne({ _id: req.params.id });
 
-  const data = await categoryModel.findOneAndUpdate(
-    { _id: req.params.id },
-    { $set: catData }
-  );
+  if (!check) {
+    checks.categoryName = req.body.categoryName;
+    checks.description = req.body.categoryDescription;
+    await checks.save();
 
-  res.redirect("/admin/category");
+    res.redirect("/admin/category");
+  } else if (req.params.id == check._id) {
+    check.categoryName = req.body.categoryName;
+    check.description = req.body.categoryDescription;
+    await check.save();
+
+    res.redirect("/admin/category");
+  } else {
+    req.flash("message", "Category already Exists");
+    console.log("Hi")
+    res.redirect("/admin/category");
+  }
 };
 
 const productListLoad = async (req, res) => {
