@@ -1,98 +1,172 @@
 <%- include('../layouts/adminLayout/admin-header') %>
-<section class="content-main">
-  <div class="row">
-      <div class="col-9">
-          <div class="content-header">
-              <h2 class="content-title">Add New Product</h2>
-          </div>
-      </div>
-      <div class="col-lg-6">
-          <div class="card mb-4">
-              <div class="card-header">
-                  <h4>Basic</h4>
-              </div>
-              <div class="card-body">
-                  <form action="/admin/addproduct" method="post" enctype="multipart/form-data">
-                      <div class="mb-4">
-                          <label for="product_name" class="form-label">Product Name</label>
-                          <input type="text" name="name" placeholder="Type here" class="form-control"
-                              id="productName">
-                      </div>
-                      <div class="mb-4">
-                          <label class="form-label">Product description</label>
-                          <textarea placeholder="Type here" name="description" class="form-control"
-                              rows="4"></textarea>
-                      </div>
-                      <div class="mb-4">
-                          <label class="form-label" for="product_price">Price</label>
-                          <input type="text" placeholder="price" name="price" class="form-control" id="productPrice">
-                      </div>
-                      <div class="row">
-                          <div class="col-lg-6">
-                              <div class="mb-4">
-                                  <label for="product_quantity" class="form-label">Quantity</label>
-                                  <input type="text" name="quantity" placeholder="nos" class="form-control"
-                                      id="productQuantity">
-                              </div>
-                          </div>
-                          <div class="col-lg-6">
-                              <div class="mb-4">
-                                  <label for="product_discount" class="form-label">Discount</label>
-                                  <input type="text" name="discount" placeholder="%" class="form-control"
-                                      id="productDiscount">
-                              </div>
-                          </div>
-
-                        
-                      </div>
-
-              </div>
-          </div> 
-      </div>
-
-      <div class="col-lg-3">
-          <div class="card mb-4">
-             
-              <div class="card-body">
-                  <div class="input-upload">
-                      <label class="form-label">Image</label>
-                      <input class="form-control" type="file" name="images" multiple>
-                  </div>
-              </div>
-          </div> 
-
-          <div class="card mb-4">
-            
-              <div class="card-body">
-                  <div class="row gx-2">
-                      <div class="col-sm-6 mb-3">
-                          <label class="form-label">Category</label>
-                          <select class="form-select" style="width: auto;" name="productCategory">
-
-                              <% for( let i=0; i < category.length; i++ ) { %>
-                                  <% if (category[i].status) { %>
-                                      <option value="<%= category[i]._id %>">
-                                          <%= category[i].categoryName %>
-                                      </option>
-                                      <% } %>
-                                          <% } %>
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/admin/addproduct" method="post" enctype="multipart/form-data" id="creationForm">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Product Name</label>
+                                <input type="text" name="name" placeholder="Type here" class="form-control"
+                                    id="productName">
+                                <span id="productNameError" class="text-danger mt-1"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product description</label>
+                                <textarea placeholder="Type here" name="description" class="form-control"
+                                    rows="4"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="product_price">Price</label>
+                                <input type="text" placeholder="price" name="price" class="form-control"
+                                    id="productPrice">
+                                <span id="productPriceError" class="text-danger mt-1"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label for="product_quantity" class="form-label">Quantity</label>
+                                        <input type="text" name="quantity" placeholder="nos" class="form-control"
+                                            id="productQuantity">
+                                        <span id="productQuantityError" class="text-danger mt-1"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label for="product_discount" class="form-label">Discount</label>
+                                        <input type="text" name="discount" placeholder="%" class="form-control"
+                                            id="productDiscount">
+                                        <span id="productDiscountError" class="text-danger mt-1"></span>
+                                    </div>
+                                </div>
 
 
+                            </div>
 
-                          </select>
-                      </div>
-                      
-                  </div> 
-              </div>
-          </div> 
-          <div>
-              <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up" style="background-color: black;">Add
-                  Product</button> 
-          </div>
-      </div>
+                    </div>
+                </div>
+            </div>
 
-      </form>
-  </div>
-</section> 
+            <div class="col-lg-3">
+                <div class="card mb-4">
 
-<%- include('../layouts/adminLayout/admin-footer') %>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <label class="form-label">Image</label>
+                            <input class="form-control" type="file" name="images" multiple>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+
+                    <div class="card-body">
+                        <div class="row gx-2">
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" style="width: auto;" name="productCategory">
+
+                                    <% for( let i=0; i < category.length; i++ ) { %>
+                                        <% if (category[i].status) { %>
+                                            <option value="<%= category[i]._id %>">
+                                                <%= category[i].categoryName %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
+
+
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up"
+                        style="background-color: black;">Add
+                        Product</button>
+                </div>
+            </div>
+
+            </form>
+        </div>
+    </section>
+    <script>
+
+        function validateForm(e) {
+            console.log("entered validation");
+            let productName = document.getElementById('productName').value;
+            let productPrice = document.getElementById('productPrice').value;
+            let productQuantity = document.getElementById('productQuantity').value;
+            let discount = document.getElementById('productDiscount').value;
+
+            //for clearing previous errors
+
+            document.getElementById('productNameError').innerHTML = "";
+            document.getElementById('productPriceError').innerHTML = "";
+            document.getElementById('productQuantityError').innerHTML = "";
+            document.getElementById('productDiscountError').innerHTML = "";
+            let isValid = true;
+
+            // Product Name validation
+            if (productName.trim() === "") {
+                document.getElementById('productNameError').innerText = "Product Name is required.";
+                isValid = false;
+            } else if (/^\d+$/.test(productName) || /^-\d+$/.test(productName)) {
+                document.getElementById('productNameError').innerText = "Product Name cannot contain numbers.";
+                isValid = false;
+            }
+
+            // Product Price validation
+            if (productPrice.trim() === "") {
+                document.getElementById('productPriceError').innerText = "Product Price is required.";
+                isValid = false;
+            }
+            else if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
+                document.getElementById('productPriceError').innerHTML = "Product Price must be a valid number greater than 0.";
+                isValid = false;
+            }
+
+            // Product Quantity validation
+
+            if (isNaN(productQuantity) || parseInt(productQuantity) < 0) {
+                document.getElementById('productQuantityError').innerHTML = "Product Quantity must be a valid non-negative integer.";
+                isValid = false;
+            }else if(productQuantity.trim()===""){
+                document.getElementById('productQuantityError').innerText = "Product Quantity is required.";
+                isValid = false;
+            }
+
+            // Discount validation
+            if (discount.trim() === "") {
+                document.getElementById('productDiscountError').innerText = "Discount is required.";
+                isValid = false;
+            }
+            else if (isNaN(discount) || parseFloat(discount) < 0 || parseFloat(discount) > 100) {
+                document.getElementById('productDiscountError').innerHTML = "Discount must be a valid percentage between 0 and 100.";
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        const form = document.getElementById("creationForm");
+        form.addEventListener("submit", (e) => {
+            const isValid = validateForm(e);
+            console.log(isValid);
+            if (!isValid) {
+                e.preventDefault();
+            }
+        })
+
+    </script>
+
+    <%- include('../layouts/adminLayout/admin-footer') %>
