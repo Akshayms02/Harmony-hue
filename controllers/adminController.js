@@ -3,11 +3,42 @@ const productHelper = require("../helper/productHelper");
 const categoryModel = require("../models/categoryModel");
 const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
+const adminModel = require("../models/adminModel");
 const userHelper = require("../helper/userHelper");
+
+const adminLoginLoad = (req, res) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  if (req.session.admin) {
+    res.redirect("/admin/adminhome");
+  }
+  const message = req.flash("message");
+  res.render("admin/adminLogin", { message: message });
+};
+
+const adminLoginPost = async (req, res) => {
+ 
+  const result = await adminModel.findOne({ email: req.body.email });
+  if (result) {
+    if (req.body.password === result.password) {
+      req.session.admin = result._id;
+      res.redirect("/admin/adminhome");
+    } else {
+      req.flash("message", "Incorrect Password");
+      res.redirect("/admin");
+    }
+  } else {
+    req.flash("message", "Invalid Email");
+    res.redirect("/admin");
+  }
+};
 
 const loadAdminHome = (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.render("admin/adminHome");
+  if (req.session.admin) {
+    res.render("admin/adminHome");
+  } else {
+    res.redirect("/admin");
+  }
 };
 
 const adminLogout = (req, res) => {
@@ -16,9 +47,9 @@ const adminLogout = (req, res) => {
   if (req.session.admin) {
     delete req.session.admin;
     req.flash("message", "Logged Out Successfully");
-    res.redirect("/");
+    res.redirect("/admin");
   } else {
-    res.redirect("/");
+    res.redirect("/admin");
   }
 };
 
@@ -79,7 +110,7 @@ const editCategoryPost = async (req, res) => {
     res.redirect("/admin/category");
   } else {
     req.flash("message", "Category already Exists");
-    console.log("Hi")
+    console.log("Hi");
     res.redirect("/admin/category");
   }
 };
@@ -141,6 +172,11 @@ const editProductPost = async (req, res) => {
     if (!product) {
       return res.redirect("/admin/productList");
     }
+    const check = await productHelper.checkDuplicateFunction(
+      req.body,
+      req.params.id
+    );
+
     product.productName = req.body.productName;
     product.productDescription = req.body.productDescription;
     product.productPrice = req.body.productPrice;
@@ -171,6 +207,9 @@ const userBlockUnblock = async (req, res) => {
   const result = await userModel.findOne({ _id: id });
   result.isActive = !result.isActive;
   result.save();
+  if (!result.isActive) {
+    delete req.session.user;
+  }
   let message;
   if (result.isActive) {
     message = "User Unblocked";
@@ -182,6 +221,8 @@ const userBlockUnblock = async (req, res) => {
 
 module.exports = {
   loadAdminHome,
+  adminLoginLoad,
+  adminLoginPost,
   addCategory,
   adminLogout,
   loadCategory,

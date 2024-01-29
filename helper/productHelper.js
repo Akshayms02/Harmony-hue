@@ -59,7 +59,7 @@ const getAllActiveProducts = () => {
   });
 };
 
-const  addProduct = (data, files) => {
+const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
     let imageUrls = [];
 
@@ -122,6 +122,33 @@ const productListUnlist = (id) => {
     result.productStatus = !result.productStatus;
     result.save();
     resolve(result);
+  });
+};
+
+const checkDuplicateFunction = (body, productId) => {
+  return new Promise(async (resolve, reject) => {
+    const checker = await productModel.findOne({ _id: productId });
+    const check = await productModel.findOne({
+      productName: body.productName,
+    });
+
+    if (!check) {
+      checker.productName = body.productName;
+      checker.productDescription = body.productDescription;
+      await checker.save();
+      resolve({ status: true });
+
+      res.redirect("/admin/category");
+    } else if (productId == check._id) {
+      check.productName = body.productName;
+      check.productDescription = body.productDescription;
+      await check.save();
+
+      res.redirect("/admin/category");
+    } else {
+      req.flash("message", "Category already Exists");
+      res.redirect("/admin/category");
+    }
   });
 };
 

@@ -1,7 +1,7 @@
 const isLogin = (req, res, next) => {
   try {
     if (req.session.admin) {
-      res.redirect("/admin");
+      res.redirect("/admin/adminhome");
      
     } else {
       next();
@@ -17,7 +17,7 @@ const isLogout = (req,res,next) => {
       next();
     } 
     else {
-      res.redirect("/")
+      res.redirect("/admin");
     }
   }
   catch (error) {

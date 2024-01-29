@@ -1,0 +1,66 @@
+<%- include('../layouts/userLayout/header') %>
+
+<body class="bg-white">
+
+<!-- <div class="alert alert-info alert-dismissible fade show text-center text-light" style="background-color: black;" role="alert">
+  Sign up and get 20% off on your first order. <a href="/register" class="alert-link text-light">Sign Up Now</a>
+  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+</div> -->
+
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container bg-white" style="display: flex; justify-content: center;">
+    <a class="navbar-brand" href="#">
+      <img src="/public/images/common/harmony-logo.svg" alt="" width="188" height="75" class="d-inline-block align-text-top">
+    </a>
+  </div>
+</nav>
+
+<main class="mt-5">
+  <div class="container">
+    <div class="row justify-content-center bg-white">
+      <div class="col-lg-5" style="border-radius: 70px;">
+        <div class="card shadow-lg p-4 mb-5" style="background-color: black; color: white; border-radius: 70px;">
+          <div class="card-body">
+            <h1 class="card-title text-center mb-4">ADMIN LOGIN</h1>
+            <% if (locals.message) { %>
+              <div class="text-center text-success" style="display: block;"><%= message %></div>
+            <% } %>
+            <form id="logform" action="/admin" method="post">
+              <div class="form-floating mb-2">
+                <input type="email" class="form-control"
+                style="border-radius:25px; margin-top: 40px;" id="typeEmailX" name="email" placeholder="Email address" >
+                <label for="typeEmailX" class="text-dark">Email address</label>
+              </div>
+              <p><span id="error1" style="display: none;"></span></p>
+              <div class="form-floating mb-2">
+                <input type="password" class="form-control" id="typePasswordX" style="border-radius:25px; margin-top: 35px;" placeholder="Password" name="password">
+                <label for="typePasswordX" class="text-dark">Password</label>
+              </div>
+              <p><span id="error2" style="display: none;"></span></p>
+              <div class="mt-3">
+                <a href="/forgot-password" class="link-light">Forgot Password?</a>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="btn btn-light w-50 mt-2" style="margin-left:50%; border-radius: 49px; " type="submit">Login</button>
+              </div>
+
+              
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="/public/js/loginScript.js"></script>
+<script>
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted) {
+    // Page is shown from the bfcache (Back-Forward Cache)
+    // You can trigger a reload here or perform any necessary actions
+    window.location.reload();
+  }
+});
+</script>
+
+<%- include('../layouts/userLayout/footer') %>

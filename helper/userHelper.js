@@ -61,7 +61,7 @@ const signupHelper = (userData) => {
 
 const getAllUsers = () => {
   return new Promise(async (resolve, reject) => {
-    const users = await userModel.find({ isAdmin: 0 });
+    const users = await userModel.find();
     resolve(users);
   });
 };

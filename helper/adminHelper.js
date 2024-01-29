@@ -22,6 +22,9 @@ const blockOrUnblock = async (userId) => {
     const user = await userModel.findById(userId);
     user.isActive = !user.isActive;
     await user.save();
+    if (!user.isActive) {
+      delete req.session.user;
+    }
     resolve(user);
   });
 };

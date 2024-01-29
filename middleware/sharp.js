@@ -1,38 +1,28 @@
 const sharp = require("sharp");
-const cropImages = async (req, res, next) => {
-  try {
-    console.log(req.files);
-    let ImageArray = req.files;
-    const imagePaths = ImageArray.map((file) => file.path);
+const resizeImages = async (req, res, next) => {
+  // Get uploaded images from Multer
+  const uploadedImages = req.files;
 
-    // Dynamically crop each image
-    const croppedImages = await Promise.all(
-      imagePaths.map(async (imagePath) => {
-        // Define your cropping parameters
-        const cropOptions = {
-          left: 10,
-          top: 10,
-          width: 200,
-          height: 200,
-        };
+  // Resize each image asynchronously
+  const promises = uploadedImages.map((image) =>
+    sharp(image.path)
+      .resize({ width: 300, height: 200 }) 
+      .toFile(`public/uploads/resized_${image.originalname}`)
+      .catch((err) => console.error(err))
+  );
 
-        // Perform the cropping operation
-        const croppedBuffer = await sharp(imagePath)
-          .extract(cropOptions)
-          .toBuffer();
+  // Wait for all resizes to finish
+  await Promise.all(promises);
 
-        return {
-          originalPath: imagePath,
-          croppedBuffer,
-        };
-      })
-    );
-    next();
-  } catch (error) {
-    console.log(error);
-  }
+  // Update request object with resized images and proceed
+  req.files = uploadedImages.map((image) => ({
+    ...image,
+    path: `resized_${image.originalname}`,
+  }));
+  console.log("Hi im cropped");
+  next();
 };
 
 module.exports = {
-  cropImages,
+  resizeImages,
 };
