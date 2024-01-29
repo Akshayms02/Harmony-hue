@@ -39,12 +39,12 @@
                   <% if (product.image && Array.isArray(product.image) && product.image.length> 0) { %>
                     <% for (let i=0; i < product.image.length; i++) { %>
                       <figure class="border-radius-10">
-                        <img src="/public/uploads/<%= product.image[i] %>" alt="product image">
+                        <img src="<%= product.image[i] %>" alt="product image">
                       </figure>
                       <% } %>
                         <% } else if (product.image) { %>
                           <figure class="border-radius-10">
-                            <img src="/public/uploads/<%= product.image %>" alt="product image">
+                            <img src="<%= product.image %>" alt="product image">
                           </figure>
                           <% } else { %>
                             <p>No images available for this product.</p>
@@ -56,12 +56,12 @@
                   <% if (product.image && Array.isArray(product.image) && product.image.length> 0) { %>
                     <% for (let i=0; i < product.image.length; i++) { %>
                       <div>
-                        <img src="/public/uploads/<%= product.image[i] %>" alt="product image">
+                        <img src="<%= product.image[i] %>" alt="product image">
                       </div>
                       <% } %>
                         <% } else if (product.image) { %>
                           <div>
-                            <img src="/public/uploads/<%= product.image %>" alt="product image">
+                            <img src="<%= product.image %>" alt="product image">
                           </div>
                           <% } else { %>
                             <p>No images available for this product.</p>
@@ -808,14 +808,14 @@
                     <div class="product-image-slider">
                       <% for( let i = 0; i < product.image.length; i++ ) { %>
                         <figure class="border-radius-10">
-                          <img src="/public/uploads/<%= product.image[i] %>" alt="product image">
+                          <img src="/<%= product.image[i] %>" alt="product image">
                         </figure>
                       <% } %>
                     </div>
                     <!-- THUMBNAILS -->
                     <div class="slider-nav-thumbnails pl-15 pr-15">
                       <% for( let i = 0; i < product.image.length; i++ ) { %>
-                        <div><img src="/public/uploads/<%= product.image[i] %>" alt="product image"></div>
+                        <div><img src="/<%= product.image[i] %>" alt="product image"></div>
                       <% } %>
                 
                     </div>

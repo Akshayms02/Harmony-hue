@@ -61,13 +61,14 @@ const getAllActiveProducts = () => {
 
 const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
-    let imageUrls = [];
+    // let imageUrls = [];
 
-    for (let i = 0; i < files.length; i++) {
-      let file = files[i];
-      let imageUrl = file.filename;
-      imageUrls.push(imageUrl);
-    }
+    // for (let i = 0; i < files.length; i++) {
+    //   let file = files[i];
+    //   let imageUrl = file.filename;
+    //   imageUrls.push(imageUrl);
+    // }
+    const resizedImageUrls = files.map((file) => file.path);
 
     await productModel
       .create({
@@ -77,7 +78,7 @@ const addProduct = (data, files) => {
         productPrice: data.price,
         productQuantity: data.quantity,
         productDiscount: data.discount,
-        image: imageUrls,
+        image: resizedImageUrls.map((path) => path.substring(2)),
       })
       .then((result) => {
         resolve(result);
