@@ -40,9 +40,9 @@
                                     <tr>
                                         <td style="vertical-align: middle; " width="10%">
                                             <% if (Array.isArray(products[i].image) && products[i].image.length > 0) { %>
-                                              <img class="img-thumbnail" width="80" src="/public/uploads/<%= products[i].image[0] %>" alt="no image available">
+                                              <img class="img-thumbnail" width="80" src="/<%= products[i].image[0] %>" alt="no image available">
                                             <% } else if (products[i].image) { %>
-                                              <img class="img-thumbnail" width="80" src="/public/uploads/<%= products[i].image %>" alt="no image available">
+                                              <img class="img-thumbnail" width="80" src="/<%= products[i].image %>" alt="no image available">
                                             <% } else { %>
                                               <span>No image available</span>
                                             <% } %>

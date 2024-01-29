@@ -61,10 +61,10 @@
                         <div class="input-upload">
                             <label class="form-label">Image</label>
                             <% if(typeof product.image==='string' ) { %>
-                                <img src="/public/uploads/<%= product.image %>"
+                                <img src="/<%= product.image %>"
                                     style="width: 100px; height: 72px;" alt="">
                                 <% } else if(Array.isArray(product.image) && product.image.length> 0) { %>
-                                    <img src="/public/uploads/<%= product.image[0] %>"
+                                    <img src="/<%= product.image[0] %>"
                                         style="width: 100px; height: 72px;" alt="">
                                     <% } %>
                                         <input class="form-control" type="file" name="images" multiple>
@@ -84,7 +84,7 @@
                                 <% if(Array.isArray(product.image) && product.image.length> 0) { %>
                                     <% for(let i=0; i<product.image.length; i++) { %>
                                         <div class="col-6">
-                                            <img src="/public/uploads/<%= product.image[i] %>"
+                                            <img src="/<%= product.image[i] %>"
                                                 style="width: 100px; height: 72px;" alt="">
                                         </div>
                                         <% } %>
