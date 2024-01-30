@@ -44,7 +44,7 @@ router.get("/editProduct/:id", adminController.editProductLoad);
 
 router.put(
   "/editProduct/:id",
-  multer.productUpload.array("images"),
+  multer.productUpload.array("images"),sharp.resizeImages,
   adminController.editProductPost
 );
 

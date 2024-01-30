@@ -169,7 +169,7 @@ const editProductPost = async (req, res) => {
   try {
     const product = await productModel.findById(req.params.id);
     if (!product) {
-      return res.redirect("/admin/productList");
+       res.redirect("/admin/productList");
     }
     const check = await productHelper.checkDuplicateFunction(
       req.body,
