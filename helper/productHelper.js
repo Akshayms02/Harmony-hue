@@ -61,13 +61,7 @@ const getAllActiveProducts = () => {
 
 const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
-    // let imageUrls = [];
-
-    // for (let i = 0; i < files.length; i++) {
-    //   let file = files[i];
-    //   let imageUrl = file.filename;
-    //   imageUrls.push(imageUrl);
-    // }
+    
     const resizedImageUrls = files.map((file) => file.path);
 
     await productModel
@@ -93,12 +87,8 @@ const editImages = async (oldImages, newImages) => {
   return new Promise((resolve, reject) => {
     if (newImages && newImages.length > 0) {
       // if new files are uploaded
-      let imageUrls = [];
-      for (let i = 0; i < newImages.length; i++) {
-        let image = newImages[i];
-        let imageUrl = image.filename;
-        imageUrls.push(imageUrl);
-      }
+      const resizedImageUrls = newImages.map((file) => file.path);
+
       // delete old images
       if (oldImages && oldImages.length > 0) {
         for (let i = 0; i < oldImages.length; i++) {
@@ -109,7 +99,7 @@ const editImages = async (oldImages, newImages) => {
           });
         }
       }
-      resolve(imageUrls);
+      resolve(resizedImageUrls);
     } else {
       // using old images
       resolve(oldImages);
@@ -134,21 +124,21 @@ const checkDuplicateFunction = (body, productId) => {
     });
 
     if (!check) {
-      checker.productName = body.productName;
-      checker.productDescription = body.productDescription;
-      await checker.save();
-      resolve({ status: true });
+      // checker.productName = body.productName;
+      // checker.productDescription = body.productDescription;
+      // await checker.save();
+      resolve({ status: 1 });
 
-      res.redirect("/admin/category");
+      
     } else if (productId == check._id) {
-      check.productName = body.productName;
-      check.productDescription = body.productDescription;
-      await check.save();
+      // check.productName = body.productName;
+      // check.productDescription = body.productDescription;
+      // await check.save();
+      resolve({ status: 2 });
 
-      res.redirect("/admin/category");
+      
     } else {
-      req.flash("message", "Category already Exists");
-      res.redirect("/admin/category");
+      resolve({ status: 3 });
     }
   });
 };
@@ -158,5 +148,5 @@ module.exports = {
   addProduct,
   productListUnlist,
   editImages,
-  getAllActiveProducts,
+  getAllActiveProducts,checkDuplicateFunction
 };

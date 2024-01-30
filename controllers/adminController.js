@@ -16,7 +16,6 @@ const adminLoginLoad = (req, res) => {
 };
 
 const adminLoginPost = async (req, res) => {
- 
   const result = await adminModel.findOne({ email: req.body.email });
   if (result) {
     if (req.body.password === result.password) {
@@ -176,13 +175,30 @@ const editProductPost = async (req, res) => {
       req.body,
       req.params.id
     );
-
-    product.productName = req.body.productName;
-    product.productDescription = req.body.productDescription;
-    product.productPrice = req.body.productPrice;
-    product.productQuantity = req.body.productQuantity;
-    product.productCategory = req.body.productCategory;
-    product.productDiscount = req.body.productDiscount;
+    switch (check.status) {
+      case 1:
+        product.productName = req.body.productName;
+        product.productDescription = req.body.productDescription;
+        product.productPrice = req.body.productPrice;
+        product.productQuantity = req.body.productQuantity;
+        product.productCategory = req.body.productCategory;
+        product.productDiscount = req.body.productDiscount;
+        break;
+      case 2:
+        product.productName = req.body.productName;
+        product.productDescription = req.body.productDescription;
+        product.productPrice = req.body.productPrice;
+        product.productQuantity = req.body.productQuantity;
+        product.productCategory = req.body.productCategory;
+        product.productDiscount = req.body.productDiscount;
+        break;
+      case 3:
+        console.log("User already Exists");
+        break;
+      default:
+        console.log("error");
+        break;
+    }
     if (req.files) {
       const filenames = await productHelper.editImages(
         product.image,
