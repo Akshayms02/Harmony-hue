@@ -99,10 +99,10 @@ const editImages = async (oldImages, newImages) => {
           });
         }
       }
-      resolve(resizedImageUrls);
+      resolve(resizedImageUrls,{status:true});
     } else {
       // using old images
-      resolve(oldImages);
+      resolve(oldImages,{status:false});
     }
   });
 };

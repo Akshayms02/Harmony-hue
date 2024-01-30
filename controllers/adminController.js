@@ -204,7 +204,12 @@ const editProductPost = async (req, res) => {
         product.image,
         req.files
       );
-      product.image = filenames.map((path) => path.substring(2));
+      if (filenames.status) {
+        product.image = filenames.map((path) => path.substring(2));
+      } else {
+        product.image = filenames;
+      }
+      
     }
     await product.save();
     res.redirect("/admin/productList");
