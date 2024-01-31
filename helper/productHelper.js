@@ -61,7 +61,6 @@ const getAllActiveProducts = () => {
 
 const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
-    
     const resizedImageUrls = files.map((file) => file.path);
 
     await productModel
@@ -99,10 +98,10 @@ const editImages = async (oldImages, newImages) => {
           });
         }
       }
-      resolve(resizedImageUrls,{status:true});
+      resolve(resizedImageUrls, { status: true });
     } else {
       // using old images
-      resolve(oldImages,{status:false});
+      resolve(oldImages, { status: false });
     }
   });
 };
@@ -124,19 +123,9 @@ const checkDuplicateFunction = (body, productId) => {
     });
 
     if (!check) {
-      // checker.productName = body.productName;
-      // checker.productDescription = body.productDescription;
-      // await checker.save();
       resolve({ status: 1 });
-
-      
     } else if (productId == check._id) {
-      // check.productName = body.productName;
-      // check.productDescription = body.productDescription;
-      // await check.save();
       resolve({ status: 2 });
-
-      
     } else {
       resolve({ status: 3 });
     }
@@ -148,5 +137,6 @@ module.exports = {
   addProduct,
   productListUnlist,
   editImages,
-  getAllActiveProducts,checkDuplicateFunction
+  getAllActiveProducts,
+  checkDuplicateFunction,
 };

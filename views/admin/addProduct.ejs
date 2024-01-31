@@ -57,11 +57,14 @@
 
             <div class="col-lg-3">
                 <div class="card mb-4">
+                    <div class="row">
+                        <div id="previewContainer" class="d-flex flex-wrap border rounded p-2 col-12"></div>
+                    </div>
 
                     <div class="card-body">
                         <div class="input-upload">
                             <label class="form-label">Image</label>
-                            <input class="form-control" type="file" name="images" multiple>
+                            <input class="form-control" id="fileInput" type="file" name="images" multiple>
                         </div>
                     </div>
                 </div>
@@ -141,7 +144,7 @@
             if (isNaN(productQuantity) || parseInt(productQuantity) < 0) {
                 document.getElementById('productQuantityError').innerHTML = "Product Quantity must be a valid non-negative integer.";
                 isValid = false;
-            }else if(productQuantity.trim()===""){
+            } else if (productQuantity.trim() === "") {
                 document.getElementById('productQuantityError').innerText = "Product Quantity is required.";
                 isValid = false;
             }
@@ -166,6 +169,75 @@
                 e.preventDefault();
             }
         })
+
+    </script>
+    <script>
+        const fileInput = document.getElementById("fileInput");
+        const previewContainer = document.getElementById("previewContainer");
+
+        let selectedFiles = []; // Track uploaded files
+
+        fileInput.addEventListener("change", function (event) {
+            const files = event.target.files; // Get uploaded files
+
+            // Clear existing previews
+            previewContainer.innerHTML = "";
+
+            for (const file of files) {
+                if (!file.type.startsWith("image/")) {
+                    alert("Only images are allowed!");
+                    continue;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const previewElement = document.createElement("div");
+                    previewElement.classList.add("preview", "col-6", "mb-2");
+
+                    const image = document.createElement("img");
+                    image.src = event.target.result;
+                    image.classList.add("img-thumbnail");
+                    previewElement.appendChild(image);
+
+                    // Delete icon button
+                    const deleteButton = document.createElement("button");
+                    deleteButton.classList.add("btn-close", "btn-close-dark");
+                    deleteButton.setAttribute("aria-label", "Delete");
+                    const icon = document.createElement("span");
+                    icon.classList.add("fas", "fa-trash"); // Trash can icon
+                    deleteButton.appendChild(icon);
+                    previewElement.appendChild(deleteButton);
+
+                    previewContainer.appendChild(previewElement);
+                    selectedFiles.push(file); // Add file to selected files
+
+                    deleteButton.addEventListener("click", function () {
+                        previewContainer.removeChild(previewElement);
+                        selectedFiles.splice(selectedFiles.indexOf(file), 1); // Remove from array
+
+                        // Remove file from FileList
+                        const fileList = event.target.files;
+
+                        if (fileList) { // Make sure fileList is available
+                            const fileIndex = fileList.indexOf(file);
+                            // ... (rest of the code)
+                        } else {
+                            console.error("fileList is undefined"); // Log a message if it's missing
+                        }
+                        // const fileIndex = fileList.indexOf(file);
+                        if (fileIndex !== -1) {
+                            fileList.splice(fileIndex, 1); // Splice to actually remove from list
+                        }
+
+                        // Optionally reset input value (clear file selection)
+                        if (fileList.length === 0) {
+                            fileInput.value = ""; // Clear input value if no files remain
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
     </script>
 
