@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Harmony Hue</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta property="og:title" content="" />
+  <meta property="og:type" content="" />
+  <meta property="og:url" content="" />
+  <meta property="og:image" content="" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/public/images/common/harmonyHue-icon.svg" />
+  <!-- Template CSS -->
+  <link href="/public/admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+  <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.css">
+  <link rel="stylesheet" href="/assets/css/maind134.css?v=3.4" />
+</head>
+
+<body>
+  <header class="header-area header-style-4 header-height-2">
+    <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
+      <div class="container">
+        <div class="header-wrap">
+          <div class="logo logo-width-1">
+            <a href="index.html"><img src="/public/images/common/harmony-logo.svg" alt="logo" /></a>
+          </div>
+          <div class="header-right">
+            <div class="search-style-2">
+              <form action="#">
+                <select class="select-active">
+                  <option>All Categories</option>
+                  <option>Women's</option>
+                  <option>Men's</option>
+                  <option>Cellphones</option>
+                  <option>Computer</option>
+                  <option>Electronics</option>
+                  <option>Accessories</option>
+                  <option>Home & Garden</option>
+                  <option>Luggage</option>
+                  <option>Shoes</option>
+                  <option>Mother & Kids</option>
+                </select>
+                <input type="text" placeholder="Search for items..." />
+              </form>
+            </div>
+            <div class="header-action-right">
+              <div class="header-action-2">
+                <div class="header-action-icon-2">
+                  <a href="/wishlist">
+                    <img class="svgInject" alt="Evara" src="/assets/imgs/theme/icons/icon-heart.svg" />
+                    <% if (locals.wishlistCount) { %>
+                      <span class="pro-count blue">
+                        <%= wishlistCount %>
+                      </span>
+                      <% } %>
+
+                  </a>
+                </div>
+                <div class="header-action-icon-2">
+                  <a class="mini-cart-icon" href="/cart">
+                    <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg" />
+                    <% if (locals.cartCount) { %>
+                      <span class="pro-count blue">
+                        <%= cartCount %>
+                      </span>
+                      <% } %>
+
+                  </a>
+                </div>
+
+                <div><a class="dropdown-item text-center" href="/logout"><i
+                      class="material-icons md-exit_to_app"></i>Logout</a></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header-bottom header-bottom-bg-color sticky-bar">
+      <div class="container">
+        <div class="header-wrap header-space-between position-relative">
+          <div class="logo logo-width-1 d-block d-lg-none">
+            <a href="index.html"><img src="/assets/imgs/theme/logo.svg" alt="logo" /></a>
+          </div>
+          <div class="header-nav d-none d-lg-flex">
+            <div class="main-categori-wrap d-none d-lg-block">
+              <a class="categori-button-active" style="background-color: black;" href="#">
+                <span class="fi-rs-apps"></span> Browse Categories
+              </a>
+
+            </div>
+            <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
+              <nav>
+                <ul>
+                  <li>
+                    <a class="active" href="#">Home <i class="fi-rs-angle-down"></i></a>
+
+                  </li>
+                  <li>
+                    <a href="#">About</a>
+                  </li>
+                  <li>
+                    <a href="#">Shop <i class="fi-rs-angle-down"></i></a>
+
+                  </li>
+
+
+                  <li>
+                    <a href="#">Pages <i class="fi-rs-angle-down"></i></a>
+
+                  </li>
+                  <li>
+                    <a href="#">Contact</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </header>

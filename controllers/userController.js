@@ -194,7 +194,7 @@ const userCartLoad = async (req, res) => {
 
     totalandSubTotal = currencyFormatter(totalandSubTotal);
 
-    res.render("users/cart", {
+    res.render("user/userCart", {
       loginStatus: req.session.user,
       cartItems,
       cartCount,
@@ -202,7 +202,7 @@ const userCartLoad = async (req, res) => {
       totalAmount: totalandSubTotal,
     });
   } catch (error) {
-    res.status(500).render("error", { error, layout: false });
+    console.log(error);
   }
 };
 

@@ -35,4 +35,6 @@ router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
 router.get("/userHome/productView/:id", userController.productViewLoad);
 
+router.get("/cart", userController.userCartLoad);
+
 module.exports = router;
