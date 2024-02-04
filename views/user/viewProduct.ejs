@@ -445,11 +445,10 @@
     const addToCart = (productId) => {
       console.log(productId);
       $.ajax({
-        url: `/addToCart/`+productId, // Replace with your API endpoint
+        url: `/addToCart/`+productId, 
         method: "POST",
         success: function (response) {
           if (response.status) {
-            console.log("Hey")
             Toastify({
               text: `Added to Cart`,
               duration: 3000,
@@ -460,18 +459,63 @@
                 background: "green",
               },
             }).showToast();
-
-
+          }
+          else{
+            Toastify({
+              text: `Something went wrong, Please try again later`,
+              duration: 3000,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "red",
+              },
+            }).showToast();
           }
         },
         error: function (XHR, textStatus, errorThrown) {
-
-
+          console.log(errorThrown);
         }
       });
     };
+  </script>
 
-
-
+  <script>
+    const addTowishlist = (productId) => {
+      console.log(productId);
+      $.ajax({
+        url: `/addToWishlist/`+productId, 
+        method: "POST",
+        success: function (response) {
+          if (response.status) {
+            Toastify({
+              text: `Added to wishlist`,
+              duration: 3000,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "green",
+              },
+            }).showToast();
+          }
+          else{
+            Toastify({
+              text: `Something went wrong, Please try again later`,
+              duration: 3000,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "red",
+              },
+            }).showToast();
+          }
+        },
+        error: function (XHR, textStatus, errorThrown) {
+          console.log(errorThrown);
+        }
+      });
+    };
   </script>
   <%- include("../layouts/userLayout/userHomeFooter") %>

@@ -2,11 +2,12 @@ const wishlistModel = require("../models/wishlistModel");
 const productModel = require("../models/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-const addItemToWishlist = (productId, userId) => {
+const addToWishlist = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
+    console.log(productId)
     const product = await productModel.findOne({ _id: productId });
 
-    if (!product || !product.product_status) {
+    if (!product || !product.productStatus) {
       reject(Error("Product Not Found"));
       return;
     }
@@ -29,26 +30,7 @@ const addItemToWishlist = (productId, userId) => {
   });
 };
 
-//   isInWishlist :async (userId,productId) =>{
-//     console.log(userId,'{{{{{{{{{{{{{{{{{{{');
-//     console.log(productId,'{{{{{{{{{{{{{{{{{{{');
-//     try{
-//         const wishList = await wishlistModel.findOne({
-//             user: userId,
-//             'products.productItemId': productId
-//           });
 
-//         console.log(wishList,'lllllllllltttttttttttttttt');
-
-//         if(wishList){
-//             return true
-//         }else{
-//             return false
-//         }
-//     }catch(error){
-//         console.log(error);
-//     }
-//   }
 const isInWishlist = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -137,7 +119,7 @@ const getWishListCount = (userId) => {
 };
 
 module.exports = {
-  addItemToWishlist,
+  addToWishlist,
   isInWishlist,
   getAllWishlistProducts,
   removeProductFromWishlist,

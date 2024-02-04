@@ -39,4 +39,6 @@ router.get("/cart", userController.userCartLoad);
 
 router.post("/addToCart/:id", userController.addToCart);
 
+router.post("/addToWishlist/:id", userController.addToWishlist);
+
 module.exports = router;

@@ -175,7 +175,6 @@ const forgotPasswordChange = async (req, res) => {
 
 const productViewLoad = async (req, res) => {
   const id = req.params.id;
-  
 
   const result = await productModel.findById({ _id: id });
 
@@ -213,9 +212,20 @@ const addToCart = async (req, res) => {
   const userId = req.session.user._id;
   const productId = req.params.id;
 
+  const result = await cartHelper.addToCart(userId, productId);
 
-  const result = await cartHelper.addToCart(userId,productId);
+  if (result) {
+    res.json({ status: true });
+  } else {
+    res.json({ status: false });
+  }
+};
 
+const addToWishlist = async (req, res) => {
+  const userId = req.session.user._id;
+  const productId = req.params.id;
+
+  const result = await wishlistHelper.addToWishlist(userId, productId);
   if (result) {
     res.json({ status: true });
   } else {
@@ -245,4 +255,5 @@ module.exports = {
   userCartLoad,
   currencyFormatter,
   addToCart,
+  addToWishlist,
 };
