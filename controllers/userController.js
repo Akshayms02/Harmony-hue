@@ -175,10 +175,28 @@ const forgotPasswordChange = async (req, res) => {
 
 const productViewLoad = async (req, res) => {
   const id = req.params.id;
+  const userData = req.session.user;
 
-  const result = await productModel.findById({ _id: id });
+  let cartCount = await cartHelper.getCartCount(userData._id);
 
-  res.render("user/viewProduct", { product: result });
+  let wishListCount = await wishlistHelper.getWishListCount(userData._id);
+
+  const product = await productModel.findById({ _id: id }).lean();
+
+  const cartStatus = await cartHelper.isAProductInCart(userData._id, product._id);
+  console.log(cartStatus);
+  const wishlistStatus = await wishlistHelper.isInWishlist(
+    userData._id,
+    product._id
+  );
+  product.cartStatus = cartStatus;
+  product.wishlistStatus = wishlistStatus;
+  product.productPrice = currencyFormatter(product.productPrice)
+
+  console.log(product);
+
+
+  res.render("user/viewProduct", { product, cartCount, wishListCount });
 };
 
 const userCartLoad = async (req, res) => {
