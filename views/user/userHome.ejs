@@ -24,7 +24,7 @@
 </head>
 
 <body>
-  <!-- Quick view -->
+  <!-- Quick view
   <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -34,9 +34,9 @@
           <div class="row">
             <div class="col-md-6 col-sm-12 col-xs-12">
               <div class="detail-gallery">
-                <span class="zoom-icon"><i class="fi-rs-search"></i></span>
+                <span class="zoom-icon"><i class="fi-rs-search"></i></span> -->
                 <!-- MAIN SLIDES -->
-                <div class="product-image-slider">
+                <!-- <div class="product-image-slider">
                   <figure class="border-radius-10">
                     <img src="/assets/imgs/shop/product-16-2.jpg" alt="product image" />
                   </figure>
@@ -59,8 +59,8 @@
                     <img src="/assets/imgs/shop/product-16-7.jpg" alt="product image" />
                   </figure>
                 </div>
-                <!-- THUMBNAILS -->
-                <div class="slider-nav-thumbnails pl-15 pr-15">
+                <-- THUMBNAILS -->
+                <!-- <div class="slider-nav-thumbnails pl-15 pr-15">
                   <div>
                     <img src="/assets/imgs/shop/thumbnail-3.jpg" alt="product image" />
                   </div>
@@ -84,8 +84,8 @@
                   </div>
                 </div>
               </div>
-              <!-- End Gallery -->
-              <div class="social-icons single-share">
+              <-- End Gallery -->
+              <!-- <div class="social-icons single-share">
                 <ul class="text-grey-5 d-inline-block">
                   <li><strong class="mr-10">Share this:</strong></li>
                   <li class="social-facebook">
@@ -203,13 +203,13 @@
                   </li>
                 </ul>
               </div>
-              <!-- Detail Info -->
-            </div>
+              <-- Detail Info -->
+            <!-- </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </div> --> 
   <header class="header-area header-style-4 header-height-2">
     <!-- <div class="header-top header-top-ptb-1 d-none d-lg-block">
         <div class="container">
@@ -318,15 +318,21 @@
             <div class="header-action-right">
               <div class="header-action-2">
                 <div class="header-action-icon-2">
-                  <a href="shop-wishlist.html">
+                  <a href="/wishlist">
                     <img class="svgInject" alt="Evara" src="/assets/imgs/theme/icons/icon-heart.svg" />
-                    <span class="pro-count blue">4</span>
+                    <% if (locals.wishlistCount) { %>
+                      <span class="pro-count blue"><%= wishlistCount %></span>
+                    <% } %>
+                   
                   </a>
                 </div>
                 <div class="header-action-icon-2">
-                  <a class="mini-cart-icon" href="shop-cart.html">
+                  <a class="mini-cart-icon" href="/cart">
                     <img alt="Evara" src="/assets/imgs/theme/icons/icon-cart.svg" />
-                    <span class="pro-count blue">2</span>
+                    <% if (locals.cartCount) { %>
+                      <span class="pro-count blue"><%= cartCount %></span>
+                    <% } %>
+               
                   </a>
                 </div>
 
