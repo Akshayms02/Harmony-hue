@@ -1,5 +1,5 @@
-const wishlistModel = require("../model/wishlistModel");
-const productModel = require("../model/productModel");
+const wishlistModel = require("../models/wishlistModel");
+const productModel = require("../models/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const addItemToWishlist = (productId, userId) => {

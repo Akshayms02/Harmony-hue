@@ -5,6 +5,8 @@ const passwordHelper = require("../helper/passwordHelper");
 const userHelper = require("../helper/userHelper");
 const categoryHelper = require("../helper/categoryHelper");
 const productHelper = require("../helper/productHelper");
+const cartHelper = require("../helper/cartHelper");
+const wishlistHelper = require("../helper/wishlistHelper");
 
 const registerLoad = (req, res) => {
   res.setHeader(
@@ -98,27 +100,28 @@ const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   try {
     let userId = req.session.user._id;
+    const categories = await categoryHelper.getAllcategory();
+
     let cartCount = await cartHelper.getCartCount(userId);
 
     let wishListCount = await wishlistHelper.getWishListCount(userId);
 
-    let products = await productHelper.recentProducts();
+    let products = await productHelper.getAllActiveProducts();
+    for (const product of products) {
+      const cartStatus = await cartHelper.isAProductInCart(userId, product._id);
+      const wishlistStatus = await wishlistHelper.isInWishlist(userId, product._id);
+    
+      product.cartStatus = cartStatus;
+      product.wishlistStatus = wishlistStatus;
+      product.productPrice = currencyFormatter(product.productPrice);
+    }
 
-    await products.forEach(async (element) => {
-      const cartStatus = await cartHelper.isAProductInCart(userId, element._id);
-
-      const wishlistStatus = await cartHelper.isInWishlist(userId, element._id);
-
-      element.cartStatus = cartStatus;
-      element.cartStatus = wishlistStatus;
-      element.productPrice = currencyFormatter(element.productPrice);
-    });
-
-    res.status(200).render("users/home", {
+    res.render("user/userHome", {
       products,
       userData: req.session.user,
       cartCount,
       wishListCount,
+      categories,
     });
   } catch (error) {
     console.log(error);
