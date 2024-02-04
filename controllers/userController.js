@@ -201,13 +201,15 @@ const productViewLoad = async (req, res) => {
 
 const userCartLoad = async (req, res) => {
   try {
-    let cartItems = await cartHelper.getAllCartItems(userData._id);
+    const userData = req.session.user;
 
-    let cartCount = await cartHelper.getCartCount(userData._id);
+    const cartItems = await cartHelper.getAllCartItems(userData._id);
 
-    let wishListCount = await wishlistHelper.getWishListCount(userData._id);
+    const cartCount = await cartHelper.getCartCount(userData._id);
 
-    let totalandSubTotal = await cartHelper.totalSubtotal(
+    const wishListCount = await wishlistHelper.getWishListCount(userData._id);
+
+    const totalandSubTotal = await cartHelper.totalSubtotal(
       userData._id,
       cartItems
     );
@@ -238,6 +240,26 @@ const addToCart = async (req, res) => {
     res.json({ status: false });
   }
 };
+const wishListLoad = async (req, res) => {
+  try {
+    const userData = req.session.user;
+
+    const cartCount = await cartHelper.getCartCount(userData._id);
+
+    const wishListCount = await wishlistHelper.getWishListCount(userData._id);
+
+    const wishListItems = await wishlistHelper.getAllWishlistProducts(userData._id);
+
+    res.render("user/userWishlist", {
+      userData: req.session.user,
+      cartCount,
+      wishListCount,
+      wishListItems,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const addToWishlist = async (req, res) => {
   const userId = req.session.user._id;
@@ -272,6 +294,7 @@ module.exports = {
   productViewLoad,
   userCartLoad,
   currencyFormatter,
+  wishListLoad,
   addToCart,
   addToWishlist,
 };
