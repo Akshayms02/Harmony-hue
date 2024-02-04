@@ -1,16 +1,16 @@
-const cartSchema = require("../model/cartModel");
-const productSchema = require("../model/productModel");
+const cartModel = require("../models/cartModel");
+const productModel = require("../models/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToUserCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
-    const product = await productSchema.findOne({ _id: productId });
+    const product = await productModel.findOne({ _id: productId });
 
     if (!product.product_status) {
       reject(Error("Product Not Found"));
     }
 
-    const cart = await cartSchema.updateOne(
+    const cart = await cartModel.updateOne(
       { user: userId },
       { $push: { products: { productItemId: productId, quantity: 1 } } },
       { upsert: true }
@@ -23,7 +23,7 @@ const addToUserCart = (userId, productId) => {
 const getCartCount = (userId) => {
   return new Promise(async (resolve, reject) => {
     let count = 0;
-    let cart = await cartSchema.findOne({ user: userId });
+    let cart = await cartModel.findOne({ user: userId });
     if (cart) {
       count = cart.products.length;
     } else {
@@ -35,7 +35,7 @@ const getCartCount = (userId) => {
 
 const totalSubtotal = (userId, cartItems) => {
   return new Promise(async (resolve, reject) => {
-    let cart = await cartSchema.findOne({ user: userId });
+    let cart = await cartModel.findOne({ user: userId });
     let total = 0;
     if (cart) {
       if (cartItems.length) {
@@ -56,7 +56,7 @@ const totalSubtotal = (userId, cartItems) => {
 
 const totalAmount = (userId) => {
   return new Promise(async (resolve, reject) => {
-    const cart = await cartSchema.findOne({ user: userId });
+    const cart = await cartModel.findOne({ user: userId });
 
     resolve(cart.totalAmount);
   });
@@ -64,7 +64,7 @@ const totalAmount = (userId) => {
 
 const getAllCartItems = (userId) => {
   return new Promise(async (resolve, reject) => {
-    let userCartItems = await cartSchema.aggregate([
+    let userCartItems = await cartModel.aggregate([
       {
         $match: { user: new ObjectId(userId) },
       },
@@ -106,7 +106,7 @@ const getAllCartItems = (userId) => {
 
 // isAProductInCart: async (userId, productId) => {
 //   try {
-//     const cart = await cartSchema.findOne({ user: userId, 'products.productItemId': productId })
+//     const cart = await cartModel.findOne({ user: userId, 'products.productItemId': productId })
 
 //     console.log(cart,'carttttttttttttttttttttttttttttttttttttttttt');
 
@@ -123,7 +123,7 @@ const getAllCartItems = (userId) => {
 const isAProductInCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const cart = await cartSchema.findOne({
+      const cart = await cartModel.findOne({
         user: userId,
         "products.productItemId": productId,
       });
@@ -142,7 +142,7 @@ const isAProductInCart = (userId, productId) => {
 
 const incDecProductQuantity = (userId, productId, quantity) => {
   return new Promise(async (resolve, reject) => {
-    const cart = await cartSchema.findOne({ user: userId });
+    const cart = await cartModel.findOne({ user: userId });
 
     const product = cart.products.find((items) => {
       return items.productItemId.toString() == productId;
@@ -162,7 +162,7 @@ const incDecProductQuantity = (userId, productId, quantity) => {
 
 const removeAnItemFromCart = (cartId, productId) => {
   return new Promise(async (resolve, reject) => {
-    cartSchema
+    cartModel
       .updateOne(
         { _id: cartId },
         {
@@ -177,7 +177,7 @@ const removeAnItemFromCart = (cartId, productId) => {
 
 const clearTheCart = (userId) => {
   return new Promise(async (resolve, reject) => {
-    await cartSchema
+    await cartModel
       .findOneAndUpdate(
         { user: userId },
         { $set: { products: [] } },
