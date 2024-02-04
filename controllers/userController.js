@@ -172,15 +172,15 @@ const forgotPasswordChange = async (req, res) => {
 
 const productViewLoad = async (req, res) => {
   const id = req.params.id;
+  const userData = req.session.user;
 
   const result = await productModel.findById({ _id: id });
 
-  res.render("user/viewProduct", { product: result });
+  res.render("user/viewProduct", { product: result ,userData});
 };
 
 const userCartLoad = async (req, res) => {
   try {
-    let userData = req.session.user;
     let cartItems = await cartHelper.getAllCartItems(userData._id);
 
     let cartCount = await cartHelper.getCartCount(userData._id);
@@ -195,11 +195,11 @@ const userCartLoad = async (req, res) => {
     totalandSubTotal = currencyFormatter(totalandSubTotal);
 
     res.render("user/userCart", {
-      loginStatus: req.session.user,
+      userData: req.session.user,
       cartItems,
       cartCount,
       wishListCount,
-      totalAmount: totalandSubTotal,
+      totalAmount: totalandSubTotal
     });
   } catch (error) {
     console.log(error);
