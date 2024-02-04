@@ -61,7 +61,7 @@ const logUser = async (req, res) => {
       console.log(response);
       if (response.loggedIn) {
         if (response.user) {
-          req.session.user = response.user._id;
+          req.session.user = response.user;
           console.log("user session created");
           res.redirect("/userHome");
         } else {
@@ -96,20 +96,32 @@ const userLogout = (req, res) => {
 
 const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  if (req.session.user) {
-    const userData = await userModel.findOne({ _id: req.session.user });
+  try {
+    let userId = req.session.user._id;
+    let cartCount = await cartHelper.getCartCount(userId);
 
-    const category = await categoryHelper.getAllcategory();
+    let wishListCount = await wishlistHelper.getWishListCount(userId);
 
-    const products = await productHelper.getAllActiveProducts();
+    let products = await productHelper.recentProducts();
 
-    res.render("user/userHome", {
-      user: userData,
-      categories: category,
-      products: products,
+    await products.forEach(async (element) => {
+      const cartStatus = await cartHelper.isAProductInCart(userId, element._id);
+
+      const wishlistStatus = await cartHelper.isInWishlist(userId, element._id);
+
+      element.cartStatus = cartStatus;
+      element.cartStatus = wishlistStatus;
+      element.productPrice = currencyFormatter(element.productPrice);
     });
-  } else {
-    res.redirect("/");
+
+    res.status(200).render("users/home", {
+      products,
+      userData: req.session.user,
+      cartCount,
+      wishListCount,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -163,6 +175,41 @@ const productViewLoad = async (req, res) => {
   res.render("user/viewProduct", { product: result });
 };
 
+const userCartLoad = async (req, res) => {
+  try {
+    let userData = req.session.user;
+    let cartItems = await cartHelper.getAllCartItems(userData._id);
+
+    let cartCount = await cartHelper.getCartCount(userData._id);
+
+    let wishListCount = await wishlistHelper.getWishListCount(userData._id);
+
+    let totalandSubTotal = await cartHelper.totalSubtotal(
+      userData._id,
+      cartItems
+    );
+
+    totalandSubTotal = currencyFormatter(totalandSubTotal);
+
+    res.render("users/cart", {
+      loginStatus: req.session.user,
+      cartItems,
+      cartCount,
+      wishListCount,
+      totalAmount: totalandSubTotal,
+    });
+  } catch (error) {
+    res.status(500).render("error", { error, layout: false });
+  }
+};
+
+const currencyFormatter = (amount) => {
+  return Number(amount).toLocaleString("en-in", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 0,
+  });
+};
 module.exports = {
   loginLoad,
   registerLoad,
@@ -175,4 +222,6 @@ module.exports = {
   verifySignUpLoad,
   userLogout,
   productViewLoad,
+  userCartLoad,
+  currencyFormatter,
 };
