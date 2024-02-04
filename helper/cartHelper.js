@@ -1,5 +1,6 @@
-const cartModel = require("../models/cartModel");
+
 const productModel = require("../models/productModel");
+const cartModel = require("../models/cartModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToUserCart = (userId, productId) => {
