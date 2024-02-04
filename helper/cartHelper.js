@@ -3,11 +3,11 @@ const productModel = require("../models/productModel");
 const cartModel = require("../models/cartModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-const addToUserCart = (userId, productId) => {
+const addToCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     const product = await productModel.findOne({ _id: productId });
 
-    if (!product.product_status) {
+    if (!product.productStatus) {
       reject(Error("Product Not Found"));
     }
 
@@ -16,6 +16,7 @@ const addToUserCart = (userId, productId) => {
       { $push: { products: { productItemId: productId, quantity: 1 } } },
       { upsert: true }
     );
+    console.log(cart);
 
     resolve(cart);
   });
@@ -192,7 +193,7 @@ const clearTheCart = (userId) => {
 };
 
 module.exports = {
-  addToUserCart,
+  addToCart,
   getCartCount,
   totalSubtotal,
   totalAmount,

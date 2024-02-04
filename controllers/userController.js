@@ -109,8 +109,11 @@ const loadUserHome = async (req, res) => {
     let products = await productHelper.getAllActiveProducts();
     for (const product of products) {
       const cartStatus = await cartHelper.isAProductInCart(userId, product._id);
-      const wishlistStatus = await wishlistHelper.isInWishlist(userId, product._id);
-    
+      const wishlistStatus = await wishlistHelper.isInWishlist(
+        userId,
+        product._id
+      );
+
       product.cartStatus = cartStatus;
       product.wishlistStatus = wishlistStatus;
       product.productPrice = currencyFormatter(product.productPrice);
@@ -172,11 +175,11 @@ const forgotPasswordChange = async (req, res) => {
 
 const productViewLoad = async (req, res) => {
   const id = req.params.id;
-  const userData = req.session.user;
+  
 
   const result = await productModel.findById({ _id: id });
 
-  res.render("user/viewProduct", { product: result ,userData});
+  res.render("user/viewProduct", { product: result });
 };
 
 const userCartLoad = async (req, res) => {
@@ -199,10 +202,24 @@ const userCartLoad = async (req, res) => {
       cartItems,
       cartCount,
       wishListCount,
-      totalAmount: totalandSubTotal
+      totalAmount: totalandSubTotal,
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+const addToCart = async (req, res) => {
+  const userId = req.session.user._id;
+  const productId = req.params.id;
+
+
+  const result = await cartHelper.addToCart(userId,productId);
+
+  if (result) {
+    res.json({ status: true });
+  } else {
+    res.json({ status: false });
   }
 };
 
@@ -227,4 +244,5 @@ module.exports = {
   productViewLoad,
   userCartLoad,
   currencyFormatter,
+  addToCart,
 };
