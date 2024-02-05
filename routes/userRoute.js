@@ -41,6 +41,8 @@ router.get("/wishlist",userAuth.isLogout, userController.wishListLoad);
 
 router.post("/addToCart/:id", userController.addToCart);
 
+router.patch("/updateCartQuantity", userController.updateCartQuantity);
+
 router.post("/addToWishlist/:id", userController.addToWishlist);
 
 

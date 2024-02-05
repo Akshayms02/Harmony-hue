@@ -27,81 +27,50 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="image product-thumbnail"><img src="/public/assets/imgs/shop/product-1-2.jpg" alt="#">
-                    </td>
-                    <td class="product-des product-name">
-                      <h5 class="product-name"><a href="shop-product-right.html">J.Crew Mercantile
-                          Women's Short-Sleeve</a></h5>
-                      <p class="font-xs">Maboriosam in a tonto nesciung eget<br> distingy
-                        magndapibus.
-                      </p>
-                    </td>
-                    <td class="price" data-title="Price"><span>$65.00 </span></td>
-                    <td class="text-center" data-title="Stock">
-                      <div class="detail-qty border radius  m-auto">
-                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                        <span class="qty-val">1</span>
-                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                      </div>
-                    </td>
-                    <td class="text-right" data-title="Cart">
-                      <span>$65.00 </span>
-                    </td>
-                    <td class="action" data-title="Remove"><a href="#" class="text-muted"><i
-                          class="fi-rs-trash"></i></a></td>
-                  </tr>
-                  <tr>
-                    <td class="image"><img src="/public/assets/imgs/shop/product-11-2.jpg" alt="#"></td>
-                    <td class="product-des">
-                      <h5 class="product-name"><a href="shop-product-right.html">Amazon Essentials
-                          Women's Tank</a></h5>
-                      <p class="font-xs">Sit at ipsum amet clita no est,<br> sed amet sadipscing
-                        et gubergren</p>
-                    </td>
-                    <td class="price" data-title="Price"><span>$75.00 </span></td>
-                    <td class="text-center" data-title="Stock">
-                      <div class="detail-qty border radius  m-auto">
-                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                        <span class="qty-val">2</span>
-                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                      </div>
-                    </td>
-                    <td class="text-right" data-title="Cart">
-                      <span>$150.00 </span>
-                    </td>
-                    <td class="action" data-title="Remove"><a href="#" class="text-muted"><i
-                          class="fi-rs-trash"></i></a></td>
-                  </tr>
-                  <tr>
-                    <td class="image"><img src="/public/assets/imgs/shop/product-6-1.jpg" alt="#"></td>
-                    <td class="product-des">
-                      <h5 class="product-name"><a href="shop-product-right.html">Amazon Brand -
-                          Daily Ritual Women's Jersey </a></h5>
-                      <p class="font-xs">Erat amet et et amet diam et et.<br> Justo amet at dolore
-                      </p>
-                    </td>
-                    <td class="price" data-title="Price"><span>$62.00 </span></td>
-                    <td class="text-center" data-title="Stock">
-                      <div class="detail-qty border radius  m-auto">
-                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                        <span class="qty-val">1</span>
-                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                      </div>
-                    </td>
-                    <td class="text-right" data-title="Cart">
-                      <span>$62.00 </span>
-                    </td>
-                    <td class="action" data-title="Remove"><a href="#" class="text-muted"><i
-                          class="fi-rs-trash"></i></a></td>
-                  </tr>
+                  <% for( let i=0; i < cartItems.length; i++ ) { %>
+                    <tr>
+                      <td class="image product-thumbnail"><img src="<%= cartItems[i].product.image[0] %>" alt="#">
+                      </td>
+                      <td class="product-des product-name">
+                        <h5 class="product-name"><a href="shop-product-right.html" style="color: black;">
+                            <%= cartItems[i].product.productName %>
+                          </a></h5>
+                        <p class="font-xs">
+                          <%= cartItems[i].product.productDescription %>
+                        </p>
+                      </td>
+                      <td class="price" data-title="Price" id="price-span<%= cartItems[i].product._id %>"><span>
+                          <%= cartItems[i].product.productPrice %>
+                        </span></td>
+                      <td class="text-center" data-title="Stock">
+                        <div class="detail-qty border radius  m-auto">
+                          <a href="#" class="qty-down" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','<%=cartItems[i].quantity%>')"><i
+                              class="fi-rs-angle-small-down"></i></a>
+                          <span class="qty-val" id="qty-val<%= cartItems[i].product._id %>"><%= cartItems[i].quantity %></span>
+                          <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','<%=cartItems[i].quantity%>')"><i
+                              class="fi-rs-angle-small-up"></i></a>
+                        </div>
+                      </td>
+                      <td class="text-right" id="text-right<%= cartItems[i].product._id %>" data-title="Cart">
+                        <span>
+                          <%=totalAmount%>
+                        </span>
+                      </td>
+                      <td class="action" data-title="Remove"><a href="#" class="text-muted"><i
+                            class="fi-rs-trash"></i></a></td>
+                    </tr>
+                    <% } %>
+
+
 
                 </tbody>
               </table>
             </div>
             <div class="cart-action text-end" style="margin-top: 40px;">
-              <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
-              <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+              <a class="btn  mr-10 mb-sm-15" style="background-color: black;"><i class="fi-rs-shuffle mr-10"></i>Update
+                Cart</a>
+              <a class="btn " style="background-color: black;"><i class="fi-rs-shopping-bag mr-10"></i>Continue
+                Shopping</a>
             </div>
             <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
             <div class="row mb-50">
@@ -109,7 +78,8 @@
                 <div class="heading_s1 mb-3">
                   <h4>Calculate Shipping</h4>
                 </div>
-                <p class="mt-15 mb-30">Flat rate: <span class="font-xl text-brand fw-900">5%</span></p>
+                <p class="mt-15 mb-30">Flat rate: <span class="font-xl text-brand fw-900"
+                    style="color: black;">5%</span></p>
                 <form class="field_form shipping_calculator">
                   <div class="form-row">
                     <div class="form-group col-lg-12">
@@ -374,7 +344,8 @@
                   </div>
                   <div class="form-row">
                     <div class="form-group col-lg-12">
-                      <button class="btn  btn-sm"><i class="fi-rs-shuffle mr-10"></i>Update</button>
+                      <button class="btn  btn-sm" style="background-color: black;"><i
+                          class="fi-rs-shuffle mr-10"></i>Update</button>
                     </div>
                   </div>
                 </form>
@@ -391,7 +362,8 @@
                               <input class="font-medium" name="Coupon" placeholder="Enter Your Coupon">
                             </div>
                             <div class="form-group col-lg-6">
-                              <button class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
+                              <button class="btn  btn-sm" style="background-color: black;"><i
+                                  class="fi-rs-label mr-10"></i>Apply</button>
                             </div>
                           </div>
                         </form>
@@ -410,7 +382,8 @@
                       <tbody>
                         <tr>
                           <td class="cart_total_label">Cart Subtotal</td>
-                          <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">$240.00</span></td>
+                          <td class="cart_total_amount"><span class="font-lg fw-900 text-brand"
+                              style="color: black;">$240.00</span></td>
                         </tr>
                         <tr>
                           <td class="cart_total_label">Shipping</td>
@@ -419,14 +392,15 @@
                         </tr>
                         <tr>
                           <td class="cart_total_label">Total</td>
-                          <td class="cart_total_amount"><strong><span
-                                class="font-xl fw-900 text-brand">$240.00</span></strong>
+                          <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand"
+                                style="color: black;">$240.00</span></strong>
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <a href="#" class="btn"> <i class="fi-rs-box-alt mr-10"></i> Proceed To
+                  <a href="#" class="btn" style="background-color: black;"> <i class="fi-rs-box-alt mr-10"></i> Proceed
+                    To
                     CheckOut</a>
                 </div>
               </div>
@@ -436,37 +410,60 @@
       </div>
     </section>
   </main>
-  <script>
-    // Get references to the necessary elements
-    const quantityVal = document.querySelector(".qty-val");
-    const priceSpan = document.querySelector(".price span");
-    const subtotalSpan = document.querySelector(".text-right span");
 
-    // Function to update the subtotal price
-    function updateSubtotal() {
-      const quantity = parseInt(quantityVal.textContent);
-      const price = parseFloat(priceSpan.textContent.replace("$", "")); // Remove dollar sign
-      const subtotal = quantity * price;
-      subtotalSpan.textContent = `$${subtotal.toFixed(2)}`; // Format with two decimal places
+  <script>
+    // const incOrDecQuantity = (productId) => {
+    //   // Get references to the necessary elements
+    //   console.log(productId);
+    //   const quantityVal = document.getElementById("qty-val" + productId);
+    //   const priceSpan = document.getElementById("price-span" + productId);
+    //   const subtotalSpan = document.getElementById("text-right" + productId);
+
+    //   // Function to update the subtotal price
+    //   function updateSubtotal() {
+    //     const quantity = parseInt(quantityVal.textContent);
+    //     const price = parseFloat(priceSpan.textContent.replace("₹", "")); // Remove Rupee symbol
+    //     const subtotal = quantity * price;
+    //     subtotalSpan.textContent = `₹${subtotal.toFixed(2)}`; // Format with two decimal places and add Rupee symbol
+    //   }
+
+
+    //   // Event listeners for quantity buttons.
+    //   document.getElementById("qty-down" + productId).addEventListener("click", () => {
+    //     const currentQuantity = parseInt(quantityVal.textContent);
+    //     if (currentQuantity > 1) {
+    //       quantityVal.textContent = currentQuantity - 1;
+    //       updateSubtotal();
+    //     }
+    //   });
+
+    //   document.getElementById("qty-up" + productId).addEventListener("click", () => {
+    //     const currentQuantity = parseInt(quantityVal.textContent);
+    //     quantityVal.textContent = currentQuantity + 1;
+    //     updateSubtotal();
+    //   });
+
+    //   // Calling the update function for intializing.
+    //   updateSubtotal();
+    // }
+
+  </script>
+  <script>
+    const incOrDecQuantity = (productId,quantity) => {
+     $.ajax({
+      url:`/updateCartQuantity?productId=${productId}&quantity=${quantity}`,
+      method:"PATCH",
+      success:(response)=>{
+        if(response.status){
+          window.location.reload();
+        }else{
+          console.log("Error");
+        }
+        
+      }
+     })
     }
 
-    // Event listeners for quantity buttons.
-    document.querySelector(".qty-down").addEventListener("click", () => {
-      const currentQuantity = parseInt(quantityVal.textContent);
-      if (currentQuantity > 1) {
-        quantityVal.textContent = currentQuantity - 1;
-        updateSubtotal();
-      }
-    });
-
-    document.querySelector(".qty-up").addEventListener("click", () => {
-      const currentQuantity = parseInt(quantityVal.textContent);
-      quantityVal.textContent = currentQuantity+1;
-      updateSubtotal();
-    });
-
-    // Calling the update function for intializing.
-    updateSubtotal();
   </script>
 
 

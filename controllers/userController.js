@@ -140,7 +140,7 @@ const sendOtp = async (req, res) => {
       req.session.otpExpiryTime = response.otpTimer;
       req.session.userData = response.user;
       req.session.otp = response.otp;
-      console.log("hey")
+      console.log("hey");
     })
     .catch((error) => {
       console.log(error);
@@ -184,7 +184,10 @@ const productViewLoad = async (req, res) => {
 
   const product = await productModel.findById({ _id: id }).lean();
 
-  const cartStatus = await cartHelper.isAProductInCart(userData._id, product._id);
+  const cartStatus = await cartHelper.isAProductInCart(
+    userData._id,
+    product._id
+  );
   console.log(cartStatus);
   const wishlistStatus = await wishlistHelper.isInWishlist(
     userData._id,
@@ -192,10 +195,9 @@ const productViewLoad = async (req, res) => {
   );
   product.cartStatus = cartStatus;
   product.wishlistStatus = wishlistStatus;
-  product.productPrice = currencyFormatter(product.productPrice)
+  product.productPrice = currencyFormatter(product.productPrice);
 
   console.log(product);
-
 
   res.render("user/viewProduct", { product, cartCount, wishListCount });
 };
@@ -214,8 +216,14 @@ const userCartLoad = async (req, res) => {
       userData._id,
       cartItems
     );
+
     totalandSubTotal = currencyFormatter(totalandSubTotal);
-    
+    for (i = 0; i < cartItems.length; i++) {
+      cartItems[i].product.productPrice = currencyFormatter(
+        cartItems[i].product.productPrice
+      );
+    }
+    console.log(cartItems);
 
     res.render("user/userCart", {
       userData: req.session.user,
@@ -241,6 +249,23 @@ const addToCart = async (req, res) => {
     res.json({ status: false });
   }
 };
+
+const updateCartQuantity = async (req, res) => {
+  const productId = req.query.productId;
+  const quantity = req.query.quantity;
+  const userId = req.session.user._id;
+  const update = await cartHelper.incDecProductQuantity(
+    userId,
+    productId,
+    quantity
+  );
+  if (update) {
+    res.json({ status: true });
+  } else {
+    res.json({ status: false });
+  }
+};
+
 const wishListLoad = async (req, res) => {
   try {
     const userData = req.session.user;
@@ -249,7 +274,9 @@ const wishListLoad = async (req, res) => {
 
     const wishListCount = await wishlistHelper.getWishListCount(userData._id);
 
-    const wishListItems = await wishlistHelper.getAllWishlistProducts(userData._id);
+    const wishListItems = await wishlistHelper.getAllWishlistProducts(
+      userData._id
+    );
 
     res.render("user/userWishlist", {
       userData: req.session.user,
@@ -260,7 +287,7 @@ const wishListLoad = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const addToWishlist = async (req, res) => {
   const userId = req.session.user._id;
@@ -298,4 +325,5 @@ module.exports = {
   wishListLoad,
   addToCart,
   addToWishlist,
+  updateCartQuantity,
 };
