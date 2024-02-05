@@ -258,10 +258,25 @@
                     <div class="detail-extralink">
 
                       <div class="product-extra-link2">
-                        <button type="submit" class="button button-add-to-cart" style="background-color: black;"
-                          onclick="addToCart('<%=product._id%>')">Add to cart</button>
-                        <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                          onclick="addTowishlist('<%=product._id%>')"><i class="fi-rs-heart"></i></a>
+                        <% if (product.cartStatus) { %>
+                          <button type="button" class="btn button-add-to-cart" style="background-color: black;"
+                            onclick="viewCart()"> View in cart</button>
+
+                          <% } else { %>
+                            <button type="submit" class="button button-add-to-cart" style="background-color: black;"
+                              onclick="addToCart('<%=product._id%>')">Add to cart</button>
+                            <% } %>
+                              <% if (product.wishlistStatus) { %>
+                                <a aria-label="Remove from wishlist" class="action-btn hover-up"
+                                  onclick="removeFromWishlist('<%=product._id%>')"><i class="fi-rs-heart"
+                                    style="background-color: red;"></i></a>
+                                <% } else { %>
+                                  <a aria-label="Add To Wishlist" class="action-btn hover-up"
+                                    onclick="addTowishlist('<%=product._id%>')"><i class="fi-rs-heart"></i></a>
+                                  <% } %>
+
+
+
 
                       </div>
                     </div>
@@ -440,12 +455,17 @@
       </div>
     </section>
   </main>
+  <script>
+    const viewCart = () => {
+      window.location.href = "/cart"
+    }
+  </script>
 
   <script>
     const addToCart = (productId) => {
       console.log(productId);
       $.ajax({
-        url: `/addToCart/`+productId, 
+        url: `/addToCart/` + productId,
         method: "POST",
         success: function (response) {
           if (response.status) {
@@ -459,8 +479,13 @@
                 background: "green",
               },
             }).showToast();
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
+
+            
           }
-          else{
+          else {
             Toastify({
               text: `Something went wrong, Please try again later`,
               duration: 3000,
@@ -471,7 +496,11 @@
                 background: "red",
               },
             }).showToast();
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
           }
+          
         },
         error: function (XHR, textStatus, errorThrown) {
           console.log(errorThrown);
@@ -484,7 +513,7 @@
     const addTowishlist = (productId) => {
       console.log(productId);
       $.ajax({
-        url: `/addToWishlist/`+productId, 
+        url: `/addToWishlist/` + productId,
         method: "POST",
         success: function (response) {
           if (response.status) {
@@ -499,7 +528,7 @@
               },
             }).showToast();
           }
-          else{
+          else {
             Toastify({
               text: `Something went wrong, Please try again later`,
               duration: 3000,

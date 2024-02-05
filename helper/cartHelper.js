@@ -1,16 +1,8 @@
-
-const productModel = require("../models/productModel");
 const cartModel = require("../models/cartModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
-    const product = await productModel.findOne({ _id: productId });
-
-    if (!product.productStatus) {
-      reject(Error("Product Not Found"));
-    }
-
     const cart = await cartModel.updateOne(
       { user: userId },
       { $push: { products: { productItemId: productId, quantity: 1 } } },
@@ -43,12 +35,13 @@ const totalSubtotal = (userId, cartItems) => {
       if (cartItems.length) {
         for (let i = 0; i < cartItems.length; i++) {
           total =
-            total + cartItems[i].quantity * cartItems[i].product.product_price;
+            total + cartItems[i].quantity * cartItems[i].product.productPrice;
         }
       }
-      cart.totalAmount = total;
+      cart.totalAmount = parseFloat(total);
+     
       await cart.save();
-      console.log(total);
+     
       resolve(total);
     } else {
       resolve(total);
@@ -98,29 +91,9 @@ const getAllCartItems = (userId) => {
       },
     ]);
 
-    // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    // console.log(userCartItems);
-    // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
     resolve(userCartItems);
   });
 };
-
-// isAProductInCart: async (userId, productId) => {
-//   try {
-//     const cart = await cartModel.findOne({ user: userId, 'products.productItemId': productId })
-
-//     console.log(cart,'carttttttttttttttttttttttttttttttttttttttttt');
-
-//     if (cart) {
-//       return true
-//     } else {
-//       return false
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// },
 
 const isAProductInCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {

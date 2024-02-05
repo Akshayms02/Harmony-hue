@@ -35,9 +35,9 @@ router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
 router.get("/userHome/productView/:id", userController.productViewLoad);
 
-router.get("/cart", userController.userCartLoad);
+router.get("/cart",userAuth.isLogout, userController.userCartLoad);
 
-router.get("/wishlist", userController.wishListLoad);
+router.get("/wishlist",userAuth.isLogout, userController.wishListLoad);
 
 router.post("/addToCart/:id", userController.addToCart);
 

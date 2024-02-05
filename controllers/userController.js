@@ -140,6 +140,7 @@ const sendOtp = async (req, res) => {
       req.session.otpExpiryTime = response.otpTimer;
       req.session.userData = response.user;
       req.session.otp = response.otp;
+      console.log("hey")
     })
     .catch((error) => {
       console.log(error);
@@ -209,12 +210,12 @@ const userCartLoad = async (req, res) => {
 
     const wishListCount = await wishlistHelper.getWishListCount(userData._id);
 
-    const totalandSubTotal = await cartHelper.totalSubtotal(
+    let totalandSubTotal = await cartHelper.totalSubtotal(
       userData._id,
       cartItems
     );
-
     totalandSubTotal = currencyFormatter(totalandSubTotal);
+    
 
     res.render("user/userCart", {
       userData: req.session.user,

@@ -193,7 +193,7 @@ const editProductPost = async (req, res) => {
         product.productDiscount = req.body.productDiscount;
         break;
       case 3:
-        console.log("User already Exists");
+        console.log("Product already Exists");
         break;
       default:
         console.log("error");
