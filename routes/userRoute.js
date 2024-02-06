@@ -43,6 +43,8 @@ router.post("/addToCart/:id", userController.addToCart);
 
 router.patch("/updateCartQuantity", userController.updateCartQuantity);
 
+router.delete("/removeCart/:id", userController.removeCartItem);
+
 router.post("/addToWishlist/:id", userController.addToWishlist);
 
 

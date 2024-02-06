@@ -35,15 +35,14 @@ const totalSubtotal = (userId, cartItems) => {
       if (cartItems.length) {
         for (let i = 0; i < cartItems.length; i++) {
           total =
-            total + cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
+            total +
+            cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
         }
       }
       cart.totalAmount = parseFloat(total);
-   
-     
+
       await cart.save();
-      console.log(cart);
-     
+
       resolve(total);
     } else {
       resolve(total);
@@ -51,13 +50,7 @@ const totalSubtotal = (userId, cartItems) => {
   });
 };
 
-const totalAmount = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    const cart = await cartModel.findOne({ user: userId });
 
-    resolve(cart.totalAmount);
-  });
-};
 
 const getAllCartItems = (userId) => {
   return new Promise(async (resolve, reject) => {
@@ -130,18 +123,20 @@ const incDecProductQuantity = (userId, productId, quantity) => {
     if (newQuantity < 1) {
       newQuantity = 1;
     }
-
+  
     product.quantity = newQuantity;
     await cart.save();
     resolve(newQuantity);
   });
 };
 
-const removeAnItemFromCart = (cartId, productId) => {
+
+
+const removeItemFromCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     cartModel
       .updateOne(
-        { _id: cartId },
+        { user: userId },
         {
           $pull: { products: { productItemId: productId } },
         }
@@ -171,10 +166,9 @@ module.exports = {
   addToCart,
   getCartCount,
   totalSubtotal,
-  totalAmount,
   getAllCartItems,
   isAProductInCart,
   incDecProductQuantity,
-  removeAnItemFromCart,
+  removeItemFromCart,
   clearTheCart,
 };

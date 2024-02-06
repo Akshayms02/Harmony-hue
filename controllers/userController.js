@@ -218,12 +218,12 @@ const userCartLoad = async (req, res) => {
     );
 
     let totalAmountOfEachProduct = [];
-    for (i = 0; i < cartItems.length; i++){
-      let total = cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
+    for (i = 0; i < cartItems.length; i++) {
+      let total =
+        cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
       total = currencyFormatter(total);
       totalAmountOfEachProduct.push(total);
     }
-
 
     totalandSubTotal = currencyFormatter(totalandSubTotal);
     for (i = 0; i < cartItems.length; i++) {
@@ -239,7 +239,7 @@ const userCartLoad = async (req, res) => {
       cartCount,
       wishListCount,
       totalAmount: totalandSubTotal,
-      totalAmountOfEachProduct
+      totalAmountOfEachProduct,
     });
   } catch (error) {
     console.log(error);
@@ -272,6 +272,23 @@ const updateCartQuantity = async (req, res) => {
     res.json({ status: true });
   } else {
     res.json({ status: false });
+  }
+};
+
+const removeCartItem = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const productId = req.params.id;
+    console.log(userId, productId);
+    const result = await cartHelper.removeItemFromCart(userId, productId);
+    console.log(result);
+    if (result) {
+      res.json({ status: true });
+    } else {
+      res.json({ status: false });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -335,4 +352,5 @@ module.exports = {
   addToCart,
   addToWishlist,
   updateCartQuantity,
+  removeCartItem,
 };
