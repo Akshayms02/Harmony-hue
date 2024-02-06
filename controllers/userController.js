@@ -217,6 +217,14 @@ const userCartLoad = async (req, res) => {
       cartItems
     );
 
+    let totalAmountOfEachProduct = [];
+    for (i = 0; i < cartItems.length; i++){
+      let total = cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
+      total = currencyFormatter(total);
+      totalAmountOfEachProduct.push(total);
+    }
+
+
     totalandSubTotal = currencyFormatter(totalandSubTotal);
     for (i = 0; i < cartItems.length; i++) {
       cartItems[i].product.productPrice = currencyFormatter(
@@ -231,6 +239,7 @@ const userCartLoad = async (req, res) => {
       cartCount,
       wishListCount,
       totalAmount: totalandSubTotal,
+      totalAmountOfEachProduct
     });
   } catch (error) {
     console.log(error);

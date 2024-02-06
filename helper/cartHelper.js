@@ -35,12 +35,14 @@ const totalSubtotal = (userId, cartItems) => {
       if (cartItems.length) {
         for (let i = 0; i < cartItems.length; i++) {
           total =
-            total + cartItems[i].quantity * cartItems[i].product.productPrice;
+            total + cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
         }
       }
       cart.totalAmount = parseFloat(total);
+   
      
       await cart.save();
+      console.log(cart);
      
       resolve(total);
     } else {
@@ -125,7 +127,7 @@ const incDecProductQuantity = (userId, productId, quantity) => {
 
     let newQuantity = product.quantity + parseInt(quantity);
 
-    if (newQuantity < 1 || newQuantity > 10) {
+    if (newQuantity < 1) {
       newQuantity = 1;
     }
 

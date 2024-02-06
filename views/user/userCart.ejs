@@ -44,16 +44,16 @@
                         </span></td>
                       <td class="text-center" data-title="Stock">
                         <div class="detail-qty border radius  m-auto">
-                          <a href="#" class="qty-down" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','<%=cartItems[i].quantity%>')"><i
+                          <a href="#"  class="qty-down" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','-1')"><i
                               class="fi-rs-angle-small-down"></i></a>
                           <span class="qty-val" id="qty-val<%= cartItems[i].product._id %>"><%= cartItems[i].quantity %></span>
-                          <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','<%=cartItems[i].quantity%>')"><i
+                          <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','1')"><i
                               class="fi-rs-angle-small-up"></i></a>
                         </div>
                       </td>
                       <td class="text-right" id="text-right<%= cartItems[i].product._id %>" data-title="Cart">
                         <span>
-                          <%=totalAmount%>
+                          <%=totalAmountOfEachProduct[i]%>
                         </span>
                       </td>
                       <td class="action" data-title="Remove"><a href="#" class="text-muted"><i
@@ -67,9 +67,9 @@
               </table>
             </div>
             <div class="cart-action text-end" style="margin-top: 40px;">
-              <a class="btn  mr-10 mb-sm-15" style="background-color: black;"><i class="fi-rs-shuffle mr-10"></i>Update
-                Cart</a>
-              <a class="btn " style="background-color: black;"><i class="fi-rs-shopping-bag mr-10"></i>Continue
+              <!-- <a class="btn  mr-10 mb-sm-15" style="background-color: black;"><i class="fi-rs-shuffle mr-10"></i>Update
+                Cart</a> -->
+              <a class="btn " style="background-color: black;" href="/userHome"><i class="fi-rs-shopping-bag mr-10" ></i>Continue
                 Shopping</a>
             </div>
             <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
@@ -411,43 +411,9 @@
     </section>
   </main>
 
-  <script>
-    // const incOrDecQuantity = (productId) => {
-    //   // Get references to the necessary elements
-    //   console.log(productId);
-    //   const quantityVal = document.getElementById("qty-val" + productId);
-    //   const priceSpan = document.getElementById("price-span" + productId);
-    //   const subtotalSpan = document.getElementById("text-right" + productId);
-
-    //   // Function to update the subtotal price
-    //   function updateSubtotal() {
-    //     const quantity = parseInt(quantityVal.textContent);
-    //     const price = parseFloat(priceSpan.textContent.replace("₹", "")); // Remove Rupee symbol
-    //     const subtotal = quantity * price;
-    //     subtotalSpan.textContent = `₹${subtotal.toFixed(2)}`; // Format with two decimal places and add Rupee symbol
-    //   }
+ 
 
 
-    //   // Event listeners for quantity buttons.
-    //   document.getElementById("qty-down" + productId).addEventListener("click", () => {
-    //     const currentQuantity = parseInt(quantityVal.textContent);
-    //     if (currentQuantity > 1) {
-    //       quantityVal.textContent = currentQuantity - 1;
-    //       updateSubtotal();
-    //     }
-    //   });
-
-    //   document.getElementById("qty-up" + productId).addEventListener("click", () => {
-    //     const currentQuantity = parseInt(quantityVal.textContent);
-    //     quantityVal.textContent = currentQuantity + 1;
-    //     updateSubtotal();
-    //   });
-
-    //   // Calling the update function for intializing.
-    //   updateSubtotal();
-    // }
-
-  </script>
   <script>
     const incOrDecQuantity = (productId,quantity) => {
      $.ajax({
