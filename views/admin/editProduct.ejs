@@ -23,21 +23,11 @@
                                 <textarea placeholder="Type here" id="productDescription" name="productDescription"
                                     class="form-control" rows="4" ><%= product.productDescription %></textarea>
                             </div>
-
-
-                            <div class="mb-4">
-                                <label class="form-label" for="product_price">Price</label>
-                                <input type="text" value="<%= product.productPrice %>" placeholder="price"
-                                    name="productPrice" class="form-control" id="productPrice">
-                            </div>
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-4">
-                                        <label for="product_quantity" class="form-label">Quantity</label>
-                                        <input type="text" name="productQuantity"
-                                            value="<%= product.productQuantity%>" placeholder="nos"
-                                            class="form-control" id="productQuantity">
-                                    </div>
+                                <div class="mb-4 col-lg-6">
+                                    <label class="form-label" for="product_price">Price</label>
+                                    <input type="text" value="<%= product.productPrice %>" placeholder="price"
+                                        name="productPrice" class="form-control" id="productPrice">
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-4">
@@ -47,6 +37,35 @@
                                             id="productDiscount">
                                     </div>
                                 </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="product_quantity" class="form-label">Small Quantity</label>
+                                        <input type="text" name="smallQuantity" placeholder="nos" class="form-control"
+                                            id="productQuantity">
+                                        <span id="productQuantityError" class="text-danger mt-1"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="product_quantity" class="form-label">Medium Quantity</label>
+                                        <input type="text" name="mediumQuantity" placeholder="nos" class="form-control"
+                                            id="productQuantity">
+                                        <span id="productQuantityError" class="text-danger mt-1"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="product_quantity" class="form-label">Large Quantity</label>
+                                        <input type="text" name="largeQuantity" placeholder="nos" class="form-control"
+                                            id="productQuantity">
+                                        <span id="productQuantityError" class="text-danger mt-1"></span>
+                                    </div>
+                                </div>
+                                
 
 
                             </div>

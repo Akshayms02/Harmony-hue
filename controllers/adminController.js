@@ -116,7 +116,7 @@ const editCategoryPost = async (req, res) => {
 
 const productListLoad = async (req, res) => {
   const products = await productHelper.getAllProducts();
-  console.log(products)
+  console.log(products);
 
   res.render("admin/productList", { products: products });
 };
@@ -171,8 +171,13 @@ const editProductPost = async (req, res) => {
   try {
     const product = await productModel.findById(req.params.id);
     if (!product) {
-       res.redirect("/admin/productList");
+      res.redirect("/admin/productList");
     }
+    const quantityS = product.productQuantity.S;
+    const quantityM = product.productQuantity.M;
+    const quantityL = product.productQuantity.L;
+    const totalAmount = parseInt(req.body.smallQuantity) + parseInt(req.body.mediumQuantity) + parseInt(req.body.largeQuantity);
+    console.log(totalAmount)
     const check = await productHelper.checkDuplicateFunction(
       req.body,
       req.params.id
@@ -182,7 +187,10 @@ const editProductPost = async (req, res) => {
         product.productName = req.body.productName;
         product.productDescription = req.body.productDescription;
         product.productPrice = req.body.productPrice;
-        product.productQuantity = req.body.productQuantity;
+        quantityS.quantity = req.body.smallQuantity;
+        quantityM.quantity = req.body.mediumQuantity;
+        quantityL.quantity = req.body.largeQuantity;
+        product.totalQuantity = totalAmount;
         product.productCategory = req.body.productCategory;
         product.productDiscount = req.body.productDiscount;
         break;
@@ -190,7 +198,10 @@ const editProductPost = async (req, res) => {
         product.productName = req.body.productName;
         product.productDescription = req.body.productDescription;
         product.productPrice = req.body.productPrice;
-        product.productQuantity = req.body.productQuantity;
+        quantityS.quantity = req.body.smallQuantity;
+        quantityM.quantity = req.body.mediumQuantity;
+        quantityL.quantity = req.body.largeQuantity;
+        product.totalQuantity = totalAmount;
         product.productCategory = req.body.productCategory;
         product.productDiscount = req.body.productDiscount;
         break;
@@ -211,7 +222,6 @@ const editProductPost = async (req, res) => {
       } else {
         product.image = filenames;
       }
-      
     }
     await product.save();
     res.redirect("/admin/productList");
