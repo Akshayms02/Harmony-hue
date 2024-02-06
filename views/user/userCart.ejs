@@ -114,7 +114,10 @@
                         <tr>
                           <td class="cart_total_label">Cart Subtotal</td>
                           <td class="cart_total_amount"><span class="font-lg fw-900 text-dark"
-                              style="color: black;" ><%= totalAmount %></span></td>
+                              style="color: black;"></span>
+                            <%= totalAmount %>
+                              </span>
+                          </td>
                         </tr>
                         <tr>
                           <td class="cart_total_label">Shipping</td>
@@ -124,7 +127,9 @@
                         <tr>
                           <td class="cart_total_label">Total</td>
                           <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
-                                style="color: black;" ><%= totalAmount %></span></strong>
+                                style="color: black;">
+                                <%= totalAmount %>
+                              </span></strong>
                           </td>
                         </tr>
                       </tbody>
@@ -175,16 +180,22 @@
               duration: 3000,
               gravity: "top",
               position: "center",
-              stopOnFocus: true, 
+              stopOnFocus: true,
               style: {
                 background: "red",
               },
             }).showToast();
 
-
             let table = document.getElementById("cartTable");
             table.deleteRow(index);
-            // window.location.reload();
+            const cartCount = document.getElementById("cartCount");
+            if (cartCount.innerText > 1) {
+              cartCount.innerText = cartCount.innerText - 1
+            } else {
+              cartCount.remove();
+            }
+
+
           } else {
             location.reload();
           }

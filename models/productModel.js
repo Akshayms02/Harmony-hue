@@ -19,8 +19,24 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     productQuantity: {
-      type: String,
-      required: true,
+      S: {
+        quantity: {
+          type: Number,
+          default:0,
+        }
+      },
+      M: {
+        quantity: {
+          type: Number,
+          default:0,
+        }
+      },
+      L: {
+        quantity: {
+          type: Number,
+          default:0,
+        }
+      },
     },
     productDiscount: {
       type: Number,
@@ -34,6 +50,10 @@ const productSchema = new mongoose.Schema(
     productStatus: {
       type: Boolean,
       default: true,
+    },
+    totalQuantity: {
+      type: Number,
+     
     },
   },
   {

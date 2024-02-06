@@ -50,8 +50,6 @@ const totalSubtotal = (userId, cartItems) => {
   });
 };
 
-
-
 const getAllCartItems = (userId) => {
   return new Promise(async (resolve, reject) => {
     let userCartItems = await cartModel.aggregate([
@@ -123,14 +121,12 @@ const incDecProductQuantity = (userId, productId, quantity) => {
     if (newQuantity < 1) {
       newQuantity = 1;
     }
-  
+
     product.quantity = newQuantity;
     await cart.save();
     resolve(newQuantity);
   });
 };
-
-
 
 const removeItemFromCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
@@ -147,21 +143,6 @@ const removeItemFromCart = (userId, productId) => {
   });
 };
 
-const clearTheCart = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    await cartModel
-      .findOneAndUpdate(
-        { user: userId },
-        { $set: { products: [] } },
-        { new: true }
-      )
-
-      .then((result) => {
-        resolve(result);
-      });
-  });
-};
-
 module.exports = {
   addToCart,
   getCartCount,
@@ -170,5 +151,4 @@ module.exports = {
   isAProductInCart,
   incDecProductQuantity,
   removeItemFromCart,
-  clearTheCart,
 };

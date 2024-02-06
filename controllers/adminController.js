@@ -116,6 +116,8 @@ const editCategoryPost = async (req, res) => {
 
 const productListLoad = async (req, res) => {
   const products = await productHelper.getAllProducts();
+  console.log(products)
+
   res.render("admin/productList", { products: products });
 };
 

@@ -62,6 +62,7 @@ const getAllActiveProducts = () => {
 const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
     const resizedImageUrls = files.map((file) => file.path);
+    let totalQuantity = parseInt(data.smallQuantity) + parseInt(data.mediumQuantity) + parseInt(data.largeQuantity);
 
     await productModel
       .create({
@@ -69,8 +70,11 @@ const addProduct = (data, files) => {
         productDescription: data.description,
         productCategory: data.productCategory,
         productPrice: data.price,
-        productQuantity: data.quantity,
+        "productQuantity.S.quantity": data.smallQuantity,
+        "productQuantity.M.quantity": data.mediumQuantity,
+        "productQuantity.L.quantity": data.largeQuantity,
         productDiscount: data.discount,
+        totalQuantity:totalQuantity,
         image: resizedImageUrls.map((path) => path.substring(2)),
       })
       .then((result) => {
