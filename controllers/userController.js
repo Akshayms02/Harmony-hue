@@ -266,7 +266,7 @@ const addToCart = async (req, res) => {
   const productId = req.params.id;
   const size = req.params.size;
 
-  const result = await cartHelper.addToCart(userId, productId,size);
+  const result = await cartHelper.addToCart(userId, productId,siz);
 
   if (result) {
     res.json({ status: true });

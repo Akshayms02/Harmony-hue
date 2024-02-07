@@ -1,11 +1,15 @@
 const cartModel = require("../models/cartModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-const addToCart = (userId, productId,size) => {
+const addToCart = (userId, productId, size) => {
   return new Promise(async (resolve, reject) => {
     const cart = await cartModel.updateOne(
       { user: userId },
-      { $push: { products: { productItemId: productId, quantity: 1,size:size } } },
+      {
+        $push: {
+          products: { productItemId: productId, quantity: 1, size: size },
+        },
+      },
       { upsert: true }
     );
     console.log(cart);
@@ -69,6 +73,7 @@ const getAllCartItems = (userId) => {
         $project: {
           item: "$products.productItemId",
           quantity: "$products.quantity",
+          size:"$products.size",
         },
       },
       {
@@ -83,6 +88,7 @@ const getAllCartItems = (userId) => {
         $project: {
           item: 1,
           quantity: 1,
+          size: 1,
           product: {
             $arrayElemAt: ["$product", 0],
           },

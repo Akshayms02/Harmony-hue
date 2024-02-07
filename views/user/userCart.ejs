@@ -21,6 +21,7 @@
                     <th scope="col" class="text-center">Image</th>
                     <th scope="col" class="text-center">Name</th>
                     <th scope="col" class="text-center">Price</th>
+                    <th scope="col" class="text-center">Size</th> 
                     <th scope="col" class="text-center">Quantity</th>
                     <th scope="col" class="text-center">Subtotal</th>
                     <th scope="col" class="text-center">Remove</th>
@@ -42,6 +43,9 @@
                       <td class="price" data-title="Price" id="price-span<%= cartItems[i].product._id %>"><span>
                           <%= cartItems[i].product.productPrice %>
                         </span></td>
+                        <td class="size" data-title="Size" id="size">
+                          <%= cartItems[i].size %>
+                        </td>
                       <td class="text-center" data-title="Stock">
                         <div class="detail-qty border radius  m-auto">
                           <a href="#" class="qty-down"
