@@ -207,7 +207,7 @@ const productViewLoad = async (req, res) => {
 
   console.log(product);
 
-  res.render("user/viewProduct", { product, cartCount, wishListCount });
+  res.render("user/viewProduct", { product, cartCount, wishListCount,userData });
 };
 
 const userCartLoad = async (req, res) => {
@@ -342,6 +342,11 @@ const addToWishlist = async (req, res) => {
     res.json({ status: false });
   }
 };
+
+const userProfileLoad = async(req, res) => {
+  const userId = req.session.user._id;
+  const result=await 
+}
 
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
