@@ -103,6 +103,7 @@ const getAllCartItems = (userId) => {
 const isAProductInCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log(userId)
       const cart = await cartModel.findOne({
         user: userId,
         "products.productItemId": productId,

@@ -11,7 +11,7 @@ const loginHelper = (userData) => {
       if (user.isActive) {
         bcrypt.compare(userData.password, user.password).then((result) => {
           if (result) {
-            response.user = user;
+            response.user = user._id;
             response.loggedIn = true;
             resolve(response);
           } else {

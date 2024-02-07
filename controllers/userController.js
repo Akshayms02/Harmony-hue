@@ -40,6 +40,7 @@ const signUpUser = async (req, res) => {
       const response = await userHelper.signupHelper(req.session.userData);
       if (!response.userExist) {
         req.flash("message", "Registration Successful. Continue to login");
+        delete req.session.userData;
         req.session.registered = "Registered";
         res.redirect("/");
       } else {
@@ -99,7 +100,7 @@ const userLogout = (req, res) => {
 const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   try {
-    let userId = req.session.user._id;
+    let userId = req.session.user;
     const categories = await categoryHelper.getAllcategory();
 
     let cartCount = await cartHelper.getCartCount(userId);
@@ -144,7 +145,7 @@ const sendOtp = async (req, res) => {
       req.session.otpExpiryTime = response.otpTimer;
       req.session.userData = response.user;
       req.session.otp = response.otp;
-      console.log("hey");
+     
     })
     .catch((error) => {
       console.log(error);
@@ -182,19 +183,19 @@ const productViewLoad = async (req, res) => {
   const id = req.params.id;
   const userData = req.session.user;
 
-  let cartCount = await cartHelper.getCartCount(userData._id);
+  let cartCount = await cartHelper.getCartCount(userData);
 
-  let wishListCount = await wishlistHelper.getWishListCount(userData._id);
+  let wishListCount = await wishlistHelper.getWishListCount(userData);
 
   const product = await productModel.findById({ _id: id }).lean();
 
   const cartStatus = await cartHelper.isAProductInCart(
-    userData._id,
+    userData,
     product._id
   );
-  console.log(cartStatus);
+
   const wishlistStatus = await wishlistHelper.isInWishlist(
-    userData._id,
+    userData,
     product._id
   );
   const offerPrice =
@@ -214,17 +215,17 @@ const userCartLoad = async (req, res) => {
   try {
     const userData = req.session.user;
 
-    const cartItems = await cartHelper.getAllCartItems(userData._id);
+    const cartItems = await cartHelper.getAllCartItems(userData);
 
-    const cartCount = await cartHelper.getCartCount(userData._id);
+    const cartCount = await cartHelper.getCartCount(userData);
 
-    const wishListCount = await wishlistHelper.getWishListCount(userData._id);
+    const wishListCount = await wishlistHelper.getWishListCount(userData);
 
     let totalandSubTotal = await cartHelper.totalSubtotal(
-      userData._id,
+      userData,
       cartItems
     );
-    console.log(totalandSubTotal)
+    
 
     let totalAmountOfEachProduct = [];
     for (i = 0; i < cartItems.length; i++) {
@@ -262,11 +263,12 @@ const userCartLoad = async (req, res) => {
 };
 
 const addToCart = async (req, res) => {
-  const userId = req.session.user._id;
+  const userId = req.session.user;
+  
   const productId = req.params.id;
   const size = req.params.size;
 
-  const result = await cartHelper.addToCart(userId, productId,siz);
+  const result = await cartHelper.addToCart(userId, productId,size);
 
   if (result) {
     res.json({ status: true });
@@ -278,7 +280,7 @@ const addToCart = async (req, res) => {
 const updateCartQuantity = async (req, res) => {
   const productId = req.query.productId;
   const quantity = req.query.quantity;
-  const userId = req.session.user._id;
+  const userId = req.session.user;
   const update = await cartHelper.incDecProductQuantity(
     userId,
     productId,
@@ -293,9 +295,9 @@ const updateCartQuantity = async (req, res) => {
 
 const removeCartItem = async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = req.session.user;
     const productId = req.params.id;
-    console.log(userId, productId);
+    
     const result = await cartHelper.removeItemFromCart(userId, productId);
     console.log(result);
     if (result) {
@@ -312,12 +314,12 @@ const wishListLoad = async (req, res) => {
   try {
     const userData = req.session.user;
 
-    const cartCount = await cartHelper.getCartCount(userData._id);
+    const cartCount = await cartHelper.getCartCount(userData);
 
-    const wishListCount = await wishlistHelper.getWishListCount(userData._id);
+    const wishListCount = await wishlistHelper.getWishListCount(userData);
 
     const wishListItems = await wishlistHelper.getAllWishlistProducts(
-      userData._id
+      userData
     );
 
     res.render("user/userWishlist", {
@@ -332,7 +334,7 @@ const wishListLoad = async (req, res) => {
 };
 
 const addToWishlist = async (req, res) => {
-  const userId = req.session.user._id;
+  const userId = req.session.user;
   const productId = req.params.id;
 
   const result = await wishlistHelper.addToWishlist(userId, productId);
@@ -344,8 +346,11 @@ const addToWishlist = async (req, res) => {
 };
 
 const userProfileLoad = async(req, res) => {
-  const userId = req.session.user._id;
-  const result=await 
+  const userId = req.session.user;
+  const user = await userModel.findOne({ _id: userId });
+  if (user) {
+    res.render("user/userProfile", { userData: user });
+  }
 }
 
 const currencyFormatter = (amount) => {
@@ -374,4 +379,5 @@ module.exports = {
   addToWishlist,
   updateCartQuantity,
   removeCartItem,
+  userProfileLoad,
 };
