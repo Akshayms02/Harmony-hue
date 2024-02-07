@@ -185,15 +185,11 @@
                 background: "red",
               },
             }).showToast();
+            setTimeout(() => {
+              location.reload()
+            }, 600);
 
-            let table = document.getElementById("cartTable");
-            table.deleteRow(index);
-            const cartCount = document.getElementById("cartCount");
-            if (cartCount.innerText > 1) {
-              cartCount.innerText = cartCount.innerText - 1
-            } else {
-              cartCount.remove();
-            }
+          
 
 
           } else {

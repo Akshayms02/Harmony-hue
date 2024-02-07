@@ -36,22 +36,15 @@ const getAllActiveProducts = () => {
             as: "category",
           },
         },
+        {
+          $match: {
+            productStatus: true,
+            "category.status": true,
+          },
+        },
       ]);
 
-      const activeProducts = result
-        .map((item) => {
-          const category = item.category[0];
-          if (category && category.status) {
-            if (item.productStatus) {
-              return item;
-            }
-          }
-          return null;
-        })
-        .filter(Boolean);
-
-      // console.log(activeProducts);
-      resolve(activeProducts);
+      resolve(result);
     } catch (error) {
       console.error(error);
       reject(error);
@@ -59,10 +52,15 @@ const getAllActiveProducts = () => {
   });
 };
 
+
+
 const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
     const resizedImageUrls = files.map((file) => file.path);
-    let totalQuantity = parseInt(data.smallQuantity) + parseInt(data.mediumQuantity) + parseInt(data.largeQuantity);
+    let totalQuantity =
+      parseInt(data.smallQuantity) +
+      parseInt(data.mediumQuantity) +
+      parseInt(data.largeQuantity);
 
     await productModel
       .create({
@@ -74,7 +72,7 @@ const addProduct = (data, files) => {
         "productQuantity.M.quantity": data.mediumQuantity,
         "productQuantity.L.quantity": data.largeQuantity,
         productDiscount: data.discount,
-        totalQuantity:totalQuantity,
+        totalQuantity: totalQuantity,
         image: resizedImageUrls.map((path) => path.substring(2)),
       })
       .then((result) => {

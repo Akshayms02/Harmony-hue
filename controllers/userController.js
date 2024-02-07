@@ -114,6 +114,10 @@ const loadUserHome = async (req, res) => {
         product._id
       );
 
+      const offerPrice =
+        product.productPrice -
+        (product.productPrice * product.productDiscount) / 100;
+      product.discountedPrice = currencyFormatter(Math.round(offerPrice));
       product.cartStatus = cartStatus;
       product.wishlistStatus = wishlistStatus;
       product.productPrice = currencyFormatter(product.productPrice);
@@ -193,8 +197,12 @@ const productViewLoad = async (req, res) => {
     userData._id,
     product._id
   );
+  const offerPrice =
+    product.productPrice -
+    (product.productPrice * product.productDiscount) / 100;
   product.cartStatus = cartStatus;
   product.wishlistStatus = wishlistStatus;
+  product.discountedPrice = currencyFormatter(Math.round(offerPrice));
   product.productPrice = currencyFormatter(product.productPrice);
 
   console.log(product);
@@ -216,9 +224,16 @@ const userCartLoad = async (req, res) => {
       userData._id,
       cartItems
     );
+    console.log(totalandSubTotal)
 
     let totalAmountOfEachProduct = [];
     for (i = 0; i < cartItems.length; i++) {
+      cartItems[i].product.productPrice = Math.round(
+        cartItems[i].product.productPrice -
+          (cartItems[i].product.productPrice *
+            cartItems[i].product.productDiscount) /
+            100
+      );
       let total =
         cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
       total = currencyFormatter(total);
@@ -249,8 +264,9 @@ const userCartLoad = async (req, res) => {
 const addToCart = async (req, res) => {
   const userId = req.session.user._id;
   const productId = req.params.id;
+  const size = req.params.size;
 
-  const result = await cartHelper.addToCart(userId, productId);
+  const result = await cartHelper.addToCart(userId, productId,size);
 
   if (result) {
     res.json({ status: true });

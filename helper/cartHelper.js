@@ -1,11 +1,11 @@
 const cartModel = require("../models/cartModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-const addToCart = (userId, productId) => {
+const addToCart = (userId, productId,size) => {
   return new Promise(async (resolve, reject) => {
     const cart = await cartModel.updateOne(
       { user: userId },
-      { $push: { products: { productItemId: productId, quantity: 1 } } },
+      { $push: { products: { productItemId: productId, quantity: 1,size:size } } },
       { upsert: true }
     );
     console.log(cart);
@@ -36,7 +36,13 @@ const totalSubtotal = (userId, cartItems) => {
         for (let i = 0; i < cartItems.length; i++) {
           total =
             total +
-            cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
+            cartItems[i].quantity *
+              parseInt(
+                cartItems[i].product.productPrice -
+                  (cartItems[i].product.productPrice *
+                    cartItems[i].product.productDiscount) /
+                    100
+              );
         }
       }
       cart.totalAmount = parseFloat(total);

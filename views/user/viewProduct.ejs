@@ -210,9 +210,11 @@
                     <div class="clearfix product-price-cover">
                       <div class="product-price primary-color float-left">
                         <ins><span class="text-brand">
+                            <%= product.discountedPrice %>
+                          </span></ins>
+                        <ins><span class="old-price font-md ml-15">
                             <%= product.productPrice %>
                           </span></ins>
-                        <ins><span class="old-price font-md ml-15">$200.00</span></ins>
                         <span class="save-price  font-md color3 ml-15">
                           <%= product.productDiscount %> % Off
                         </span>
@@ -247,11 +249,9 @@
                     <div class="attr-detail attr-size">
                       <strong class="mr-10">Size</strong>
                       <ul class="list-filter size-filter font-small">
-                        <li><a href="#">S</a></li>
-                        <li class="active"><a href="#">M</a></li>
-                        <li><a href="#">L</a></li>
-                        <li><a href="#">XL</a></li>
-                        <li><a href="#">XXL</a></li>
+                        <li><a href="#" id="S">S</a></li>
+                        <li class="active" id="M"><a href="#">M</a></li>
+                        <li><a href="#" id="L">L</a></li>
                       </ul>
                     </div>
                     <div class="bt-1 border-color-1 mt-30 mb-30"></div>
@@ -284,7 +284,16 @@
                       <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
                       <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a
                           href="#" rel="tag">Dress</a> </li>
-                      <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
+                      <li>Availability:<span class="in-stock text-success ml-5" id="smallQuantity">
+                          <%= product.productQuantity.S.quantity %> Items In Stock
+                        </span>
+                        <span class="in-stock text-success ml-5" id="mediumQuantity">
+                          <%= product.productQuantity.M.quantity %> Items In Stock
+                        </span>
+                        <span class="in-stock text-success ml-5" id="largeQuantity">
+                          <%= product.productQuantity.L.quantity %> Items In Stock
+                        </span>
+                      </li>
                     </ul>
                   </div>
                   <!-- Detail Info -->
@@ -460,12 +469,53 @@
       window.location.href = "/cart"
     }
   </script>
+  <script>
+    document.getElementById('smallQuantity').style.display = "none"
+    document.getElementById('largeQuantity').style.display = 'none';
+    document.getElementById('mediumQuantity').style.display = "inline";
+    document.getElementById("S").addEventListener('click', () => {
+      document.getElementById('smallQuantity').style.display = "inline";
+      document.getElementById('largeQuantity').style.display = 'none';
+      document.getElementById('mediumQuantity').style.display = "none";
+      document.getElementById("S").classList.add('active');
+      document.getElementById("M").classList.remove('active');
+      document.getElementById("L").classList.remove('active');
+
+    });
+    document.getElementById("M").addEventListener('click', () => {
+      document.getElementById('mediumQuantity').style.display = "inline";
+      document.getElementById('largeQuantity').style.display = 'none';
+      document.getElementById('smallQuantity').style.display = "none";
+      document.getElementById("M").classList.add('active');
+      document.getElementById("L").classList.remove('active');
+      document.getElementById("S").classList.remove('active');
+    });
+    document.getElementById("L").addEventListener('click', () => {
+      document.getElementById('largeQuantity').style.display = "inline";
+      document.getElementById('mediumQuantity').style.display = 'none';
+      document.getElementById('smallQuantity').style.display = "none";
+      document.getElementById("L").classList.add('active');
+      document.getElementById("M").classList.remove('active');
+      document.getElementById("S").classList.remove('active');
+    });
+  </script>
+
 
   <script>
     const addToCart = (productId) => {
+      let size="";
+      if(document.getElementById("S").classList.contains("active")){
+        size="S";
+      }else if(document.getElementById("M").classList.contains("active")){
+        size="M"
+      }else if(document.getElementById("L").classList.contains("active")){
+        size="L"
+      }else{
+        size="M";
+      }
       console.log(productId);
       $.ajax({
-        url: `/addToCart/` + productId,
+        url: `/addToCart/${productId}/${size}`,
         method: "POST",
         success: function (response) {
           if (response.status) {
@@ -483,7 +533,7 @@
               location.reload();
             }, 1000);
 
-            
+
           }
           else {
             Toastify({
@@ -500,7 +550,7 @@
               location.reload();
             }, 1000);
           }
-          
+
         },
         error: function (XHR, textStatus, errorThrown) {
           console.log(errorThrown);
@@ -520,7 +570,7 @@
             Toastify({
               text: `Added to wishlist`,
               duration: 3000,
-              gravity: "top", 
+              gravity: "top",
               position: "center",
               stopOnFocus: true,
               style: {
@@ -532,9 +582,9 @@
             Toastify({
               text: `Something went wrong, Please try again later`,
               duration: 3000,
-              gravity: "top", 
-              position: "center", 
-              stopOnFocus: true, 
+              gravity: "top",
+              position: "center",
+              stopOnFocus: true,
               style: {
                 background: "red",
               },

@@ -39,7 +39,7 @@ router.get("/cart",userAuth.isLogout, userController.userCartLoad);
 
 router.get("/wishlist",userAuth.isLogout, userController.wishListLoad);
 
-router.post("/addToCart/:id", userController.addToCart);
+router.post("/addToCart/:id/:size", userController.addToCart);
 
 router.patch("/updateCartQuantity", userController.updateCartQuantity);
 

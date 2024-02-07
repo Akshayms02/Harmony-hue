@@ -204,15 +204,16 @@
                           <div class="rating-result" title="90%">
                             <span>
                               <span>
-                                <%= products[i].productDiscount %>
+                                80%
                               </span>
                             </span>
                           </div>
                           <div class="product-price">
                             <span class="text-dark"> 
-                              <%= products[i].productPrice %>
+                              <%= products[i].discountedPrice %>
+                              
                             </span>
-                            <!-- <span class="old-price">$245.8</span> -->
+                            <span class="old-price"><%= products[i].productPrice %></span>
                           </div>
                           <div class="product-action-1 show">
                             <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i
