@@ -7,6 +7,7 @@ const categoryHelper = require("../helper/categoryHelper");
 const productHelper = require("../helper/productHelper");
 const cartHelper = require("../helper/cartHelper");
 const wishlistHelper = require("../helper/wishlistHelper");
+const orderHelper = require("../helper/orderHelper");
 
 const registerLoad = (req, res) => {
   res.setHeader(
@@ -376,6 +377,51 @@ const updateUserDetails = async (req, res) => {
   }
 };
 
+const checkoutLoad = async (req, res) => {
+  const userId = req.session.user;
+  const cartItems = await cartHelper.getAllCartItems(userId);
+  let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartItems);
+  const userData = await userModel.findOne({ _id: userId });
+  console.log(userData);
+
+  console.log(cartItems);
+  let totalAmountOfEachProduct = [];
+  for (i = 0; i < cartItems.length; i++) {
+    cartItems[i].product.productPrice = Math.round(
+      cartItems[i].product.productPrice -
+        (cartItems[i].product.productPrice *
+          cartItems[i].product.productDiscount) /
+          100
+    );
+    let total =
+      cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
+    total = currencyFormatter(total);
+    totalAmountOfEachProduct.push(total);
+  }
+  totalandSubTotal = currencyFormatter(totalandSubTotal);
+  for (i = 0; i < cartItems.length; i++) {
+    cartItems[i].product.productPrice = currencyFormatter(
+      cartItems[i].product.productPrice
+    );
+  }
+  if (cartItems) {
+    res.render("user/checkout", {
+      cartItems,
+      totalAmountOfEachProduct,
+      totalandSubTotal,userData
+    });
+  }
+};
+
+const placeOrder = async (req, res) => {
+  const data = req.body;
+  console.log(data);
+  const result = await orderHelper.placeOrder(data);
+  if (result) {
+    
+  }
+}
+
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
     style: "currency",
@@ -406,4 +452,5 @@ module.exports = {
   addAddress,
   deleteAddress,
   updateUserDetails,
+  checkoutLoad,placeOrder,
 };

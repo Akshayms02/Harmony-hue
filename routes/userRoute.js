@@ -55,6 +55,10 @@ router.get("/profile", userAuth.isLogout, userController.userProfileLoad);
 
 router.put("/updateUserDetails", userController.updateUserDetails);
 
+router.get("/checkout", userAuth.isLogout, userController.checkoutLoad);
+
+router.post("/placeOrder", userController.placeOrder);
+
 
 
 module.exports = router;
