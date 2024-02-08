@@ -882,13 +882,13 @@ button.submit, button[type='submit'] {
   padding: 12px 40px;
   color: #ffffff;
   border: none;
-  background-color: #088178;
-  border: 1px solid #046963;
+  background-color: #000000;
+  border: 1px solid #000000;
   border-radius: 5px;
 }
 
 button.submit:hover, button[type='submit']:hover {
-  background-color: #046963 !important;
+  background-color: #000000 !important;
 }
 
 .btn-brand:hover {
@@ -1224,8 +1224,8 @@ textarea:focus {
   padding: 12px 40px;
   color: #ffffff;
   border: none;
-  background-color: #088178;
-  border: 1px solid #046963;
+  background-color: #000000;
+  border: 1px solid #000000;
   border-radius: 5px;
 }
 
@@ -2240,7 +2240,7 @@ label {
 
 .dashboard-menu ul li a.active {
   color: #fff;
-  background-color: #088178;
+  background-color: #000000;
 }
 
 .dashboard-menu ul li a.active i {
@@ -4370,8 +4370,8 @@ table .product-thumbnail img {
 .size-filter.list-filter li a:hover,
 .size-filter.list-filter li.active a {
   color: #fff;
-  background-color: #088178;
-  border-color: #088178;
+  background-color: #000000;
+  border-color: #000000;
 }
 
 .detail-qty {
@@ -7658,7 +7658,7 @@ span.fi-rs-apps {
 #scrollUp {
   width: 40px;
   height: 40px;
-  background-color: #088178;
+  background-color: black;
   color: #ffffff;
   right: 30px;
   bottom: 30px;

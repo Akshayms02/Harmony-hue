@@ -50,6 +50,8 @@ router.put(
 
 router.get("/userList", adminAuth.isLogout, adminController.userListLoad);
 
+
+
 router.patch("/blockUnblockuser/:id", adminController.userBlockUnblock);
 
 module.exports = router;

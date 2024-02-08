@@ -349,8 +349,21 @@ const userProfileLoad = async(req, res) => {
   const userId = req.session.user;
   const user = await userModel.findOne({ _id: userId });
   if (user) {
+    console.log(user);
     res.render("user/userProfile", { userData: user });
   }
+}
+
+const addAddress = async (req, res) => {
+  console.log(req.body)
+  const body = req.body;
+  const userId = req.session.user;
+  const result = await userHelper.addAddress(body, userId);
+  if (result) {
+
+    res.json({ status: true });
+  }
+  
 }
 
 const currencyFormatter = (amount) => {
@@ -380,4 +393,5 @@ module.exports = {
   updateCartQuantity,
   removeCartItem,
   userProfileLoad,
+  addAddress,
 };

@@ -66,7 +66,22 @@ const getAllUsers = () => {
   });
 };
 
+const addAddress = (body, userId) => {
+  return new Promise(async (resolve, reject) => {
+    const result = await userModel.updateOne(
+      { _id: userId },
+      {
+          $push: { address: body },
+      }, 
+    );
+    console.log(result);
+    resolve(result);
+  });
+};
+
 module.exports = {
   loginHelper,
-  signupHelper,getAllUsers
+  signupHelper,
+  getAllUsers,
+  addAddress,
 };

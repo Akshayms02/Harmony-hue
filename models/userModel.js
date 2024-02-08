@@ -21,9 +21,18 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  address: {
-    type: Array,
-  },
+  address: [
+    {
+      name: String,
+      house: String,
+      state: String,
+      country: String,
+      city: String,
+      pincode:Number,
+      addressType:Number,
+      
+   }
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
