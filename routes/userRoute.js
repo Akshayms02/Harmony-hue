@@ -33,7 +33,7 @@ router.post("/verify", userAuth.otpAuthenticator, userController.signUpUser);
 
 router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
-router.get("/userHome/productView/:id", userController.productViewLoad);
+router.get("/userHome/productView/:id",userAuth.isLogout, userController.productViewLoad);
 
 router.get("/cart",userAuth.isLogout, userController.userCartLoad);
 
@@ -49,7 +49,11 @@ router.post("/addToWishlist/:id", userController.addToWishlist);
 
 router.put("/addAddress", userController.addAddress);
 
-router.get("/profile", userController.userProfileLoad);
+router.put("/deleteAddress/:id", userController.deleteAddress);
+
+router.get("/profile", userAuth.isLogout, userController.userProfileLoad);
+
+router.put("/updateUserDetails", userController.updateUserDetails);
 
 
 

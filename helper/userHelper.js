@@ -7,7 +7,6 @@ const loginHelper = (userData) => {
     let user = await userModel.findOne({ email: userData.email });
     let response = {};
     if (user) {
-      console.log(user);
       if (user.isActive) {
         bcrypt.compare(userData.password, user.password).then((result) => {
           if (result) {
@@ -47,7 +46,6 @@ const signupHelper = (userData) => {
           password: userData.password,
         })
         .then((data) => {
-          console.log(data);
           resolve(data);
         })
         .catch((error) => {
@@ -71,11 +69,69 @@ const addAddress = (body, userId) => {
     const result = await userModel.updateOne(
       { _id: userId },
       {
-          $push: { address: body },
-      }, 
+        $push: { address: body },
+      }
     );
-    console.log(result);
+
     resolve(result);
+  });
+};
+
+const deleteAddress = (addressId, userId) => {
+  return new Promise(async (resolve, reject) => {
+    const result = await userModel.updateOne(
+      { _id: userId },
+      {
+        $pull: { address: { _id: addressId } },
+      }
+    );
+
+    if (result) {
+      resolve(result);
+    } else {
+      reject(Error("Something went wrong"));
+    }
+  });
+};
+
+const updateUserDetails = (userId, userDetails) => {
+  return new Promise(async (resolve, reject) => {
+   
+    const user = await userModel.findById(userId);
+    
+    let response = {};
+    if (user) {
+      if (user.isActive) {
+        const success = await bcrypt.compare(
+          userDetails.password,
+          user.password
+        );
+    
+        if (success) {
+          if (userDetails.name) {
+            user.name = userDetails.name;
+          }
+          if (userDetails.email) {
+            user.email = userDetails.email;
+          }
+          if (userDetails.mobile) {
+            user.mobile = userDetails.mobile;
+          }
+          if (
+            userDetails.npassword &&
+            userDetails.npassword === userDetails.cpassword
+          ) {
+            user.password = await bcrypt.hash(userDetails.npassword, 10);
+          }
+          await user.save();
+          response.status = true;
+          resolve(response);
+        } else {
+          response.message = "Incorrect Password";
+          resolve(response);
+        }
+      }
+    }
   });
 };
 
@@ -84,4 +140,6 @@ module.exports = {
   signupHelper,
   getAllUsers,
   addAddress,
+  deleteAddress,
+  updateUserDetails,
 };

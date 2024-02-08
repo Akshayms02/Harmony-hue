@@ -290,7 +290,7 @@
                                     <div class="tab-pane fade" id="address" role="tabpanel"
                                         aria-labelledby="address-tab">
                                         <div class="row">
-                                            <% for( let i = 0; i < userData.address.length; i++ ) { %>
+                                            <% for( let i=0; i < userData.address.length; i++ ) { %>
 
                                                 <% if (userData.address[i].addressType===0) { %>
                                                     <div class="col-lg-6 mt-3">
@@ -299,10 +299,21 @@
                                                                 <h5 class="mb-0">Billing Address</h5>
                                                             </div>
                                                             <div class="card-body ">
-                                                                <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>
-                                                                    <br><%= userData.address[i].city %>,<%= userData.address[i].state %> <br><%= userData.address[i].pincode %> <br><%= userData.address[i].country %></address>
-                                                                
-                                                                <a href="#" class="btn-small text-danger">Delete</a>
+                                                                <address>
+                                                                    <%= userData.address[i].name %><br>
+                                                                        <%= userData.address[i].house %>
+                                                                            <br>
+                                                                            <%= userData.address[i].city %>,<%=
+                                                                                    userData.address[i].state %> <br>
+                                                                                    <%= userData.address[i].pincode %>
+                                                                                        <br>
+                                                                                        <%= userData.address[i].country
+                                                                                            %>
+                                                                </address>
+
+                                                                <a href="#"
+                                                                    onclick="deleteAddress('<%=userData.address[i]._id%>')"
+                                                                    class="btn-small text-danger">Delete</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -313,18 +324,28 @@
                                                                     <h5 class="mb-0">Shipping Address</h5>
                                                                 </div>
                                                                 <div class="card-body">
-                                                                    <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>
-                                                                        <br><%= userData.address[i].city %>,<%= userData.address[i].state %> <br><%= userData.address[i].pincode %> <br><%= userData.address[i].country %></address>
-                                                                    
+                                                                    <address>
+                                                                        <%= userData.address[i].name %><br>
+                                                                            <%= userData.address[i].house %>
+                                                                                <br>
+                                                                                <%= userData.address[i].city %>,<%=
+                                                                                        userData.address[i].state %>
+                                                                                        <br>
+                                                                                        <%= userData.address[i].pincode
+                                                                                            %> <br>
+                                                                                            <%= userData.address[i].country
+                                                                                                %>
+                                                                    </address>
+
                                                                     <a href="#" class="btn-small text-danger">Delete</a>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                <% } %>
-                                                
-                                                
-                                            <% } %>
-                                            
+                                                        <% } %>
+
+
+                                                            <% } %>
+
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel"
@@ -431,60 +452,44 @@
                                             </div>
                                             <div class="card-body">
 
-                                                <form method="post" name="enq">
+                                                <form action="/updateUserDetails" method="post" id="userDetailsForm">
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="name"
-                                                                type="text">
+                                                                type="text" value="<%= userData.name %>">
                                                         </div>
-
-
                                                         <div class="form-group col-md-12">
-                                                            <label>House<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
-                                                                type="text">
+                                                            <label>Email <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="email"
+                                                                type="text" value="<%= userData.email %>">
                                                         </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>State<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Country<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="country" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>City<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="city"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Pin Code<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="pincode" type="text">
+                                                        <div class="form-group col-md-12">
+                                                            <label>Mobile Number <span class="required">*</span></label>
+                                                            <input required="" class="form-control square" name="mobile"
+                                                                type="text" value="<%= userData.mobile %>">
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Current Password <span
                                                                     class="required">*</span></label>
                                                             <input required="" class="form-control square"
                                                                 name="password" type="password">
+                                                            <span class="text-danger" id="passwordError"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>New Password <span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="npassword" type="password">
+                                                            <input class="form-control square" name="npassword"
+                                                                type="password">
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Confirm Password <span
                                                                     class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="cpassword" type="password">
+                                                            <input class="form-control square" name="cpassword"
+                                                                type="password">
                                                         </div>
                                                         <div class="col-md-12">
                                                             <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
+                                                                value="Submit">Save</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -514,9 +519,9 @@
                             Toastify({
                                 text: `Address Added`,
                                 duration: 3000,
-                                gravity: "top", 
-                                position: "center", 
-                                stopOnFocus: true, 
+                                gravity: "top",
+                                position: "center",
+                                stopOnFocus: true,
                                 style: {
                                     background: "linear-gradient(to right, aqua, blue)",
                                 },
@@ -524,13 +529,13 @@
                             setTimeout(() => {
                                 location.reload();
                             }, 1000);
-                        }else{
+                        } else {
                             Toastify({
                                 text: `Address Added`,
                                 duration: 3000,
-                                gravity: "top", 
-                                position: "center", 
-                                stopOnFocus: true, 
+                                gravity: "top",
+                                position: "center",
+                                stopOnFocus: true,
                                 style: {
                                     background: "linear-gradient(to right, red, white)",
                                 },
@@ -538,6 +543,72 @@
                         }
                     }
 
+                })
+            })
+        })
+    </script>
+
+    <script>
+        const deleteAddress = (addressId) => {
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this address!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+            }).then((response) => {
+                console.log(response);
+                if (response) {
+                    $.ajax({
+                        url: `/deleteAddress/${addressId}`,
+                        type: 'PUT'
+                    }).done(response => {
+                        Swal.fire("Successfull", `Address Deleted`, "success").then(() => {
+                            location.reload();
+                        })
+                    }).fail((error) => {
+                        Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+                            location.reload()
+                        })
+                    })
+                }
+            })
+        }
+
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#userDetailsForm").submit(function(event){
+                event.preventDefault();
+                let data = $(this).serialize();
+                console.log(data + "hi")
+                $.ajax({
+                    url: "/updateUserDetails",
+                    method: "PUT",
+                    data: data,
+                    success: (response) => {
+                        if (response.status) {
+                            Toastify({
+                                text: `Account Details Updated`,
+                                duration: 3000,
+                                gravity: "top",
+                                position: "center",
+                                stopOnFocus: true,
+                                style: {
+                                    background: "linear-gradient(to right, aqua, blue)",
+                                },
+                            }).showToast();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            document.getElementById("passwordError").innerHTML = `${response.message}`;
+
+                        }
+                    }
                 })
             })
         })

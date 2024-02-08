@@ -61,7 +61,6 @@ const logUser = async (req, res) => {
   await userHelper
     .loginHelper(req.body)
     .then((response) => {
-      console.log(response);
       if (response.loggedIn) {
         if (response.user) {
           req.session.user = response.user;
@@ -145,7 +144,6 @@ const sendOtp = async (req, res) => {
       req.session.otpExpiryTime = response.otpTimer;
       req.session.userData = response.user;
       req.session.otp = response.otp;
-     
     })
     .catch((error) => {
       console.log(error);
@@ -169,9 +167,7 @@ const forgotPasswordLoad = (req, res) => {
 const forgotPasswordChange = async (req, res) => {
   await passwordHelper
     .forgotPassword(req.body.password, req.body.email)
-    .then((response) => {
-      console.log(response);
-    })
+    .then((response) => {})
     .catch((error) => {
       console.log(error);
     });
@@ -189,10 +185,7 @@ const productViewLoad = async (req, res) => {
 
   const product = await productModel.findById({ _id: id }).lean();
 
-  const cartStatus = await cartHelper.isAProductInCart(
-    userData,
-    product._id
-  );
+  const cartStatus = await cartHelper.isAProductInCart(userData, product._id);
 
   const wishlistStatus = await wishlistHelper.isInWishlist(
     userData,
@@ -206,9 +199,12 @@ const productViewLoad = async (req, res) => {
   product.discountedPrice = currencyFormatter(Math.round(offerPrice));
   product.productPrice = currencyFormatter(product.productPrice);
 
-  console.log(product);
-
-  res.render("user/viewProduct", { product, cartCount, wishListCount,userData });
+  res.render("user/viewProduct", {
+    product,
+    cartCount,
+    wishListCount,
+    userData,
+  });
 };
 
 const userCartLoad = async (req, res) => {
@@ -221,11 +217,7 @@ const userCartLoad = async (req, res) => {
 
     const wishListCount = await wishlistHelper.getWishListCount(userData);
 
-    let totalandSubTotal = await cartHelper.totalSubtotal(
-      userData,
-      cartItems
-    );
-    
+    let totalandSubTotal = await cartHelper.totalSubtotal(userData, cartItems);
 
     let totalAmountOfEachProduct = [];
     for (i = 0; i < cartItems.length; i++) {
@@ -264,11 +256,11 @@ const userCartLoad = async (req, res) => {
 
 const addToCart = async (req, res) => {
   const userId = req.session.user;
-  
+
   const productId = req.params.id;
   const size = req.params.size;
 
-  const result = await cartHelper.addToCart(userId, productId,size);
+  const result = await cartHelper.addToCart(userId, productId, size);
 
   if (result) {
     res.json({ status: true });
@@ -297,9 +289,9 @@ const removeCartItem = async (req, res) => {
   try {
     const userId = req.session.user;
     const productId = req.params.id;
-    
+
     const result = await cartHelper.removeItemFromCart(userId, productId);
-    console.log(result);
+
     if (result) {
       res.json({ status: true });
     } else {
@@ -318,9 +310,7 @@ const wishListLoad = async (req, res) => {
 
     const wishListCount = await wishlistHelper.getWishListCount(userData);
 
-    const wishListItems = await wishlistHelper.getAllWishlistProducts(
-      userData
-    );
+    const wishListItems = await wishlistHelper.getAllWishlistProducts(userData);
 
     res.render("user/userWishlist", {
       userData: req.session.user,
@@ -345,26 +335,46 @@ const addToWishlist = async (req, res) => {
   }
 };
 
-const userProfileLoad = async(req, res) => {
+const userProfileLoad = async (req, res) => {
   const userId = req.session.user;
   const user = await userModel.findOne({ _id: userId });
   if (user) {
-    console.log(user);
     res.render("user/userProfile", { userData: user });
   }
-}
+};
 
 const addAddress = async (req, res) => {
-  console.log(req.body)
   const body = req.body;
   const userId = req.session.user;
   const result = await userHelper.addAddress(body, userId);
   if (result) {
-
     res.json({ status: true });
   }
-  
-}
+};
+
+const deleteAddress = async (req, res) => {
+  const addressId = req.params.id;
+
+  const userId = req.session.user;
+
+  const result = await userHelper.deleteAddress(addressId, userId);
+  if (result) {
+    res.json({ status: true });
+  }
+};
+
+const updateUserDetails = async (req, res) => {
+  const userId = req.session.user;
+  const userDetails = req.body;
+
+  const result = await userHelper.updateUserDetails(userId, userDetails);
+
+  if (result.status) {
+    res.json({ status: true });
+  } else {
+    res.json({ message: result.message });
+  }
+};
 
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
@@ -394,4 +404,6 @@ module.exports = {
   removeCartItem,
   userProfileLoad,
   addAddress,
+  deleteAddress,
+  updateUserDetails,
 };
