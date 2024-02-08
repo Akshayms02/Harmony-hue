@@ -457,35 +457,40 @@
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="name"
-                                                                type="text" value="<%= userData.name %>">
+                                                                id="name" type="text" value="<%= userData.name %>">
+                                                            <span id="nameError" class="text-danger"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Email <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="email"
-                                                                type="text" value="<%= userData.email %>">
+                                                                id="email" type="text" value="<%= userData.email %>">
+                                                            <span id="emailError" class="text-danger"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Mobile Number <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="mobile"
-                                                                type="text" value="<%= userData.mobile %>">
+                                                                id="mobile" type="text" value="<%= userData.mobile %>">
+                                                            <span id="mobileError" class="text-danger"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Current Password <span
                                                                     class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                name="password" type="password">
+                                                                name="password" id="password" type="password">
                                                             <span class="text-danger" id="passwordError"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>New Password <span class="required">*</span></label>
                                                             <input class="form-control square" name="npassword"
-                                                                type="password">
+                                                                type="password" id="npassword">
+                                                            <span id="npasswordError" class="text-danger"></span>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Confirm Password <span
                                                                     class="required">*</span></label>
                                                             <input class="form-control square" name="cpassword"
-                                                                type="password">
+                                                                type="password" id="cpassword">
+                                                            <span id="cpasswordError" class="text-danger"></span>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <button type="submit" class="btn btn-fill-out submit"
@@ -579,38 +584,83 @@
         }
 
     </script>
-    <script>
-        $(document).ready(function() {
-            $("#userDetailsForm").submit(function(event){
-                event.preventDefault();
-                let data = $(this).serialize();
-                console.log(data + "hi")
-                $.ajax({
-                    url: "/updateUserDetails",
-                    method: "PUT",
-                    data: data,
-                    success: (response) => {
-                        if (response.status) {
-                            Toastify({
-                                text: `Account Details Updated`,
-                                duration: 3000,
-                                gravity: "top",
-                                position: "center",
-                                stopOnFocus: true,
-                                style: {
-                                    background: "linear-gradient(to right, aqua, blue)",
-                                },
-                            }).showToast();
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            document.getElementById("passwordError").innerHTML = `${response.message}`;
 
+    <script>
+        $(document).ready(function () {
+            $("#userDetailsForm").submit(function (event) {
+                event.preventDefault();
+                const validate = validateForm();
+                console.log(validate);
+                if (validate) {
+                    let data = $(this).serialize();
+                    console.log(data + "hi")
+                    $.ajax({
+                        url: "/updateUserDetails",
+                        method: "PUT",
+                        data: data,
+                        success: (response) => {
+                            if (response.status) {
+                                Toastify({
+                                    text: `Account Details Updated`,
+                                    duration: 3000,
+                                    gravity: "top",
+                                    position: "center",
+                                    stopOnFocus: true,
+                                    style: {
+                                        background: "linear-gradient(to right, aqua, blue)",
+                                    },
+                                }).showToast();
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                document.getElementById("passwordError").innerHTML = `${response.message}`;
+
+                            }
                         }
-                    }
-                })
+                    })
+                }
+
+
             })
         })
+    </script>
+    <script>
+        function validateForm() {
+            const nameRegex = /^[a-zA-Z\s]+$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const mobileRegex = /^\d{10}$/;
+            const passwordRegex = /^(?=.[A-Za-z])(?=.\d)(?=.*[^A-Za-z\d]).{8,}$/;
+            let isValid = true
+            if (!nameRegex.test(document.getElementById("name").value)) {
+                document.getElementById("nameError").innerHTML = "Invalid Format(should only contain letters and spaces.)";
+                isValid = false;
+            } else {
+                document.getElementById("nameError").innerHTML = '';
+            }
+            if (!emailRegex.test(document.getElementById("email").value)) {
+                document.getElementById("emailError").innerHTML = "Invalid Email";
+                isValid = false;
+            } else {
+                document.getElementById("emailError").innerHTML = ""
+            }
+            if (!mobileRegex.test(document.getElementById("mobile").value)) {
+                document.getElementById("mobileError").innerHTML = "Invalid Mobile Number";
+                isValid = false;
+            } else {
+                document.getElementById("mobileError").innerHTML = ""
+            }
+            if (document.getElementById("npassword").value && !passwordRegex.test(document.getElementById("npassword").value)) {
+                document.getElementById("npasswordError").innerHTML = "Password must be at least 8 characters and should contain an uppercase letter, number, or special symbol.";
+                isValid = false;
+            }
+            if (document.getElementById("npassword").value && document.getElementById("npassword").value !== document.getElementById("cpassword").value) {
+                document.getElementById("cpasswordError").innerHTML = "Password doesnt match";
+                isValid = false;
+            } else {
+                document.getElementById("cpasswordError").innerHTML = "";
+            }
+            return isValid;
+        }
     </script>
     <%- include("../layouts/userLayout/userHomeFooter") %>
