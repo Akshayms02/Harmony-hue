@@ -349,7 +349,7 @@
 
                 </div>
               </div>
-              <a  class="btn btn-fill-out btn-block mt-30" id="placeOrder">Place Order</a>
+              <a class="btn btn-fill-out btn-block mt-30" id="placeOrder">Place Order</a>
             </div>
           </div>
         </div>
@@ -358,22 +358,38 @@
   </main>
 
   <script>
-    $(document).ready(function(){
-      $("#placeOrder").click(function(){
-        let address=$("input[name='address']:checked").val();
-        let payment=$("input[name='payment_option']:checked").val();
-        const data={
-          addressId:address,
-          paymentOption:payment,
+    $(document).ready(function () {
+      $("#placeOrder").click(function () {
+        let address = $("input[name='address']:checked").val();
+        let payment = $("input[name='payment_option']:checked").val();
+        const data = {
+          addressId: address,
+          paymentOption: payment,
         }
         // if(payment==="COD"){}
-          $.ajax({
-            url:"/placeOrder",
-            method:"POST",
-            data:data,
-          })
-        
-        
+        $.ajax({
+          url: "/placeOrder",
+          method: "POST",
+          data: data,
+          success: (response) => {
+            if (response) {
+              window.location.href = response.url
+            } else {
+              Toastify({
+                text: `Something went wrong`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                stopOnFocus: true,
+                style: {
+                  background: "linear-gradient(to right, aqua, blue)",
+                },
+              }).showToast();
+            }
+          }
+        })
+
+
 
       })
 
