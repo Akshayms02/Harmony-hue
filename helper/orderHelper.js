@@ -70,8 +70,7 @@ const cancelOrder = (orderId) => {
         order.status = "cancelled";
         order.save();
         resolve(order);
-      }
-      else {
+      } else {
         reject(Error("Order not found"));
       }
     } catch (error) {
@@ -80,8 +79,40 @@ const cancelOrder = (orderId) => {
   });
 };
 
+const getAllOrders = () => {
+  return new Promise(async (resolve, reject) => {
+    const result = await orderModel.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "userOrderDetails",
+        },
+      },
+    ]);
+    if (result) {
+      resolve(result);
+    }
+  });
+};
+const changeOrderStatus = (orderId, changeStatus) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const order = await orderModel.findOne({ _id: orderId });
+      order.status = changeStatus;
+      await order.save();
+      resolve(order);
+    } catch (error) {
+      reject(new Error("Something wrong!!!"));
+    }
+  });
+};
+
 module.exports = {
   placeOrder,
   getOrderDetails,
   cancelOrder,
+  getAllOrders,
+  changeOrderStatus,
 };

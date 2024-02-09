@@ -1,0 +1,163 @@
+<%- include("../layouts/adminLayout/admin-header") %>
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Order List </h2>
+
+      </div>
+
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="table-responsive">
+          <% if (!allOrders.length) { %>
+            <h1>No Orders Yet</h1>
+            <% } else { %>
+
+              <table class="table table-hover" id="orderTable">
+                <thead>
+                  <tr>
+                    <th>ORDER ID</th>
+                    <th scope="col">USER NAME</th>
+                    <th scope="col">DATE</th>
+                    <th scope="col">AMOUNT</th>
+                    <th scope="col">PAYMENT TYPE</th>
+                    <th scope="col">STATUS</th>
+                    <th scope="col"> CHANGE STATUS</th>
+                    <th scope="col"> VIEW DETAILS </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for( let i=0; i < allOrders.length; i++ ) { %>
+                    <tr>
+                      <td width="10%">
+                        <%= allOrders[i].orderId %>
+                      </td>
+                      <td width="8%">
+                        <%= allOrders[i].userOrderDetails[0].name %>
+                      </td>
+                      <td width="15%">
+                        <%= allOrders[i].formattedDate %>
+                      </td>
+                      <td width="7%">
+                        <%= allOrders[i].totalAmount %>
+                      </td>
+                      <td width="7%">
+                        <%= allOrders[i].paymentMethod %>
+                      </td>
+                      <td width="7%">
+                        <% if (allOrders[i].status=='pending' ) { %>
+                          <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-warning">
+                            <%= allOrders[i].status %>
+                          </span>
+                          <% } else if (allOrders[i].status=='processing' ) {%>
+                            <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-secondary">
+                              <%= allOrders[i].status %>
+                            </span>
+                            <% } else if (allOrders[i].status=='confirmed' ) {%>
+                              <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-dark">
+                                <%= allOrders[i].status %>
+                              </span>
+                              <% } else if (allOrders[i].status=='shipped' ) {%>
+                                <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-info">
+                                  <%= allOrders[i].status %>
+                                </span>
+                                <% } else if (allOrders[i].status=='outForDelivery' ) {%>
+                                  <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-warning">
+                                    <%= allOrders[i].status %>
+                                  </span>
+                                  <% } else if (allOrders[i].status=='delivered' ) {%>
+                                    <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-success">
+                                      <%= allOrders[i].status %>
+                                    </span>
+                                    <% } else if (allOrders[i].status=='cancelled' ) {%>
+                                      <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-warning">
+                                        <%= allOrders[i].status %>
+                                      </span>
+                                      <% } else {%>
+                                        <span id="status<%= allOrders[i]._id %>"
+                                          class="badge rounded-pill alert-danger">
+                                          <%= allOrders[i].status %>
+                                        </span>
+                                        <% } %>
+                      </td>
+
+                      <td width="10%">
+                        <% if (allOrders[i].status=='pending' ) { %>
+                          <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','processing','confirmed')"
+                            class="btn btn-outline-primary rounded font-sm">Approve</a>
+                          <% } else if (allOrders[i].status=='processing' ) {%>
+                            <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','confirmed','shipped')"
+                              class="btn btn-outline-success rounded font-sm">Confirm</a>
+                            <% } else if (allOrders[i].status=='confirmed' ) {%>
+                              <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','shipped','outForDelivery')"
+                                class="btn btn-outline-warning rounded font-sm">Ship</a>
+                              <% } else if (allOrders[i].status=='shipped' ) {%>
+                                <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','outForDelivery','delivered')"
+                                  class="btn  btn-outline-success rounded font-sm">Send Out</a>
+                                <% } else if (allOrders[i].status=='outForDelivery' ) {%>
+                                  <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','delivered','d-none')"
+                                    class="btn btn-outline-primary rounded font-sm">Approved</a>
+                                  <% } else if (allOrders[i].status=='delivered' ) { %>
+                                    <span class="badge bg-success">Delivered</span>
+                                    <% } else if (allOrders[i].status=='cancelled' ) {%>
+                                      <span class="badge bg-danger">cancelled by the user</span>
+                                      <% } %>
+                      </td>
+
+                      <td width="10%">
+                        <a href="/admin/order-details/<%= allOrders[i]._id %>"
+                          class="btn btn-md bg-dark rounded font-sm">Details</a>
+                      </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+              </table>
+              <% } %>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    function changeOrderStatus(orderId, status, nextButtonValue) {
+      console.log(orderId);
+      console.log(status);
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You wont be able to undo this!!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Update it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+      }).then((response) => {
+        console.log(response);
+        if (response.isConfirmed) {
+          $.ajax({
+            url: '/admin/orderStatusChange',
+            method: 'PUT',
+            data: {
+              orderId: orderId,
+              status: status
+            }
+          }).done(response => {
+            Swal.fire("Successfull", `Status Updated`, "success").then(() => {
+              location.reload();
+            })
+          }).fail((error) => {
+            Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+              location.reload()
+            })
+          })
+        }
+      })
+
+
+    }
+  </script>
+
+  <%- include("../layouts/adminLayout/admin-footer") %>

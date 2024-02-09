@@ -274,14 +274,24 @@
                                                                         <%= element.totalAmount %> for <%=
                                                                                 element.quantity %> item
                                                                     </td>
-                                                                    <% if (element.status==="pending" ) { %>
-                                                                        <td><a onclick="cancelOrder('<%=element._id%>')"
+                                                                    <% if (element.status==='pending' ||
+                                                                        element.status==='confirmed' ||
+                                                                        element.status==='processing' ||
+                                                                        element.status==='outForDelivery' ||
+                                                                        element.status==='shipped' ) { %>
+                                                                        <td><a onclick="cancelOrder('<%= element._id %>')"
                                                                                 class="btn-small d-block text-danger">Cancel</a>
                                                                         </td>
-                                                                        <% } else { %>
-                                                                            <td>
-                                                                               <span class="badge bg-danger rounded">Cancelled</span> </td>
-                                                                            <% } %>
+                                                                        <% } else if (element.status==='delivered' ) {
+                                                                            %>
+                                                                            <td><span
+                                                                                    class="badge bg-success rounded">Delivered</span>
+                                                                            </td>
+                                                                            <% } else { %>
+                                                                                <td><span
+                                                                                        class="badge bg-danger rounded">Cancelled</span>
+                                                                                </td>
+                                                                                <% } %>
 
                                                                 </tr>
                                                                 <% }) %>
@@ -699,6 +709,6 @@
         }
     </script>
     <script> $(document).ready(function () {
-        $('#orderTable').DataTable();
-    });</script>
+            $('#orderTable').DataTable();
+        });</script>
     <%- include("../layouts/userLayout/userHomeFooter") %>

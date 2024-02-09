@@ -5,6 +5,8 @@ const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
 const adminModel = require("../models/adminModel");
 const userHelper = require("../helper/userHelper");
+const orderHelper = require("../helper/orderHelper");
+const moment = require("moment");
 
 const adminLoginLoad = (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -176,8 +178,11 @@ const editProductPost = async (req, res) => {
     const quantityS = product.productQuantity.S;
     const quantityM = product.productQuantity.M;
     const quantityL = product.productQuantity.L;
-    const totalAmount = parseInt(req.body.smallQuantity) + parseInt(req.body.mediumQuantity) + parseInt(req.body.largeQuantity);
-    console.log(totalAmount)
+    const totalAmount =
+      parseInt(req.body.smallQuantity) +
+      parseInt(req.body.mediumQuantity) +
+      parseInt(req.body.largeQuantity);
+    console.log(totalAmount);
     const check = await productHelper.checkDuplicateFunction(
       req.body,
       req.params.id
@@ -252,6 +257,37 @@ const userBlockUnblock = async (req, res) => {
   res.json({ message: message });
 };
 
+const adminOrderPageLoad = async (req, res) => {
+  try {
+    const allOrders = await orderHelper.getAllOrders();
+    for (const order of allOrders) {
+      const dateString = order.orderedOn;
+      order.formattedDate = moment(dateString).format("MMMM Do, YYYY");
+    }
+
+    res.render("admin/orderList", { allOrders });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const changeOrderStatus = async (req, res, next) => {
+  try {
+
+    const response = await orderHelper.changeOrderStatus(
+      req.body.orderId,
+      req.body.status
+    );
+    res.json({
+      error: false,
+      message: "order status updated",
+      status: response.orderStatus,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   loadAdminHome,
   adminLoginLoad,
@@ -270,4 +306,6 @@ module.exports = {
   editProductPost,
   userListLoad,
   userBlockUnblock,
+  adminOrderPageLoad,
+  changeOrderStatus,
 };
