@@ -42,7 +42,7 @@ const placeOrder = (body, userId) => {
         });
         resolve(result);
       }
-      
+
       console.log(address + "Hey");
     } catch (error) {
       console.log(error);
@@ -51,7 +51,7 @@ const placeOrder = (body, userId) => {
 };
 
 const getOrderDetails = (userId) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const orderDetails = await orderModel.find({ user: userId });
       console.log(orderDetails);
@@ -60,8 +60,28 @@ const getOrderDetails = (userId) => {
       console.log(error);
     }
   });
-}
+};
+
+const cancelOrder = (orderId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const order = await orderModel.findOne({ _id: orderId });
+      if (order) {
+        order.status = "cancelled";
+        order.save();
+        resolve(order);
+      }
+      else {
+        reject(Error("Order not found"));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
 
 module.exports = {
-  placeOrder,getOrderDetails,
+  placeOrder,
+  getOrderDetails,
+  cancelOrder,
 };

@@ -61,6 +61,8 @@ router.post("/placeOrder", userController.placeOrder);
 
 router.get("/orderSuccessPage", userController.orderSuccessPageLoad);
 
+router.patch("/cancelOrder/:id", userController.cancelOrder);
+
 
 
 module.exports = router;

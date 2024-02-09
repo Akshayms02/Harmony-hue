@@ -247,9 +247,9 @@
                                             <div class="card-header">
                                                 <h5 class="mb-0">Your Orders</h5>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table">
+                                            <div class="card-body ">
+                                                <div class="table-responsive container">
+                                                    <table class="table" id="orderTable">
                                                         <thead>
                                                             <tr>
                                                                 <th>Order</th>
@@ -260,17 +260,33 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <% orderDetails.forEach(element => { %>
+                                                            <% orderDetails.forEach(element=> { %>
                                                                 <tr>
-                                                                    <td>#<%= element.orderId %></td>
-                                                                    <td><%= element.formattedDate %></td>
-                                                                    <td><%= element.status %></td>
-                                                                    <td><%= element.totalAmount %> for <%= element.quantity %> item</td>
-                                                                    <td><a href="#" class="btn-small d-block">View</a></td>
+                                                                    <td>#<%= element.orderId %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= element.formattedDate %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= element.status %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= element.totalAmount %> for <%=
+                                                                                element.quantity %> item
+                                                                    </td>
+                                                                    <% if (element.status==="pending" ) { %>
+                                                                        <td><a onclick="cancelOrder('<%=element._id%>')"
+                                                                                class="btn-small d-block text-danger">Cancel</a>
+                                                                        </td>
+                                                                        <% } else { %>
+                                                                            <td>
+                                                                               <span class="badge bg-danger rounded">Cancelled</span> </td>
+                                                                            <% } %>
+
                                                                 </tr>
-                                                            <% }) %>
-                                                           
-                                                            
+                                                                <% }) %>
+
+
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -301,9 +317,9 @@
                                                                                             %>
                                                                 </address>
 
-                                                                <a href="#"
+                                                                <span href="#"
                                                                     onclick="deleteAddress('<%=userData.address[i]._id%>')"
-                                                                    class="btn-small text-danger">Delete</a>
+                                                                    class="badge bg-danger">Delete</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -499,6 +515,35 @@
             </div>
         </section>
     </main>
+    <script>
+        const cancelOrder = (orderId) => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will not be able to undo this',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+            }).then((response) => {
+                console.log(response);
+                if (response.isConfirmed) {
+                    $.ajax({
+                        url: `/cancelOrder/${orderId}`,
+                        type: 'PATCH'
+                    }).done(response => {
+                        Swal.fire("Successfull", `Address Deleted`, "success").then(() => {
+                            location.reload();
+                        })
+                    }).fail((error) => {
+                        Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+                            location.reload()
+                        })
+                    })
+                }
+            })
+        }
+    </script>
 
     <script>
         $(document).ready(function () {
@@ -653,4 +698,7 @@
             return isValid;
         }
     </script>
+    <script> $(document).ready(function () {
+        $('#orderTable').DataTable();
+    });</script>
     <%- include("../layouts/userLayout/userHomeFooter") %>

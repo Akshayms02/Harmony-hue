@@ -185,8 +185,10 @@ const productViewLoad = async (req, res) => {
 
   let wishListCount = await wishlistHelper.getWishListCount(userData);
 
-  const product = await productModel.findById({ _id: id }).populate('productCategory').lean();
-  console.log(product)
+  const product = await productModel
+    .findById({ _id: id })
+    .populate("productCategory")
+    .lean();
 
   const cartStatus = await cartHelper.isAProductInCart(userData, product._id);
 
@@ -447,6 +449,20 @@ const orderSuccessPageLoad = (req, res) => {
   res.render("user/orderSuccessPage");
 };
 
+const cancelOrder = async (req, res) => {
+  try {
+    console.log("entered")
+    const orderId = req.params.id;
+    const result = await orderHelper.cancelOrder(orderId);
+
+    if (result) {
+      res.json({status:true})
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
     style: "currency",
@@ -480,4 +496,5 @@ module.exports = {
   checkoutLoad,
   placeOrder,
   orderSuccessPageLoad,
+  cancelOrder,
 };
