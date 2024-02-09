@@ -2960,13 +2960,13 @@ fieldset:disabled .btn {
   background-color: transparent;
 }
 .btn-outline-success {
-  color: #198754;
-  border-color: #198754;
+  color: #000000;
+  border-color: #000000;
 }
 .btn-outline-success:hover {
   color: #fff;
-  background-color: #198754;
-  border-color: #198754;
+  background-color: #000000;
+  border-color: #000000;
 }
 .btn-check:focus + .btn-outline-success,
 .btn-outline-success:focus {

@@ -408,18 +408,27 @@ const checkoutLoad = async (req, res) => {
     res.render("user/checkout", {
       cartItems,
       totalAmountOfEachProduct,
-      totalandSubTotal,userData
+      totalandSubTotal,
+      userData,
     });
   }
 };
 
 const placeOrder = async (req, res) => {
-  const data = req.body;
-  console.log(data);
-  const result = await orderHelper.placeOrder(data);
+  const body = req.body;
+  const userId = req.session.user;
+  console.log(body);
+  const result = await orderHelper.placeOrder(body,userId);
   if (result) {
-    
+    const cart = await cartHelper.clearAllCartItems(userId);
+    if (cart) {
+      res.json({ url: "/orderSuccessPage" });
+    }
   }
+};
+
+const orderSuccessPageLoad = (req, res) => {
+res.render("user/orderSuccessPage")
 }
 
 const currencyFormatter = (amount) => {
@@ -429,28 +438,29 @@ const currencyFormatter = (amount) => {
     minimumFractionDigits: 0,
   });
 };
-module.exports = {
-  loginLoad,
-  registerLoad,
-  signUpUser,
-  logUser,
-  loadUserHome,
-  forgotPasswordLoad,
-  forgotPasswordChange,
-  sendOtp,
-  verifySignUpLoad,
-  userLogout,
-  productViewLoad,
-  userCartLoad,
-  currencyFormatter,
-  wishListLoad,
-  addToCart,
-  addToWishlist,
-  updateCartQuantity,
-  removeCartItem,
-  userProfileLoad,
-  addAddress,
-  deleteAddress,
-  updateUserDetails,
-  checkoutLoad,placeOrder,
-};
+  module.exports = {
+    loginLoad,
+    registerLoad,
+    signUpUser,
+    logUser,
+    loadUserHome,
+    forgotPasswordLoad,
+    forgotPasswordChange,
+    sendOtp,
+    verifySignUpLoad,
+    userLogout,
+    productViewLoad,
+    userCartLoad,
+    currencyFormatter,
+    wishListLoad,
+    addToCart,
+    addToWishlist,
+    updateCartQuantity,
+    removeCartItem,
+    userProfileLoad,
+    addAddress,
+    deleteAddress,
+    updateUserDetails,
+    checkoutLoad,
+    placeOrder,orderSuccessPageLoad,
+  };

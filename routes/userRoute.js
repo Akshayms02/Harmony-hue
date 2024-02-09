@@ -59,6 +59,8 @@ router.get("/checkout", userAuth.isLogout, userController.checkoutLoad);
 
 router.post("/placeOrder", userController.placeOrder);
 
+router.get("/orderSuccessPage", userController.orderSuccessPageLoad);
+
 
 
 module.exports = router;

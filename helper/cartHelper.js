@@ -156,6 +156,13 @@ const removeItemFromCart = (userId, productId) => {
   });
 };
 
+const clearAllCartItems = (userId) => {
+  return new Promise(async(resolve, reject) => {
+    const result = await cartModel.deleteOne({ user: userId });
+    resolve(result);
+  })
+}
+
 module.exports = {
   addToCart,
   getCartCount,
@@ -163,5 +170,5 @@ module.exports = {
   getAllCartItems,
   isAProductInCart,
   incDecProductQuantity,
-  removeItemFromCart,
+  removeItemFromCart,clearAllCartItems,
 };

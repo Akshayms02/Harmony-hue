@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
   },
-  items: [
+  products: [
     {
       product: {
         type: mongoose.Types.ObjectId,
@@ -14,8 +14,8 @@ const orderSchema = new mongoose.Schema({
       quantity: {
         type: Number,
       },
-      price: {
-        type: Number,
+      size: {
+        type: String,
       },
     },
   ],
@@ -39,6 +39,10 @@ const orderSchema = new mongoose.Schema({
     type: Date,
   },
   status: {
+    type: Number,
+    default: 0,
+  },
+  totalAmount: {
     type: Number,
   },
 });
