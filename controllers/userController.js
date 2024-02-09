@@ -185,7 +185,8 @@ const productViewLoad = async (req, res) => {
 
   let wishListCount = await wishlistHelper.getWishListCount(userData);
 
-  const product = await productModel.findById({ _id: id }).lean();
+  const product = await productModel.findById({ _id: id }).populate('productCategory').lean();
+  console.log(product)
 
   const cartStatus = await cartHelper.isAProductInCart(userData, product._id);
 
