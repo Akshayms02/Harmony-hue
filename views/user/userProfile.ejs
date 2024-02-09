@@ -274,7 +274,7 @@
                                                                         <%= element.totalAmount %> for <%=
                                                                                 element.quantity %> item
                                                                     </td>
-                                                                    <% if (element.status=="pending" ) { %>
+                                                                    <% if (element.status=="pending"||element.status=="processing"||element.status=="shipped"||element.status=="confirmed"||element.status=="outForDelivery" ) { %>
                                                                         <td><a onclick="cancelOrder('<%= element._id %>')"
                                                                                 class="btn-small d-block text-danger">Cancel</a>
                                                                         </td>

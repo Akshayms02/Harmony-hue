@@ -247,7 +247,7 @@
                             <%= element.state %> ,<%= element.city %>, <%= element.country %> <br> Pincode:
                                   <%=element.pincode %>
                         </p>
-                        <input type="radio" class="form-check-input bg-dark" name="address" id="address-1"
+                        <input type="radio" class="form-check-input" style="border-color: black; outline: none;" name="address" id="address-1"
                           value="<%= element._id %>" checked>
                         <label for="address-1" class="form-check-label">Select this address</label>
                       </div>
@@ -367,7 +367,7 @@
           addressId: address,
           paymentOption: payment,
         }
-        // if(payment==="COD"){}
+        
         $.ajax({
           url: "/placeOrder",
           method: "POST",
