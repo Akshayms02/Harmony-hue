@@ -205,7 +205,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
-                                                href="#track-orders" role="tab" aria-controls="track-orders"
+                                                href="#addAddress" role="tab" aria-controls="track-orders"
                                                 aria-selected="false"><i class="fi-rs-marker mr-10"></i>Add Address
                                                 </Address></a>
                                         </li>
@@ -274,11 +274,7 @@
                                                                         <%= element.totalAmount %> for <%=
                                                                                 element.quantity %> item
                                                                     </td>
-                                                                    <% if (element.status==='pending' ||
-                                                                        element.status==='confirmed' ||
-                                                                        element.status==='processing' ||
-                                                                        element.status==='outForDelivery' ||
-                                                                        element.status==='shipped' ) { %>
+                                                                    <% if (element.status=="pending" ) { %>
                                                                         <td><a onclick="cancelOrder('<%= element._id %>')"
                                                                                 class="btn-small d-block text-danger">Cancel</a>
                                                                         </td>
@@ -292,8 +288,8 @@
                                                                                         class="badge bg-danger rounded">Cancelled</span>
                                                                                 </td>
                                                                                 <% } %>
-
                                                                 </tr>
+
                                                                 <% }) %>
 
 
@@ -364,7 +360,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
+                                    <div class="tab-pane fade" id="addAddress" role="tabpanel"
                                         aria-labelledby="track-orders-tab">
                                         <div class="card">
                                             <div class="card-header">
@@ -375,46 +371,48 @@
                                                 <form method="post" action="/addAddress" id="myForm" name="enq">
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
-                                                            <label>Full Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name"
-                                                                type="text">
+                                                            <label>Full Name</label>
+                                                            <input class="form-control square" name="name" type="text" id="name2">
+                                                            <span id="name-error" class="text-danger"></span>
                                                         </div>
-
 
                                                         <div class="form-group col-md-12">
-                                                            <label>House<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
-                                                                type="text">
+                                                            <label>House</label>
+                                                            <input class="form-control square" name="house" type="text" id="house">
+                                                            <span id="house-error" class="text-danger"></span>
                                                         </div>
+
                                                         <div class="form-group col-md-6">
-                                                            <label>State<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
-                                                                type="text">
+                                                            <label>State</label>
+                                                            <input class="form-control square" name="state" type="text" id="state">
+                                                            <span id="state-error" class="text-danger"></span>
                                                         </div>
+
                                                         <div class="form-group col-md-6">
-                                                            <label>Country<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="country" type="text">
+                                                            <label>Country</label>
+                                                            <input class="form-control square" name="country"
+                                                                type="text" id="country">
+                                                            <span id="country-error" class="text-danger"></span>
                                                         </div>
+
                                                         <div class="form-group col-md-6">
-                                                            <label>City<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="city"
-                                                                type="text">
+                                                            <label>City</label>
+                                                            <input class="form-control square" name="city" type="text" id="city">
+                                                            <span id="city-error" class="text-danger"></span>
                                                         </div>
+
                                                         <div class="form-group col-md-6">
-                                                            <label>Pin Code<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="pincode" type="text">
+                                                            <label>Pin Code</label>
+                                                            <input class="form-control square" name="pincode"
+                                                                type="text" id="pincode">
+                                                            <span id="pincode-error" class="text-danger"></span>
                                                         </div>
+
                                                         <div class="form-group col-md-4">
-                                                            <label>Address Type<span class="required">*</span></label>
+                                                            <label>Address Type</label>
                                                             <select name="addressType" id="address" class="form-select">
-                                                                <option value="0">
-                                                                    Billing Address
-                                                                </option>
-                                                                <option value="1">
-                                                                    Shipping Address
-                                                                </option>
+                                                                <option value="0">Billing Address</option>
+                                                                <option value="1">Shipping Address</option>
                                                             </select>
                                                         </div>
 
@@ -424,6 +422,8 @@
                                                         </div>
                                                     </div>
                                                 </form>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -559,41 +559,45 @@
         $(document).ready(function () {
             $("#myForm").submit(function (event) {
                 event.preventDefault();
-                var formData = $(this).serialize();
-                $.ajax({
-                    url: "/addAddress",
-                    method: "PUT",
-                    data: formData,
-                    success: (response) => {
-                        if (response.status) {
-                            Toastify({
-                                text: `Address Added`,
-                                duration: 3000,
-                                gravity: "top",
-                                position: "center",
-                                stopOnFocus: true,
-                                style: {
-                                    background: "linear-gradient(to right, aqua, blue)",
-                                },
-                            }).showToast();
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            Toastify({
-                                text: `Address Added`,
-                                duration: 3000,
-                                gravity: "top",
-                                position: "center",
-                                stopOnFocus: true,
-                                style: {
-                                    background: "linear-gradient(to right, red, white)",
-                                },
-                            }).showToast();
+                const valid = validateForm2();
+                if (valid) {
+                    var formData = $(this).serialize();
+                    $.ajax({
+                        url: "/addAddress",
+                        method: "PUT",
+                        data: formData,
+                        success: (response) => {
+                            if (response.status) {
+                                Toastify({
+                                    text: `Address Added`,
+                                    duration: 3000,
+                                    gravity: "top",
+                                    position: "center",
+                                    stopOnFocus: true,
+                                    style: {
+                                        background: "linear-gradient(to right, aqua, blue)",
+                                    },
+                                }).showToast();
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Toastify({
+                                    text: `Address Added`,
+                                    duration: 3000,
+                                    gravity: "top",
+                                    position: "center",
+                                    stopOnFocus: true,
+                                    style: {
+                                        background: "linear-gradient(to right, red, white)",
+                                    },
+                                }).showToast();
+                            }
                         }
-                    }
 
-                })
+                    })
+                }
+
             })
         })
     </script>
@@ -670,6 +674,12 @@
             })
         })
     </script>
+
+    <script> $(document).ready(function () {
+            $('#orderTable').DataTable();
+        });
+
+    </script>
     <script>
         function validateForm() {
             const nameRegex = /^[a-zA-Z\s]+$/;
@@ -708,7 +718,74 @@
             return isValid;
         }
     </script>
-    <script> $(document).ready(function () {
-            $('#orderTable').DataTable();
-        });</script>
+    <script>
+        function validateForm2() {
+            const nameRegex = /^[a-zA-Z\s]+$/;
+            const houseRegex = /^[a-zA-Z0-9\s]+$/; // Assuming house number can have alphanumeric characters and spaces
+            const stateRegex = /^[a-zA-Z ]+$/; // Assuming state name can have only letters and spaces
+            const countryRegex = /^[a-zA-Z ]+$/; // Assuming country name can have only letters and spaces
+            const cityRegex = /^[a-zA-Z ]+$/; // Assuming city name can have only letters and spaces
+            const pincodeRegex = /^\d{6}$/; // Assuming pincode is 6 digits
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const passwordRegex = /^(?=.[A-Za-z])(?=.\d)(?=.*[^A-Za-z\d]).{8,}$/;
+            let isValid = true;
+
+            if (document.getElementById('name2') === "") {
+                document.getElementById("name-error").innerHTML = "Invalid Name(should only contain letters and spaces.)";
+                isValid = false;
+            }
+
+
+            if (!nameRegex.test(document.getElementById("name2").value)) {
+                document.getElementById("name-error").innerHTML = "Invalid Format(should only contain letters and spaces.)";
+                isValid = false;
+            } else {
+                document.getElementById("name-error").innerHTML = "";
+            }
+
+            if (!houseRegex.test(document.getElementById("house").value)) {
+                document.getElementById("house-error").innerHTML = "Invalid House Number";
+                isValid = false;
+            } else {
+                document.getElementById("house-error").innerHTML = "";
+            }
+
+            if (!stateRegex.test(document.getElementById("state").value)) {
+                document.getElementById("state-error").innerHTML = "Invalid State";
+                isValid = false;
+            } else {
+                document.getElementById("state-error").innerHTML = "";
+            }
+
+            if (!countryRegex.test(document.getElementById("country").value)) {
+                document.getElementById("country-error").innerHTML = "Invalid Country";
+                isValid = false;
+            } else {
+                document.getElementById("country-error").innerHTML = "";
+            }
+
+            if (!cityRegex.test(document.getElementById("city").value)) {
+                document.getElementById("city-error").innerHTML = "Invalid City";
+                isValid = false;
+            } else {
+                document.getElementById("city-error").innerHTML = "";
+            }
+
+            if (!pincodeRegex.test(document.getElementById("pincode").value)) {
+                document.getElementById("pincode-error").innerHTML = "Invalid Pincode (should be 6 digits)";
+                isValid = false;
+            } else {
+                document.getElementById("pincode-error").innerHTML = "";
+            }
+
+            return isValid;
+        }
+        document.getElementById("myForm").addEventListener("submit", (e) => {
+            const result = validateForm2();
+            if (!result) {
+                e.preventDefault();
+            }
+        })
+    </script>
+
     <%- include("../layouts/userLayout/userHomeFooter") %>
