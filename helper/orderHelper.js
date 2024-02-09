@@ -38,7 +38,7 @@ const placeOrder = (body, userId) => {
             mobile: user.mobile,
           },
           paymentMethod: body.paymentOption,
-          total: cart.totalAmount,
+          totalAmount: cart.totalAmount,
         });
         resolve(result);
       }
@@ -50,6 +50,18 @@ const placeOrder = (body, userId) => {
   });
 };
 
+const getOrderDetails = (userId) => {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const orderDetails = await orderModel.find({ user: userId });
+      console.log(orderDetails);
+      resolve(orderDetails);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+}
+
 module.exports = {
-  placeOrder,
+  placeOrder,getOrderDetails,
 };

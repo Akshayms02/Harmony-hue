@@ -8,6 +8,7 @@ const productHelper = require("../helper/productHelper");
 const cartHelper = require("../helper/cartHelper");
 const wishlistHelper = require("../helper/wishlistHelper");
 const orderHelper = require("../helper/orderHelper");
+const moment = require("moment");
 
 const registerLoad = (req, res) => {
   res.setHeader(
@@ -339,8 +340,22 @@ const addToWishlist = async (req, res) => {
 const userProfileLoad = async (req, res) => {
   const userId = req.session.user;
   const user = await userModel.findOne({ _id: userId });
+  const orderDetails = await orderHelper.getOrderDetails(userId);
+  for (const order of orderDetails) {
+    const dateString = order.orderedOn;
+    order.formattedDate = moment(dateString).format("MMMM Do, YYYY");
+    order.formattedTotal = currencyFormatter(order.totalAmount);
+    let quantity = 0;
+    for (const product of order.products) {
+      quantity += Number(product.quantity);
+    }
+    order.quantity = quantity;
+    quantity = 0;
+  }
+
+  console.log(orderDetails[0].formattedDate);
   if (user) {
-    res.render("user/userProfile", { userData: user });
+    res.render("user/userProfile", { userData: user, orderDetails });
   }
 };
 
@@ -418,7 +433,7 @@ const placeOrder = async (req, res) => {
   const body = req.body;
   const userId = req.session.user;
   console.log(body);
-  const result = await orderHelper.placeOrder(body,userId);
+  const result = await orderHelper.placeOrder(body, userId);
   if (result) {
     const cart = await cartHelper.clearAllCartItems(userId);
     if (cart) {
@@ -428,8 +443,8 @@ const placeOrder = async (req, res) => {
 };
 
 const orderSuccessPageLoad = (req, res) => {
-res.render("user/orderSuccessPage")
-}
+  res.render("user/orderSuccessPage");
+};
 
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
@@ -438,29 +453,30 @@ const currencyFormatter = (amount) => {
     minimumFractionDigits: 0,
   });
 };
-  module.exports = {
-    loginLoad,
-    registerLoad,
-    signUpUser,
-    logUser,
-    loadUserHome,
-    forgotPasswordLoad,
-    forgotPasswordChange,
-    sendOtp,
-    verifySignUpLoad,
-    userLogout,
-    productViewLoad,
-    userCartLoad,
-    currencyFormatter,
-    wishListLoad,
-    addToCart,
-    addToWishlist,
-    updateCartQuantity,
-    removeCartItem,
-    userProfileLoad,
-    addAddress,
-    deleteAddress,
-    updateUserDetails,
-    checkoutLoad,
-    placeOrder,orderSuccessPageLoad,
-  };
+module.exports = {
+  loginLoad,
+  registerLoad,
+  signUpUser,
+  logUser,
+  loadUserHome,
+  forgotPasswordLoad,
+  forgotPasswordChange,
+  sendOtp,
+  verifySignUpLoad,
+  userLogout,
+  productViewLoad,
+  userCartLoad,
+  currencyFormatter,
+  wishListLoad,
+  addToCart,
+  addToWishlist,
+  updateCartQuantity,
+  removeCartItem,
+  userProfileLoad,
+  addAddress,
+  deleteAddress,
+  updateUserDetails,
+  checkoutLoad,
+  placeOrder,
+  orderSuccessPageLoad,
+};

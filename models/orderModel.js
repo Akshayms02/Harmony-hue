@@ -39,8 +39,13 @@ const orderSchema = new mongoose.Schema({
     type: Date,
   },
   status: {
+    type: String,
+    enum: ["pending", "shipped", "delivered", "cancelled"],
+    default: "pending",
+  },
+  orderId: {
     type: Number,
-    default: 0,
+    default: () => Math.floor(100000 + Math.random() * 900000),
   },
   totalAmount: {
     type: Number,
