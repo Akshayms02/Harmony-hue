@@ -45,7 +45,7 @@
                                     <div class="mb-4">
                                         <label for="product_quantity" class="form-label">Small Quantity</label>
                                         <input type="text" name="smallQuantity" placeholder="nos" class="form-control"
-                                            id="productQuantity">
+                                            id="productQuantity" value="<%= product.productQuantity.S.quantity %>">
                                         <span id="productQuantityError" class="text-danger mt-1"></span>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
                                     <div class="mb-4">
                                         <label for="product_quantity" class="form-label">Medium Quantity</label>
                                         <input type="text" name="mediumQuantity" placeholder="nos" class="form-control"
-                                            id="productQuantity">
+                                            id="productQuantity" value="<%= product.productQuantity.M.quantity %>">
                                         <span id="productQuantityError" class="text-danger mt-1"></span>
                                     </div>
                                 </div>
@@ -61,7 +61,7 @@
                                     <div class="mb-4">
                                         <label for="product_quantity" class="form-label">Large Quantity</label>
                                         <input type="text" name="largeQuantity" placeholder="nos" class="form-control"
-                                            id="productQuantity">
+                                            id="productQuantity" value="<%= product.productQuantity.L.quantity %>">
                                         <span id="productQuantityError" class="text-danger mt-1"></span>
                                     </div>
                                 </div>
