@@ -9,7 +9,7 @@ router.get("/", adminAuth.isLogin, adminController.adminLoginLoad);
 
 router.post("/", adminController.adminLoginPost);
 
-router.get("/adminhome", adminController.loadAdminHome);
+router.get("/adminhome",adminAuth.isLogout, adminController.loadAdminHome);
 
 router.get("/logout", adminAuth.isLogout, adminController.adminLogout);
 
@@ -25,7 +25,7 @@ router.get(
 
 router.put("/editCategory/:id", adminController.editCategoryPost);
 
-router.get("/delete-category/:id", adminController.deleteCategory);
+router.get("/delete-category/:id",adminAuth.isLogout, adminController.deleteCategory);
 
 router.get("/productList", adminAuth.isLogout, adminController.productListLoad);
 
@@ -40,7 +40,7 @@ router.post(
 
 router.patch("/deleteproduct/:id", adminController.deleteProduct);
 
-router.get("/editProduct/:id", adminController.editProductLoad);
+router.get("/editProduct/:id",adminAuth.isLogout, adminController.editProductLoad);
 
 router.put(
   "/editProduct/:id",
@@ -52,7 +52,7 @@ router.get("/userList", adminAuth.isLogout, adminController.userListLoad);
 
 router.patch("/blockUnblockuser/:id", adminController.userBlockUnblock);
 
-router.get("/orders", adminController.adminOrderPageLoad);
+router.get("/orders", adminAuth.isLogout,adminController.adminOrderPageLoad);
 
 router.put("/orderStatusChange", adminController.changeOrderStatus);
 

@@ -1,6 +1,7 @@
 const orderModel = require("../models/orderModel");
 const cartModel = require("../models/cartModel");
 const userModel = require("../models/userModel");
+const productModel = require("../models/productModel");
 
 const placeOrder = (body, userId) => {
   return new Promise(async (resolve, reject) => {
@@ -43,7 +44,6 @@ const placeOrder = (body, userId) => {
         resolve(result);
       }
 
-      console.log(address + "Hey");
     } catch (error) {
       console.log(error);
     }

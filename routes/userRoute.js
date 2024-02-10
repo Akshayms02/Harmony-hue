@@ -59,7 +59,7 @@ router.get("/checkout", userAuth.isLogout, userController.checkoutLoad);
 
 router.post("/placeOrder", userController.placeOrder);
 
-router.get("/orderSuccessPage", userController.orderSuccessPageLoad);
+router.get("/orderSuccessPage",userAuth.isLogout, userController.orderSuccessPageLoad);
 
 router.patch("/cancelOrder/:id", userController.cancelOrder);
 
