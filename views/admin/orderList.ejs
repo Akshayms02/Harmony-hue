@@ -87,20 +87,20 @@
                           <span class="badge bg-danger">cancelled by the user</span>
                           <% } %>
                             <% if (allOrders[i].status=='pending' ) { %>
-                              <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','processing','confirmed')"
-                                class="btn btn-outline-primary rounded font-sm">Approve</a>
+                              <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','processing')"
+                                class="btn btn-primary rounded font-sm">Approve</a>
                               <% } else if (allOrders[i].status=='processing' ) {%>
-                                <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','confirmed','shipped')"
-                                  class="btn btn-outline-success rounded font-sm">Confirm</a>
+                                <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','confirmed')"
+                                  class="btn btn-success rounded font-sm">Confirm</a>
                                 <% } else if (allOrders[i].status=='confirmed' ) {%>
-                                  <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','shipped','outForDelivery')"
-                                    class="btn btn-outline-warning rounded font-sm">Ship</a>
+                                  <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','shipped')"
+                                    class="btn btn-warning rounded font-sm">Ship</a>
                                   <% } else if (allOrders[i].status=='shipped' ) {%>
-                                    <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','outForDelivery','delivered')"
-                                      class="btn  btn-outline-success rounded font-sm">Send Out</a>
+                                    <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','outForDelivery')"
+                                      class="btn  btn-success rounded font-sm">Send Out</a>
                                     <% } else if (allOrders[i].status=='outForDelivery' ) {%>
-                                      <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','delivered','d-none')"
-                                        class="btn btn-outline-primary rounded font-sm">Approved</a>
+                                      <a onclick="changeOrderStatus('<%= allOrders[i]._id %>','delivered')"
+                                        class="btn btn-primary rounded font-sm">Approved</a>
                                       <% } else if (allOrders[i].status=='delivered' ) { %>
                                         <span class="badge bg-success">Delivered</span>
                                         <% } %>
@@ -123,9 +123,7 @@
 
 
   <script>
-    function changeOrderStatus(orderId, status, nextButtonValue) {
-      console.log(orderId);
-      console.log(status);
+    function changeOrderStatus(orderId, status) {
 
       Swal.fire({
         title: 'Are you sure?',
@@ -150,7 +148,7 @@
               location.reload();
             })
           }).fail((error) => {
-            Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+            Swal.fire("Successfull", `${error.message}`, "success").then(() => {
               location.reload()
             })
           })
