@@ -196,12 +196,11 @@
         const fileInput = document.getElementById("fileInput");
         const previewContainer = document.getElementById("previewContainer");
 
-        let selectedFiles = []; // Track uploaded files
+        let selectedFiles = []; 
 
         fileInput.addEventListener("change", function (event) {
             const files = event.target.files; // Get uploaded files
 
-            // Clear existing previews
             previewContainer.innerHTML = "";
 
             for (const file of files) {

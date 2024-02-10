@@ -11,12 +11,14 @@
 
                     <div class="card-body">
                         <form action="/admin/editProduct/<%= product._id %>?_method=PUT" method="post"
-                            enctype="multipart/form-data">
+                            enctype="multipart/form-data" id="editForm">
                             <div class="mb-4">
                                 <input type="hidden" value="PUT" name="_method" >
                                 <label for="product_name" class="form-label">Product Name</label>
                                 <input type="text" name="productName" value="<%= product.productName %>"
                                     placeholder="Type here" class="form-control" id="productName">
+                                    <span id="productNameError" class="text-danger">
+                                    </span>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Product description</label>
@@ -28,6 +30,8 @@
                                     <label class="form-label" for="product_price">Price</label>
                                     <input type="text" value="<%= product.productPrice %>" placeholder="price"
                                         name="productPrice" class="form-control" id="productPrice">
+                                        <span id="productPriceError" class="text-danger">
+                                        </span>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-4">
@@ -35,6 +39,8 @@
                                         <input type="text" name="productDiscount"
                                             value="<%= product.productDiscount %>" placeholder="%" class="form-control"
                                             id="productDiscount">
+                                            <span id="productDiscountError" class="text-danger">
+                                            </span>
                                     </div>
                                 </div>
                             </div>
@@ -66,8 +72,6 @@
                                     </div>
                                 </div>
                                 
-
-
                             </div>
 
                     </div>
@@ -147,5 +151,73 @@
             </form>
         </div>
     </section>
+    <script>
+
+        function validateForm(e) {
+            console.log("entered validation");
+            let productName = document.getElementById('productName').value;
+            let productPrice = document.getElementById('productPrice').value;
+            let productQuantity = document.getElementById('productQuantity').value;
+            let discount = document.getElementById('productDiscount').value;
+
+            //for clearing previous errors
+
+            document.getElementById('productNameError').innerHTML = "";
+            document.getElementById('productPriceError').innerHTML = "";
+            document.getElementById('productQuantityError').innerHTML = "";
+            document.getElementById('productDiscountError').innerHTML = "";
+            let isValid = true;
+
+            // Product Name validation
+            if (productName.trim() === "") {
+                document.getElementById('productNameError').innerText = "Product Name is required.";
+                isValid = false;
+            } else if (/^\d+$/.test(productName) || /^-\d+$/.test(productName)) {
+                document.getElementById('productNameError').innerText = "Product Name cannot contain numbers.";
+                isValid = false;
+            }
+
+            // Product Price validation
+            if (productPrice.trim() === "") {
+                document.getElementById('productPriceError').innerText = "Product Price is required.";
+                isValid = false;
+            }
+            else if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
+                document.getElementById('productPriceError').innerHTML = "Product Price must be a valid number greater than 0.";
+                isValid = false;
+            }
+
+            // Product Quantity validation
+
+            if (isNaN(productQuantity) || parseInt(productQuantity) < 0) {
+                document.getElementById('productQuantityError').innerHTML = "Product Quantity must be a valid non-negative integer.";
+                isValid = false;
+            } else if (productQuantity.trim() === "") {
+                document.getElementById('productQuantityError').innerText = "Product Quantity is required.";
+                isValid = false;
+            }
+
+            // Discount validation
+            if (discount.trim() === "") {
+                document.getElementById('productDiscountError').innerText = "Discount is required.";
+                isValid = false;
+            }
+            else if (isNaN(discount) || parseFloat(discount) < 0 || parseFloat(discount) > 100) {
+                document.getElementById('productDiscountError').innerHTML = "Discount must be a valid percentage between 0 and 100.";
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        const form = document.getElementById("editForm");
+        form.addEventListener("submit", (e) => {
+            const isValid = validateForm(e);
+            console.log(isValid);
+            if (!isValid) {
+                e.preventDefault();
+            }
+        })
+
+    </script>
 
     <%- include('../layouts/adminLayout/admin-footer') %>
