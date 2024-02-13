@@ -52,8 +52,6 @@ const getAllActiveProducts = () => {
   });
 };
 
-
-
 const addProduct = (data, files) => {
   return new Promise(async (resolve, reject) => {
     const resizedImageUrls = files.map((file) => file.path);
@@ -62,15 +60,28 @@ const addProduct = (data, files) => {
       parseInt(data.mediumQuantity) +
       parseInt(data.largeQuantity);
 
+    const productQuantity = [
+      {
+        size: "S",
+        quantity: data.smallQuantity,
+      },
+      {
+        size: "M",
+        quantity: data.mediumQuantity,
+      },
+      {
+        size: "L",
+        quantity: data.largeQuantity,
+      },
+    ];
+
     await productModel
       .create({
         productName: data.name,
         productDescription: data.description,
         productCategory: data.productCategory,
         productPrice: data.price,
-        "productQuantity.S.quantity": data.smallQuantity,
-        "productQuantity.M.quantity": data.mediumQuantity,
-        "productQuantity.L.quantity": data.largeQuantity,
+        productQuantity: productQuantity,
         productDiscount: data.discount,
         totalQuantity: totalQuantity,
         image: resizedImageUrls.map((path) => path.substring(2)),

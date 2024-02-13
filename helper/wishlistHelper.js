@@ -1,9 +1,10 @@
 const wishlistModel = require("../models/wishlistModel");
 const productModel = require("../models/productModel");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToWishlist = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
-    console.log(productId)
+    console.log(productId);
     const product = await productModel.findOne({ _id: productId });
 
     if (!product || !product.productStatus) {
@@ -29,7 +30,6 @@ const addToWishlist = (userId, productId) => {
   });
 };
 
-
 const isInWishlist = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -49,8 +49,64 @@ const isInWishlist = (userId, productId) => {
     }
   });
 };
+const getAllWishlistProducts = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    let wishlistProducts = await wishlistModel.aggregate([
+      {
+        $match: {
+          user: new ObjectId(userId),
+        },
+      },
 
+      {
+        $unwind: "$products",
+      },
+      {
+        $project: {
+          item: "$products.productItemId",
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "item",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      {
+        $project: {
+          item: 1,
+          product: {
+            $arrayElemAt: ["$product", 0],
+          },
+        },
+      },
+    ]);
+    resolve(wishlistProducts);
+  });
+};
 
+const removeProductFromWishlist = (userId, productId) => {
+  return new Promise(async (resolve, reject) => {
+    await wishlistModel
+      .updateOne(
+        {
+          user: new ObjectId(userId),
+        },
+        {
+          $pull: {
+            products: {
+              productItemId: productId,
+            },
+          },
+        }
+      )
+      .then((result) => {
+        resolve(result);
+      });
+  });
+};
 
 const getWishListCount = (userId) => {
   return new Promise(async (resolve, reject) => {
@@ -64,4 +120,6 @@ module.exports = {
   addToWishlist,
   isInWishlist,
   getWishListCount,
+  removeProductFromWishlist,
+  getAllWishlistProducts,
 };

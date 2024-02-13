@@ -17,6 +17,9 @@ const orderSchema = new mongoose.Schema({
       size: {
         type: String,
       },
+      productPrize: {
+        type:Number,
+      }
     },
   ],
   address: {

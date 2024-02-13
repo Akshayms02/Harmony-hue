@@ -80,26 +80,34 @@
     <script>
         function changeUserStatus(userId) {
             console.log('clicked', userId);
-
-            swal("Are you sure you want to do this?", {
-                buttons: ["NO", "YES"]
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to do this?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes !',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
             }).then((response) => {
                 console.log(response);
-                if (response) {
+                if (response.isConfirmed) {
                     $.ajax({
                         url: '/admin/blockUnblockUser/' + userId,
                         type: 'PATCH'
                     }).done(response => {
-                        swal("Successfull", `${response.message}`, "success").then(() => {
+                        Swal.fire("Successfull", `Status Updated`, "success").then(() => {
                             location.reload();
                         })
                     }).fail((error) => {
-                        swal("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+                        Swal.fire("Successfull", `${error.message}`, "success").then(() => {
                             location.reload()
                         })
                     })
                 }
             })
+
+
+
         }
     </script>
 

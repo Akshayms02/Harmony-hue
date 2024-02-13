@@ -18,26 +18,18 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    productQuantity: {
-      S: {
+    productQuantity: [
+      {
+        size: {
+          type: String,
+          enum: ["S", "M", "L"],
+        },
         quantity: {
           type: Number,
-          default:0,
-        }
+          default: 0,
+        },
       },
-      M: {
-        quantity: {
-          type: Number,
-          default:0,
-        }
-      },
-      L: {
-        quantity: {
-          type: Number,
-          default:0,
-        }
-      },
-    },
+    ],
     productDiscount: {
       type: Number,
       required: true,
@@ -53,7 +45,6 @@ const productSchema = new mongoose.Schema(
     },
     totalQuantity: {
       type: Number,
-     
     },
   },
   {

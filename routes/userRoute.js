@@ -1,12 +1,18 @@
 const express = require("express");
 const userAuth = require("../middleware/userAuth");
 const router = express.Router();
-const userController = require("../controllers/userController");
-const sharp = require("../middleware/sharp");
+const authController = require("../controllers/user/authContoller");
+const cartController = require("../controllers/user/cartController");
+const orderController = require("../controllers/user/orderController");
+const productController = require("../controllers/user/productController");
+const userController = require("../controllers/user/userController");
+const wishlistController = require("../controllers/user/wishlistController");
+// const userController = require("../controllers/userController");
+// const sharp = require("../middleware/sharp");
 
-router.get("/", userAuth.isLogin, userController.loginLoad);
+router.get("/", userAuth.isLogin, authController.loginLoad);
 
-router.post("/", userController.logUser);
+router.post("/", authController.logUser);
 
 router.get(
   "/forgot-password",
@@ -14,38 +20,38 @@ router.get(
   userController.forgotPasswordLoad
 );
 
-router.get("/logout", userAuth.isLogout, userController.userLogout);
+router.get("/logout", userAuth.isLogout, authController.userLogout);
 
 router.post("/forgot-password", userController.forgotPasswordChange);
 
-router.get("/register", userAuth.isLogin, userController.registerLoad);
+router.get("/register", userAuth.isLogin, authController.registerLoad);
 
-router.post("/register", userController.sendOtp);
+router.post("/register", authController.sendOtp);
 
 router.get(
   "/verify",
   userAuth.isLogin,
   userAuth.isRegistered,
-  userController.verifySignUpLoad
+  authController.verifySignUpLoad
 );
 
-router.post("/verify", userAuth.otpAuthenticator, userController.signUpUser);
+router.post("/verify", userAuth.otpAuthenticator, authController.signUpUser);
 
 router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
-router.get("/userHome/productView/:id",userAuth.isLogout, userController.productViewLoad);
+router.get("/userHome/productView/:id",userAuth.isLogout, productController.productViewLoad);
 
-router.get("/cart",userAuth.isLogout, userController.userCartLoad);
+router.get("/cart",userAuth.isLogout,cartController.userCartLoad);
 
-router.get("/wishlist",userAuth.isLogout, userController.wishListLoad);
+router.get("/wishlist",userAuth.isLogout, wishlistController.wishListLoad);
 
-router.post("/addToCart/:id/:size", userController.addToCart);
+router.post("/addToCart/:id/:size", productController.addToCart);
 
-router.patch("/updateCartQuantity", userController.updateCartQuantity);
+router.patch("/updateCartQuantity",cartController.updateCartQuantity);
 
-router.delete("/removeCart/:id", userController.removeCartItem);
+router.delete("/removeCart/:id",cartController.removeCartItem);
 
-router.post("/addToWishlist/:id", userController.addToWishlist);
+router.post("/addToWishlist/:id", wishlistController.addToWishlist);
 
 router.put("/addAddress", userController.addAddress);
 
@@ -55,13 +61,13 @@ router.get("/profile", userAuth.isLogout, userController.userProfileLoad);
 
 router.put("/updateUserDetails", userController.updateUserDetails);
 
-router.get("/checkout", userAuth.isLogout, userController.checkoutLoad);
+router.get("/checkout", userAuth.isLogout,orderController.checkoutLoad);
 
-router.post("/placeOrder", userController.placeOrder);
+router.post("/placeOrder", orderController.placeOrder);
 
-router.get("/orderSuccessPage",userAuth.isLogout, userController.orderSuccessPageLoad);
+router.get("/orderSuccessPage",userAuth.isLogout, orderController.orderSuccessPageLoad);
 
-router.patch("/cancelOrder/:id", userController.cancelOrder);
+router.patch("/cancelOrder/:id", orderController.cancelOrder);
 
 
 

@@ -1,59 +1,64 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/adminController");
+const adminController = require("../controllers/admin/adminController");
+const authContoller = require("../controllers/admin/authController");
+const categoryController = require("../controllers/admin/categoryController");
+const orderController = require("../controllers/admin/orderController");
+const productController = require("../controllers/admin/productController");
+const usersController = require("../controllers/admin/usersController");
 const adminAuth = require("../middleware/adminAuth");
 const multer = require("../middleware/multer");
 const sharp = require("../middleware/sharp");
 
-router.get("/", adminAuth.isLogin, adminController.adminLoginLoad);
+router.get("/", adminAuth.isLogin, authContoller.adminLoginLoad);
 
-router.post("/", adminController.adminLoginPost);
+router.post("/", authContoller.adminLoginPost);
+
+router.get("/logout", adminAuth.isLogout, authContoller.adminLogout);
 
 router.get("/adminhome",adminAuth.isLogout, adminController.loadAdminHome);
 
-router.get("/logout", adminAuth.isLogout, adminController.adminLogout);
+router.get("/category", adminAuth.isLogout, categoryController.loadCategory);
 
-router.get("/category", adminAuth.isLogout, adminController.loadCategory);
-
-router.post("/addCategory", adminAuth.isLogout, adminController.addCategory);
+router.post("/addCategory", adminAuth.isLogout, categoryController.addCategory);
 
 router.get(
   "/editCategory",
   adminAuth.isLogout,
-  adminController.editCategoryLoad
+  categoryController.editCategoryLoad
 );
 
-router.put("/editCategory/:id", adminController.editCategoryPost);
+router.put("/editCategory/:id", categoryController.editCategoryPost);
 
-router.get("/delete-category/:id",adminAuth.isLogout, adminController.deleteCategory);
+router.get("/delete-category/:id",adminAuth.isLogout, categoryController.deleteCategory);
 
-router.get("/productList", adminAuth.isLogout, adminController.productListLoad);
+router.get("/productList", adminAuth.isLogout, productController.productListLoad);
 
-router.get("/addProduct", adminAuth.isLogout, adminController.addProductLoad);
+router.get("/addProduct", adminAuth.isLogout, productController.addProductLoad);
 
 router.post(
   "/addProduct",
   multer.productUpload.array("images"),
   sharp.resizeImages,
-  adminController.addProductPost
+  productController.addProductPost
 );
 
-router.patch("/deleteproduct/:id", adminController.deleteProduct);
+router.patch("/deleteproduct/:id", productController.deleteProduct);
 
-router.get("/editProduct/:id",adminAuth.isLogout, adminController.editProductLoad);
+router.get("/editProduct/:id",adminAuth.isLogout, productController.editProductLoad);
 
 router.put(
   "/editProduct/:id",
   multer.productUpload.array("images"),sharp.resizeImages,
-  adminController.editProductPost
+  productController.editProductPost
 );
 
-router.get("/userList", adminAuth.isLogout, adminController.userListLoad);
+router.get("/userList", adminAuth.isLogout, usersController.userListLoad);
 
-router.patch("/blockUnblockuser/:id", adminController.userBlockUnblock);
+router.patch("/blockUnblockuser/:id", usersController.userBlockUnblock);
 
-router.get("/orders", adminAuth.isLogout,adminController.adminOrderPageLoad);
+router.get("/orders", adminAuth.isLogout,orderController.adminOrderPageLoad);
 
-router.put("/orderStatusChange", adminController.changeOrderStatus);
+router.put("/orderStatusChange", orderController.changeOrderStatus);
 
 module.exports = router;
