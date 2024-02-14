@@ -286,13 +286,13 @@
                       <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a
                           href="#" rel="tag">Dress</a> </li>
                       <li>Availability:<span class="in-stock text-success ml-5" id="smallQuantity">
-                          <%= product.productQuantity.S.quantity %> Items In Stock
+                          <%= product.productQuantity[0].quantity %> Items In Stock
                         </span>
                         <span class="in-stock text-success ml-5" id="mediumQuantity">
-                          <%= product.productQuantity.M.quantity %> Items In Stock
+                          <%= product.productQuantity[1].quantity %> Items In Stock
                         </span>
                         <span class="in-stock text-success ml-5" id="largeQuantity">
-                          <%= product.productQuantity.L.quantity %> Items In Stock
+                          <%= product.productQuantity[2].quantity %> Items In Stock
                         </span>
                       </li>
                     </ul>

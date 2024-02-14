@@ -67,7 +67,7 @@
                           width: 100%;
                           margin-top: 10px;
                         "
-                        href="/verify"
+                        onclick="resendOtp()"
                         >Resend OTP <span id="timer" style="color: white; margin-left: 5px;"></span></a
                       >
                       
@@ -81,5 +81,18 @@
       </div>
     </main>
     <script src="/public/js/loginScript.js"></script>
+
+    <script>
+      const resendOtp=()=>{
+        console.log("Hey")
+        $.ajax({
+          url:"/resendOtp",
+          method:"POST",
+          success:(response)=>{
+            console.log(response);
+          }
+        })
+      }
+    </script>
 
     <%- include('../layouts/userLayout/footer') %>

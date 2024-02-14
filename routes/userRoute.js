@@ -35,21 +35,27 @@ router.get(
   authController.verifySignUpLoad
 );
 
+router.post("/resendOtp", userAuth.otpAuthenticator, authController.resendOtp);
+
 router.post("/verify", userAuth.otpAuthenticator, authController.signUpUser);
 
 router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
-router.get("/userHome/productView/:id",userAuth.isLogout, productController.productViewLoad);
+router.get(
+  "/userHome/productView/:id",
+  userAuth.isLogout,
+  productController.productViewLoad
+);
 
-router.get("/cart",userAuth.isLogout,cartController.userCartLoad);
+router.get("/cart", userAuth.isLogout, cartController.userCartLoad);
 
-router.get("/wishlist",userAuth.isLogout, wishlistController.wishListLoad);
+router.get("/wishlist", userAuth.isLogout, wishlistController.wishListLoad);
 
 router.post("/addToCart/:id/:size", productController.addToCart);
 
-router.patch("/updateCartQuantity",cartController.updateCartQuantity);
+router.patch("/updateCartQuantity", cartController.updateCartQuantity);
 
-router.delete("/removeCart/:id",cartController.removeCartItem);
+router.delete("/removeCart/:id", cartController.removeCartItem);
 
 router.post("/addToWishlist/:id", wishlistController.addToWishlist);
 
@@ -61,14 +67,16 @@ router.get("/profile", userAuth.isLogout, userController.userProfileLoad);
 
 router.put("/updateUserDetails", userController.updateUserDetails);
 
-router.get("/checkout", userAuth.isLogout,orderController.checkoutLoad);
+router.get("/checkout", userAuth.isLogout, orderController.checkoutLoad);
 
 router.post("/placeOrder", orderController.placeOrder);
 
-router.get("/orderSuccessPage",userAuth.isLogout, orderController.orderSuccessPageLoad);
+router.get(
+  "/orderSuccessPage",
+  userAuth.isLogout,
+  orderController.orderSuccessPageLoad
+);
 
 router.patch("/cancelOrder/:id", orderController.cancelOrder);
-
-
 
 module.exports = router;

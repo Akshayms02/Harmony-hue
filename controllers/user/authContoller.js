@@ -69,6 +69,7 @@ const registerLoad = (req, res) => {
 
 const signUpUser = async (req, res) => {
   try {
+    console.log(req.session.otp, req.body.otp,req.session.otpExpiryTime);
     if (req.session.otp === req.body.otp) {
       const response = await userHelper.signupHelper(req.session.userData);
       if (!response.userExist) {
@@ -114,6 +115,29 @@ const verifySignUpLoad = (req, res) => {
   }
 };
 
+const resendOtp = (req, res) => {
+  try {
+    const userData = req.session.userData;
+    delete req.session.otpExpiryTime;
+    delete req.session.otp;
+    otpHelper
+      .otpSender(userData)
+      .then((response) => {
+        console.log(response);
+        req.session.otpExpiryTime = response.otpTimer;
+        req.session.userData = response.user;
+        req.session.otp = response.otp;
+        req.session.save()
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    res.json({ status: true });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   loginLoad,
   logUser,
@@ -122,4 +146,5 @@ module.exports = {
   signUpUser,
   sendOtp,
   verifySignUpLoad,
+  resendOtp,
 };

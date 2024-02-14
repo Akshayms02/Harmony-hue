@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (countdown <= 0) {
         // Enabling the link after the countdown
         link.classList.remove("disabled");
-        link.setAttribute("href", "/verify");
+        link.setAttribute("onclick", "resendOtp()");
         clearInterval(countdownInterval);
         timer.innerText = ""; //Clearing the text inside the timer
       } else {
