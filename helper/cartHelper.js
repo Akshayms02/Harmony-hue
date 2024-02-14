@@ -1,4 +1,5 @@
 const cartModel = require("../models/cartModel");
+const productModel = require("../models/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToCart = (userId, productId, size) => {
@@ -33,8 +34,10 @@ const getCartCount = (userId) => {
 
 const totalSubtotal = (userId, cartItems) => {
   return new Promise(async (resolve, reject) => {
+    console.log(userId);
     let cart = await cartModel.findOne({ user: userId });
     let total = 0;
+   
     if (cart) {
       if (cartItems.length) {
         for (let i = 0; i < cartItems.length; i++) {
@@ -52,6 +55,7 @@ const totalSubtotal = (userId, cartItems) => {
       cart.totalAmount = parseFloat(total);
 
       await cart.save();
+      
 
       resolve(total);
     } else {
@@ -73,7 +77,7 @@ const getAllCartItems = (userId) => {
         $project: {
           item: "$products.productItemId",
           quantity: "$products.quantity",
-          size:"$products.size",
+          size: "$products.size",
         },
       },
       {
@@ -103,7 +107,6 @@ const getAllCartItems = (userId) => {
 const isAProductInCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      
       const cart = await cartModel.findOne({
         user: userId,
         "products.productItemId": productId,
@@ -129,17 +132,37 @@ const incDecProductQuantity = (userId, productId, quantity) => {
       return items.productItemId.toString() == productId;
     });
 
+    const productStock = await productModel.findOne({ _id: productId });
+
+    const size = product.size;
+
+    const sizeStock = productStock.productQuantity.find((items) => {
+      return items.size == size;
+    });
     let newQuantity = product.quantity + parseInt(quantity);
 
     if (newQuantity < 1) {
       newQuantity = 1;
     }
-
-    product.quantity = newQuantity;
-    await cart.save();
-    resolve(newQuantity);
+    console.log(newQuantity)
+    if (newQuantity > sizeStock.quantity) {
+      resolve({ status: false, message: "Stock limit exceeded" });
+    }
+    else {
+      product.quantity = newQuantity;
+      await cart.save();
+      resolve({
+        status: true,
+        message: "Quantity updated",
+        price: productStock.productPrice,
+        discount: productStock.productDiscount,
+      });
+    }
+    
   });
 };
+
+
 
 const removeItemFromCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
@@ -157,11 +180,11 @@ const removeItemFromCart = (userId, productId) => {
 };
 
 const clearAllCartItems = (userId) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const result = await cartModel.deleteOne({ user: userId });
     resolve(result);
-  })
-}
+  });
+};
 
 module.exports = {
   addToCart,
@@ -170,5 +193,7 @@ module.exports = {
   getAllCartItems,
   isAProductInCart,
   incDecProductQuantity,
-  removeItemFromCart,clearAllCartItems,
+  removeItemFromCart,
+  clearAllCartItems,
+
 };

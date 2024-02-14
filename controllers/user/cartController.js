@@ -1,4 +1,5 @@
 const cartHelper = require("../../helper/cartHelper");
+const cartModel = require("../../models/cartModel");
 const wishlistHelper = require("../../helper/wishlistHelper");
 
 const userCartLoad = async (req, res) => {
@@ -57,10 +58,24 @@ const updateCartQuantity = async (req, res) => {
     productId,
     quantity
   );
-  if (update) {
-    res.json({ status: true });
+  const cartItems = await cartHelper.getAllCartItems(userId);
+
+  if (update.status) {
+    const cart = await cartModel.findOne({ user: userId }).lean();
+   
+    for (const product of cart.products) {
+      product.totalPrice = currencyFormatter(
+        Math.round(update.price - (update.price * update.discount) / 100) *
+          product.quantity
+      );
+    }
+    const totalSubtotal=await cartHelper.totalSubtotal(userId, cartItems);
+    console.log(totalSubtotal);
+    console.log(cart)
+
+    res.json({ status: true, message: update.message,cartDetails:cart,totalSubtotal });
   } else {
-    res.json({ status: false });
+    res.json({ status: false, message: update.message });
   }
 };
 

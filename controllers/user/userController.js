@@ -47,24 +47,28 @@ const loadUserHome = async (req, res) => {
 };
 
 const userProfileLoad = async (req, res) => {
-  const userId = req.session.user;
-  const user = await userModel.findOne({ _id: userId });
-  const orderDetails = await orderHelper.getOrderDetails(userId);
-  for (const order of orderDetails) {
-    const dateString = order.orderedOn;
-    order.formattedDate = moment(dateString).format("MMMM Do, YYYY");
-    order.formattedTotal = currencyFormatter(order.totalAmount);
-    let quantity = 0;
-    for (const product of order.products) {
-      quantity += Number(product.quantity);
+  try {
+    const userId = req.session.user;
+    const user = await userModel.findOne({ _id: userId });
+    const orderDetails = await orderHelper.getOrderDetails(userId);
+    for (const order of orderDetails) {
+      const dateString = order.orderedOn;
+      order.formattedDate = moment(dateString).format("MMMM Do, YYYY");
+      order.formattedTotal = currencyFormatter(order.totalAmount);
+      let quantity = 0;
+      for (const product of order.products) {
+        quantity += Number(product.quantity);
+      }
+      order.quantity = quantity;
+      quantity = 0;
     }
-    order.quantity = quantity;
-    quantity = 0;
-  }
 
-  console.log(orderDetails[0].formattedDate);
-  if (user) {
-    res.render("user/userProfile", { userData: user, orderDetails });
+    console.log(orderDetails[0].formattedDate);
+    if (user) {
+      res.render("user/userProfile", { userData: user, orderDetails });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 

@@ -21,7 +21,7 @@
                     <th scope="col" class="text-center">Image</th>
                     <th scope="col" class="text-center">Name</th>
                     <th scope="col" class="text-center">Price</th>
-                    <th scope="col" class="text-center">Size</th> 
+                    <th scope="col" class="text-center">Size</th>
                     <th scope="col" class="text-center">Quantity</th>
                     <th scope="col" class="text-center">Subtotal</th>
                     <th scope="col" class="text-center">Remove</th>
@@ -43,15 +43,15 @@
                       <td class="price" data-title="Price" id="price-span<%= cartItems[i].product._id %>"><span>
                           <%= cartItems[i].product.productPrice %>
                         </span></td>
-                        <td class="size" data-title="Size" id="size">
-                          <%= cartItems[i].size %>
-                        </td>
+                      <td class="size" data-title="Size" id="size">
+                        <%= cartItems[i].size %>
+                      </td>
                       <td class="text-center" data-title="Stock">
                         <div class="detail-qty border radius  m-auto">
                           <a href="#" class="qty-down"
                             onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','-1')"><i
                               class="fi-rs-angle-small-down"></i></a>
-                          <span class="qty-val" id="qty-val<%= cartItems[i].product._id %>">
+                          <span class="qty-val" id="quantity<%= cartItems[i].product._id %>">
                             <%= cartItems[i].quantity %>
                           </span>
                           <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','1')"><i
@@ -59,7 +59,7 @@
                         </div>
                       </td>
                       <td class="text-right" id="text-right<%= cartItems[i].product._id %>" data-title="Cart">
-                        <span>
+                        <span id="individualTotal<%= cartItems[i].product._id %>">
                           <%=totalAmountOfEachProduct[i]%>
                         </span>
                       </td>
@@ -118,10 +118,12 @@
                         <tbody>
                           <tr>
                             <td class="cart_total_label">Cart Subtotal</td>
-                            <td class="cart_total_amount"><span class="font-lg fw-900 text-dark"
-                                style="color: black;"></span>
-                              <%= totalAmount %>
-                                </span>
+                            <td class="cart_total_amount"><span class="font-lg fw-900 text-dark" id="totalAmount"
+                                style="color: black;">
+                                <%= totalAmount %>
+                              </span>
+
+
                             </td>
                           </tr>
                           <tr>
@@ -132,7 +134,7 @@
                           <tr>
                             <td class="cart_total_label">Total</td>
                             <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
-                                  style="color: black;">
+                                  style="color: black;" id="totalAmountFinal">
                                   <%= totalAmount %>
                                 </span></strong>
                             </td>
@@ -140,13 +142,14 @@
                         </tbody>
                       </table>
                     </div>
-                    <a href="/checkout" class="btn" style="background-color: black;"> <i class="fi-rs-box-alt mr-10"></i> Proceed
+                    <a href="/checkout" class="btn" style="background-color: black;"> <i
+                        class="fi-rs-box-alt mr-10"></i> Proceed
                       To
                       CheckOut</a>
                   </div>
                 </div>
-              <% } %>
-              
+                <% } %>
+
             </div>
           </div>
         </div>
@@ -164,9 +167,35 @@
         method: "PATCH",
         success: (response) => {
           if (response.status) {
-            window.location.reload();
+            Toastify({
+              text: `Quantity Updated`,
+              duration: 3000,
+              gravity: "top",
+              position: "center",
+              stopOnFocus: true,
+              style: {
+                background: "green",
+              },
+            }).showToast();
+            document.getElementById("totalAmount").innerHTML = "₹" + response.totalSubtotal
+            document.getElementById("totalAmountFinal").innerHTML = "₹" + response.totalSubtotal
+            for (i = 0; i < response.cartDetails.products.length; i++) {
+              document.getElementById("quantity" + productId).innerHTML = response.cartDetails.products[i].quantity;
+              document.getElementById("individualTotal" + productId).innerHTML = response.cartDetails.products[i].totalPrice
+            }
+
+
           } else {
-            console.log("Error");
+            Toastify({
+              text: `Stock Limit Exceeded`,
+              duration: 3000,
+              gravity: "top",
+              position: "center",
+              stopOnFocus: true,
+              style: {
+                background: "red",
+              },
+            }).showToast();
           }
 
         }
@@ -196,7 +225,7 @@
               location.reload()
             }, 600);
 
-          
+
 
 
           } else {

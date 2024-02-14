@@ -59,6 +59,8 @@ router.delete("/removeCart/:id", cartController.removeCartItem);
 
 router.post("/addToWishlist/:id", wishlistController.addToWishlist);
 
+router.put("/removeFromWishlist", wishlistController.removeFromWishlist);
+
 router.put("/addAddress", userController.addAddress);
 
 router.put("/deleteAddress/:id", userController.deleteAddress);
