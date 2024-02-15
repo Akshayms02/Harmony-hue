@@ -507,17 +507,23 @@
   <script>
     const addToCart = (productId) => {
       let size = "";
+      let quantity=0;
       if (document.getElementById("S").classList.contains("active")) {
         size = "S";
+        quantity=document.getElementById("smallQuantity");
       } else if (document.getElementById("M").classList.contains("active")) {
         size = "M"
+        quantity=document.getElementById("mediumQuantity");
       } else if (document.getElementById("L").classList.contains("active")) {
         size = "L"
+        quantity=document.getElementById("largeQuantity");
       } else {
         size = "M";
+        quantity=document.getElementById("mediumQuantity");
       }
       console.log(productId);
-      $.ajax({
+      if(quantity>0){
+        $.ajax({
         url: `/addToCart/${productId}/${size}`,
         method: "POST",
         success: function (response) {
@@ -559,6 +565,19 @@
           console.log(errorThrown);
         }
       });
+      }else{
+        Toastify({
+              text: `Out of stock`,
+              duration: 3000,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: true, // Prevents dismissing of toast on hover
+              style: {
+                background: "red",
+              },
+            }).showToast();
+      }
+      
     };
   </script>
 
