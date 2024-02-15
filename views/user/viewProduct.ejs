@@ -507,77 +507,77 @@
   <script>
     const addToCart = (productId) => {
       let size = "";
-      let quantity=0;
+      let quantity = 0;
       if (document.getElementById("S").classList.contains("active")) {
         size = "S";
-        quantity=document.getElementById("smallQuantity");
+        quantity = parseInt(document.getElementById("smallQuantity").innerHTML)
       } else if (document.getElementById("M").classList.contains("active")) {
         size = "M"
-        quantity=document.getElementById("mediumQuantity");
+        quantity = parseInt(document.getElementById("mediumQuantity").innerHTML);
       } else if (document.getElementById("L").classList.contains("active")) {
         size = "L"
-        quantity=document.getElementById("largeQuantity");
+        quantity = parseInt(document.getElementById("largeQuantity").innerHTML)
       } else {
         size = "M";
-        quantity=document.getElementById("mediumQuantity");
+        quantity = parseInt(document.getElementById("mediumQuantity").innerHTML);
       }
       console.log(productId);
-      if(quantity>0){
+      if (quantity > 0) {
         $.ajax({
-        url: `/addToCart/${productId}/${size}`,
-        method: "POST",
-        success: function (response) {
-          if (response.status) {
-            Toastify({
-              text: `Added to Cart`,
-              duration: 3000,
-              gravity: "top", // `top` or `bottom`
-              position: "center", // `left`, `center` or `right`
-              stopOnFocus: true, // Prevents dismissing of toast on hover
-              style: {
-                background: "green",
-              },
-            }).showToast();
-            setTimeout(() => {
-              location.reload();
-            }, 1000);
+          url: `/addToCart/${productId}/${size}`,
+          method: "POST",
+          success: function (response) {
+            if (response.status) {
+              Toastify({
+                text: `Added to Cart`,
+                duration: 3000,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "green",
+                },
+              }).showToast();
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
 
 
+            }
+            else {
+              Toastify({
+                text: `Something went wrong, Please try again later`,
+                duration: 3000,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+            }
+
+          },
+          error: function (XHR, textStatus, errorThrown) {
+            console.log(errorThrown);
           }
-          else {
-            Toastify({
-              text: `Something went wrong, Please try again later`,
-              duration: 3000,
-              gravity: "top", // `top` or `bottom`
-              position: "center", // `left`, `center` or `right`
-              stopOnFocus: true, // Prevents dismissing of toast on hover
-              style: {
-                background: "red",
-              },
-            }).showToast();
-            setTimeout(() => {
-              location.reload();
-            }, 1000);
-          }
-
-        },
-        error: function (XHR, textStatus, errorThrown) {
-          console.log(errorThrown);
-        }
-      });
-      }else{
+        });
+      } else {
         Toastify({
-              text: `Out of stock`,
-              duration: 3000,
-              gravity: "top", // `top` or `bottom`
-              position: "center", // `left`, `center` or `right`
-              stopOnFocus: true, // Prevents dismissing of toast on hover
-              style: {
-                background: "red",
-              },
-            }).showToast();
+          text: `Out of stock`,
+          duration: 3000,
+          gravity: "top", // `top` or `bottom`
+          position: "center", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          style: {
+            background: "red",
+          },
+        }).showToast();
       }
-      
+
     };
   </script>
 
@@ -629,8 +629,8 @@
       $.ajax({
         url: `/removeFromWishList`,
         method: "PUT",
-        data:{
-          productId:productId
+        data: {
+          productId: productId
 
         },
         success: function (response) {
