@@ -22,9 +22,17 @@ const placeOrder = (body, userId) => {
           product: product.productItemId,
           quantity: product.quantity,
           size: product.size,
-          productPrice: product.price
+          productPrice: product.price,
         });
-        let changeStock = await productModel.updateOne({ _id: product.productItemId, "productQuantity.size": product.size }, { $inc: { "productQuantity.$.quantity": - product.quantity,totalQuantity:-product.quantity } });
+        let changeStock = await productModel.updateOne(
+          { _id: product.productItemId, "productQuantity.size": product.size },
+          {
+            $inc: {
+              "productQuantity.$.quantity": -product.quantity,
+              totalQuantity: -product.quantity,
+            },
+          }
+        );
       }
 
       if (cart && address) {
@@ -43,10 +51,9 @@ const placeOrder = (body, userId) => {
           paymentMethod: body.paymentOption,
           totalAmount: cart.totalAmount,
         });
-        
+
         resolve(result);
       }
-
     } catch (error) {
       console.log(error);
     }
@@ -119,5 +126,3 @@ module.exports = {
   getAllOrders,
   changeOrderStatus,
 };
-
-

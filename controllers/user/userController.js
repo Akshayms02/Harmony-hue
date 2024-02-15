@@ -64,8 +64,6 @@ const userProfileLoad = async (req, res) => {
       order.quantity = quantity;
       quantity = 0;
     }
-
-    console.log(orderDetails[0].formattedDate);
     if (user) {
       res.render("user/userProfile", {
         userData: user,
