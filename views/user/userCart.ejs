@@ -54,7 +54,7 @@
                           <span class="qty-val" id="quantity<%= cartItems[i].product._id %>">
                             <%= cartItems[i].quantity %>
                           </span>
-                          <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','1')"><i
+                          <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','1')" id="upButton<%= cartItems[i].product._id %>"><i
                               class="fi-rs-angle-small-up"></i></a>
                         </div>
                       </td>
@@ -162,6 +162,7 @@
 
   <script>
     const incOrDecQuantity = (productId, quantity) => {
+      let Quantity=$("#quantity"+productId).html();
       $.ajax({
         url: `/updateCartQuantity?productId=${productId}&quantity=${quantity}`,
         method: "PATCH",
@@ -179,11 +180,13 @@
             }).showToast();
             document.getElementById("totalAmount").innerHTML = "₹" + response.totalSubtotal
             document.getElementById("totalAmountFinal").innerHTML = "₹" + response.totalSubtotal
-            for (i = 0; i < response.cartDetails.products.length; i++) {
-              document.getElementById("quantity" + productId).innerHTML = response.cartDetails.products[i].quantity;
-              document.getElementById("individualTotal" + productId).innerHTML = response.cartDetails.products[i].totalPrice
-            }
-
+           
+              console.log(response.cartDetails[0].products)
+              
+              $("#quantity" + productId).html(response.cartDetails[0].products.quantity) 
+              $("#individualTotal" + productId).html( response.cartDetails[0].products.totalPrice) 
+              $("#upButton"+productId).show()
+          
 
           } else {
             Toastify({
@@ -196,6 +199,10 @@
                 background: "red",
               },
             }).showToast();
+          
+            
+            $("#quantity" + productId).html(Quantity) 
+            $("#upButton"+productId).hide()
           }
 
         }
@@ -224,10 +231,6 @@
             setTimeout(() => {
               location.reload()
             }, 600);
-
-
-
-
           } else {
             location.reload();
           }

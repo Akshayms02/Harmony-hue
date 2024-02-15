@@ -1,6 +1,7 @@
 const cartHelper = require("../../helper/cartHelper");
 const cartModel = require("../../models/cartModel");
 const wishlistHelper = require("../../helper/wishlistHelper");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const userCartLoad = async (req, res) => {
   try {
@@ -61,19 +62,32 @@ const updateCartQuantity = async (req, res) => {
   const cartItems = await cartHelper.getAllCartItems(userId);
 
   if (update.status) {
-    const cart = await cartModel.findOne({ user: userId }).lean();
-   
-    for (const product of cart.products) {
-      product.totalPrice = currencyFormatter(
-        Math.round(update.price - (update.price * update.discount) / 100) *
-          product.quantity
-      );
-    }
-    const totalSubtotal=await cartHelper.totalSubtotal(userId, cartItems);
-    console.log(totalSubtotal);
-    console.log(cart)
+    const cart = await cartModel.aggregate([
+      { $unwind: "$products" },
+      {
+        $match: {
+          user: new ObjectId(userId),
+          "products.productItemId": new ObjectId(productId),
+        },
+      },
+    ]);
+    console.log(cart);
 
-    res.json({ status: true, message: update.message,cartDetails:cart,totalSubtotal });
+    cart[0].products.totalPrice = currencyFormatter(
+      Math.round(update.price - (update.price * update.discount) / 100) *
+        cart[0].products.quantity
+    );
+
+    const totalSubtotal = await cartHelper.totalSubtotal(userId, cartItems);
+    console.log(totalSubtotal);
+    console.log(cart);
+
+    res.json({
+      status: true,
+      message: update.message,
+      cartDetails: cart,
+      totalSubtotal,
+    });
   } else {
     res.json({ status: false, message: update.message });
   }

@@ -56,7 +56,7 @@ const userProfileLoad = async (req, res) => {
       order.formattedDate = moment(dateString).format("MMMM Do, YYYY");
       order.formattedTotal = currencyFormatter(order.totalAmount);
       let quantity = 0;
-      for (const product of order.products) {
+      for (const product of order.products) { 
         quantity += Number(product.quantity);
       }
       order.quantity = quantity;
