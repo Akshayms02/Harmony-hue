@@ -49,6 +49,8 @@ const loadUserHome = async (req, res) => {
 const userProfileLoad = async (req, res) => {
   try {
     const userId = req.session.user;
+    const cartCount = await cartHelper.getCartCount(userId);
+    const wishListCount = await wishlistHelper.getWishListCount(userId);
     const user = await userModel.findOne({ _id: userId });
     const orderDetails = await orderHelper.getOrderDetails(userId);
     for (const order of orderDetails) {
@@ -56,7 +58,7 @@ const userProfileLoad = async (req, res) => {
       order.formattedDate = moment(dateString).format("MMMM Do, YYYY");
       order.formattedTotal = currencyFormatter(order.totalAmount);
       let quantity = 0;
-      for (const product of order.products) { 
+      for (const product of order.products) {
         quantity += Number(product.quantity);
       }
       order.quantity = quantity;
@@ -65,7 +67,12 @@ const userProfileLoad = async (req, res) => {
 
     console.log(orderDetails[0].formattedDate);
     if (user) {
-      res.render("user/userProfile", { userData: user, orderDetails });
+      res.render("user/userProfile", {
+        userData: user,
+        orderDetails,
+        cartCount,
+        wishListCount,
+      });
     }
   } catch (error) {
     console.log(error);

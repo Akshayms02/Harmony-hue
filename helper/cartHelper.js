@@ -4,11 +4,21 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToCart = (userId, productId, size) => {
   return new Promise(async (resolve, reject) => {
+    const product = await productModel.findOne({ _id: productId });
+    const discountedPrice = Math.round(
+      product.productPrice -
+        (product.productPrice * product.productDiscount) / 100
+    );
     const cart = await cartModel.updateOne(
       { user: userId },
       {
         $push: {
-          products: { productItemId: productId, quantity: 1, size: size },
+          products: {
+            productItemId: productId,
+            quantity: 1,
+            size: size,
+            price: discountedPrice,
+          },
         },
       },
       { upsert: true }
@@ -37,7 +47,7 @@ const totalSubtotal = (userId, cartItems) => {
     console.log(userId);
     let cart = await cartModel.findOne({ user: userId });
     let total = 0;
-   
+
     if (cart) {
       if (cartItems.length) {
         for (let i = 0; i < cartItems.length; i++) {
@@ -55,7 +65,6 @@ const totalSubtotal = (userId, cartItems) => {
       cart.totalAmount = parseFloat(total);
 
       await cart.save();
-      
 
       resolve(total);
     } else {
@@ -144,11 +153,10 @@ const incDecProductQuantity = (userId, productId, quantity) => {
     if (newQuantity < 1) {
       newQuantity = 1;
     }
-    console.log(newQuantity)
+    console.log(newQuantity);
     if (newQuantity > sizeStock.quantity) {
       resolve({ status: false, message: "Stock limit exceeded" });
-    }
-    else {
+    } else {
       product.quantity = newQuantity;
       await cart.save();
       resolve({
@@ -158,11 +166,8 @@ const incDecProductQuantity = (userId, productId, quantity) => {
         discount: productStock.productDiscount,
       });
     }
-    
   });
 };
-
-
 
 const removeItemFromCart = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
@@ -195,5 +200,4 @@ module.exports = {
   incDecProductQuantity,
   removeItemFromCart,
   clearAllCartItems,
-
 };

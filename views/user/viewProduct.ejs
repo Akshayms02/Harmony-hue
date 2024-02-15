@@ -197,7 +197,9 @@
                     <h2 class="title-detail">
                       <%= product.productName %>
                     </h2>
-                    <h4 class="title-info mt-3"><%= product.productCategory.categoryName %></h4>
+                    <h4 class="title-info mt-3">
+                      <%= product.productCategory.categoryName %>
+                    </h4>
                     <div class="product-detail-rating">
 
                       <div class="product-rate-cover text-end">
@@ -270,7 +272,7 @@
                               <% if (product.wishlistStatus) { %>
                                 <a aria-label="Remove from wishlist" class="action-btn hover-up"
                                   onclick="removeFromWishlist('<%=product._id%>')"><i class="fi-rs-heart"
-                                    style="background-color: red;"></i></a>
+                                    style="color: red;"></i></a>
                                 <% } else { %>
                                   <a aria-label="Add To Wishlist" class="action-btn hover-up"
                                     onclick="addTowishlist('<%=product._id%>')"><i class="fi-rs-heart"></i></a>
@@ -504,15 +506,15 @@
 
   <script>
     const addToCart = (productId) => {
-      let size="";
-      if(document.getElementById("S").classList.contains("active")){
-        size="S";
-      }else if(document.getElementById("M").classList.contains("active")){
-        size="M"
-      }else if(document.getElementById("L").classList.contains("active")){
-        size="L"
-      }else{
-        size="M";
+      let size = "";
+      if (document.getElementById("S").classList.contains("active")) {
+        size = "S";
+      } else if (document.getElementById("M").classList.contains("active")) {
+        size = "M"
+      } else if (document.getElementById("L").classList.contains("active")) {
+        size = "L"
+      } else {
+        size = "M";
       }
       console.log(productId);
       $.ajax({
@@ -581,7 +583,7 @@
             setTimeout(() => {
               location.reload()
             }, 1000);
-            
+
           }
           else {
             Toastify({
@@ -601,5 +603,51 @@
         }
       });
     };
+  </script>
+
+  <script>
+    const removeFromWishlist = (productId) => {
+      $.ajax({
+        url: `/removeFromWishList`,
+        method: "PUT",
+        data:{
+          productId:productId
+
+        },
+        success: function (response) {
+          if (response.status) {
+            Toastify({
+              text: `Removed from wishlist`,
+              duration: 3000,
+              gravity: "top",
+              position: "center",
+              stopOnFocus: true,
+              style: {
+                background: "red",
+              },
+            }).showToast();
+            setTimeout(() => {
+              location.reload()
+            }, 1000);
+
+          }
+          else {
+            Toastify({
+              text: `Something went wrong, Please try again later`,
+              duration: 3000,
+              gravity: "top",
+              position: "center",
+              stopOnFocus: true,
+              style: {
+                background: "red",
+              },
+            }).showToast();
+          }
+        },
+        error: function (XHR, textStatus, errorThrown) {
+          console.log(errorThrown);
+        }
+      });
+    }
   </script>
   <%- include("../layouts/userLayout/userHomeFooter") %>
