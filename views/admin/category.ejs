@@ -8,8 +8,10 @@
         <h2 class="content-title card-title">Category Management</h2>
         <p>Add, edit, or delete (Soft delete) a category</p>
         <% if (locals.message) { %>
-         <span style="color: red;"><%= message %></span>
-        <% } %>
+          <span style="color: red;">
+            <%= message %>
+          </span>
+          <% } %>
       </div>
       <div>
         <input type="text" placeholder="Search Categories" class="form-control bg-white" />
@@ -139,14 +141,21 @@
 
   <script>
     function deleteACategory(categoryId) {
-      swal("Are you sure you want to delete this", {
-        buttons: ["cancel", "ok"],
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to do this?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes !',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
       }).then((response) => {
-        if (response) {
+        console.log(response);
+        if (response.isConfirmed) {
           $.ajax({
             url: "/admin/delete-category/" + categoryId,
             type: "get",
-          }).then((response) => {
+          }).done(response => {
             if (response) {
               if (response.listed) {
                 //to show green button and green toast message
@@ -191,10 +200,17 @@
               }
               console.log(response.listed);
             }
-          });
+          })
+            .fail((error) => {
+              Swal.fire("Successfull", `${error.message}`, "success").then(() => {
+                location.reload()
+              })
+            })
         }
-      });
+      })
+
     }
+
   </script>
 
   <script>
