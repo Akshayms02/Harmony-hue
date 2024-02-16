@@ -1,5 +1,6 @@
 const cartHelper = require("../../helper/cartHelper");
 const orderHelper = require("../../helper/orderHelper");
+const couponHelper=require("../../helper/couponHelper")
 const userModel = require("../../models/userModel");
 
 const checkoutLoad = async (req, res) => {
@@ -7,6 +8,7 @@ const checkoutLoad = async (req, res) => {
   const cartItems = await cartHelper.getAllCartItems(userId);
   let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartItems);
   const userData = await userModel.findOne({ _id: userId });
+  const coupons = await couponHelper.findAllCoupons();
   console.log(userData);
 
   console.log(cartItems);
@@ -34,7 +36,7 @@ const checkoutLoad = async (req, res) => {
       cartItems,
       totalAmountOfEachProduct,
       totalandSubTotal,
-      userData,
+      userData,coupons
     });
   }
 };

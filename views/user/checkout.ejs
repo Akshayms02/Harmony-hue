@@ -176,49 +176,37 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-6 mb-sm-15">
-            <!-- <div class="toggle_info">
-                            <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Already have an account?</span> <a href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to login</a></span>
-                        </div> -->
+            <div class="toggle_info">
+              <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Avialable Coupons</span> <a
+                  href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">See
+                  More</a></span>
+            </div>
             <div class="panel-collapse collapse login_form" id="loginform">
               <div class="panel-body">
-                <p class="mb-30 font-sm">If you have shopped with us before, please enter your details below. If you are
-                  a new customer, please proceed to the Billing &amp; Shipping section.</p>
-                <form method="post">
-                  <div class="form-group">
-                    <input type="text" name="email" placeholder="Username Or Email">
-                  </div>
-                  <div class="form-group">
-                    <input type="password" name="password" placeholder="Password">
-                  </div>
-                  <div class="login_footer form-group">
-                    <div class="chek-form">
-                      <div class="custome-checkbox">
-                        <input class="form-check-input" type="checkbox" name="checkbox" id="remember" value="">
-                        <label class="form-check-label" for="remember"><span>Remember me</span></label>
-                      </div>
-                    </div>
-                    <a href="#">Forgot password?</a>
-                  </div>
-                  <div class="form-group">
-                    <button class="btn btn-md" name="login">Log in</button>
-                  </div>
-                </form>
+                <% for( let i=0; i < coupons.length; i++ ) { %>
+                  <p>
+                    <%=coupons[i].couponName%>
+                  </p><br>
+                  <% } %>
+
               </div>
             </div>
           </div>
           <div class="col-lg-6">
-            <!-- <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                        </div> -->
+            <div class="toggle_info">
+              <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon"
+                  data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your
+                  code</a></span>
+            </div>
             <div class="panel-collapse collapse coupon_form " id="coupon">
               <div class="panel-body">
                 <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                <form method="post">
+                <form action="/applyCoupon" method="post" id="couponForm">
                   <div class="form-group">
-                    <input type="text" placeholder="Enter Coupon Code...">
+                    <input type="text" placeholder="Enter Coupon Code..." name="couponCode">
                   </div>
                   <div class="form-group">
-                    <button class="btn  btn-md" name="login">Apply Coupon</button>
+                    <button class="btn  btn-md" name="login" style="background-color: black;" type="submit">Apply Coupon</button>
                   </div>
                 </form>
               </div>
@@ -247,8 +235,8 @@
                             <%= element.state %> ,<%= element.city %>, <%= element.country %> <br> Pincode:
                                   <%=element.pincode %>
                         </p>
-                        <input type="radio" class="form-check-input" style="border-color: black; outline: none;" name="address" id="address-1"
-                          value="<%= element._id %>" checked>
+                        <input type="radio" class="form-check-input" style="border-color: black; outline: none;"
+                          name="address" id="address-1" value="<%= element._id %>" checked>
                         <label for="address-1" class="form-check-label">Select this address</label>
                       </div>
                     </div>
@@ -346,7 +334,7 @@
                         PayPal account.</p>
                     </div>
                   </div>
-                  
+
 
                 </div>
               </div>
@@ -388,6 +376,33 @@
             }
           }
         })
+      })
+
+    })
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#couponForm").submit(function(event){
+        console.log("hey")
+        event.preventDefault();
+        let formData=$(this).serialize();
+        console.log(formData)
+        $.ajax({
+          url:"/applyCoupon",
+          method:"POST",
+          data:formData,
+          success:(response)=>{
+            if(status){
+              console.log(true)
+            }
+
+          },
+          error:(error)=>{
+            console.log(error)
+          }
+        })
+        
+
       })
 
     })

@@ -35,22 +35,23 @@
           </div>
           <div class="header-right">
             <div class="search-style-2">
-              <form action="#">
-                <select class="select-active">
-                  <option>All Categories</option>
-                  <option>Women's</option>
-                  <option>Men's</option>
-                  <option>Cellphones</option>
-                  <option>Computer</option>
-                  <option>Electronics</option>
-                  <option>Accessories</option>
-                  <option>Home & Garden</option>
-                  <option>Luggage</option>
-                  <option>Shoes</option>
-                  <option>Mother & Kids</option>
-                </select>
-                <input type="text" placeholder="Search for items..." />
-              </form>
+             
+                <div>
+                  <form action="#" method="post">
+                      <div class="header-search-wrapper">
+                          
+                          <div>
+                              <input type="search" class="form-control" id="searchInput"
+                                  placeholder="Search in..." required autocomplete="off">
+                              <a href="#" class="search-toggle" role="button">
+                                  <i class="icon-search"></i>
+                              </a>
+                          </div>
+                      </div><!-- End .header-search-wrapper -->
+                  </form>
+                  <ul id="suggestionList"></ul>
+              </div>
+           
             </div>
             <div class="header-action-right">
               <div class="header-action-2">

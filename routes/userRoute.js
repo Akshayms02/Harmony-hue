@@ -7,8 +7,8 @@ const orderController = require("../controllers/user/orderController");
 const productController = require("../controllers/user/productController");
 const userController = require("../controllers/user/userController");
 const wishlistController = require("../controllers/user/wishlistController");
-// const userController = require("../controllers/userController");
-// const sharp = require("../middleware/sharp");
+const couponController = require("../controllers/user/couponController");
+
 
 router.get("/", userAuth.isLogin, authController.loginLoad);
 
@@ -84,5 +84,8 @@ router.get(
 router.patch("/cancelOrder/:id", orderController.cancelOrder);
 
 router.patch("/cancelSingleOrder", orderController.cancelSingleOrder);
+
+router.post("/applyCoupon", couponController.applyCoupon);
+
 
 module.exports = router;
