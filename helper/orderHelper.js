@@ -185,7 +185,7 @@ const changeOrderStatus = (orderId, changeStatus) => {
 const cancelSingleOrder = (orderId, singleOrderId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const cancelled = await orderModel.updateOne(
+      const cancelled = await orderModel.findOneAndUpdate(
         {
           _id: new ObjectId(orderId),
           "products._id": new ObjectId(singleOrderId),
@@ -194,6 +194,32 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
           $set: { "products.$.status": "cancelled" },
         }
       );
+      const result = await orderModel.aggregate([
+        {
+          $unwind: "$products",
+        },
+        {
+          $match: {
+            _id: new ObjectId(orderId),
+            "products._id": new ObjectId(singleOrderId),
+          },
+        },
+      ]);
+      const singleProductId = result[0].products.product;
+      const singleProductSize = result[0].products.size;
+      const singleProductQuantity = result[0].products.quantity;
+
+      const stockIncrease = await productModel.updateOne(
+        { _id: singleProductId, "productQuantity.size": singleProductSize },
+        {
+          $inc: {
+            "productQuantity.$.quantity": singleProductQuantity,
+            totalQuantity: singleProductQuantity,
+          },
+        }
+      );
+
+      console.log(result);
 
       resolve(cancelled);
     } catch (error) {
