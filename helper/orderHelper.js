@@ -97,7 +97,6 @@ const getOrderDetailsOfEachProduct = (orderId) => {
           $unwind: "$orderedProduct",
         },
       ]);
-      console.log(orderDetails);
 
       resolve(orderDetails);
     } catch (error) {
@@ -186,7 +185,6 @@ const changeOrderStatus = (orderId, changeStatus) => {
 const cancelSingleOrder = (orderId, singleOrderId) => {
   return new Promise(async (resolve, reject) => {
     try {
-     
       const cancelled = await orderModel.updateOne(
         {
           _id: new ObjectId(orderId),
@@ -196,8 +194,25 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
           $set: { "products.$.status": "cancelled" },
         }
       );
-      console.log(cancelled)
+
       resolve(cancelled);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+const changeOrderStatusOfEachProduct = (orderId, productId, status) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await orderModel.updateOne(
+        { _id: new ObjectId(orderId), "products._id": new ObjectId(productId) },
+        {
+          $set: { "products.$.status": status },
+        }
+      );
+      console.log(result);
+      resolve(result);
     } catch (error) {
       console.log(error);
     }
@@ -213,4 +228,5 @@ module.exports = {
   changeOrderStatus,
   getSingleOrderDetails,
   cancelSingleOrder,
+  changeOrderStatusOfEachProduct,
 };

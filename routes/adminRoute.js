@@ -16,7 +16,7 @@ router.post("/", authContoller.adminLoginPost);
 
 router.get("/logout", adminAuth.isLogout, authContoller.adminLogout);
 
-router.get("/adminhome",adminAuth.isLogout, adminController.loadAdminHome);
+router.get("/adminhome", adminAuth.isLogout, adminController.loadAdminHome);
 
 router.get("/category", adminAuth.isLogout, categoryController.loadCategory);
 
@@ -30,9 +30,17 @@ router.get(
 
 router.put("/editCategory/:id", categoryController.editCategoryPost);
 
-router.get("/delete-category/:id",adminAuth.isLogout, categoryController.deleteCategory);
+router.get(
+  "/delete-category/:id",
+  adminAuth.isLogout,
+  categoryController.deleteCategory
+);
 
-router.get("/productList", adminAuth.isLogout, productController.productListLoad);
+router.get(
+  "/productList",
+  adminAuth.isLogout,
+  productController.productListLoad
+);
 
 router.get("/addProduct", adminAuth.isLogout, productController.addProductLoad);
 
@@ -45,11 +53,16 @@ router.post(
 
 router.patch("/deleteproduct/:id", productController.deleteProduct);
 
-router.get("/editProduct/:id",adminAuth.isLogout, productController.editProductLoad);
+router.get(
+  "/editProduct/:id",
+  adminAuth.isLogout,
+  productController.editProductLoad
+);
 
 router.put(
   "/editProduct/:id",
-  multer.productUpload.array("images"),sharp.resizeImages,
+  multer.productUpload.array("images"),
+  sharp.resizeImages,
   productController.editProductPost
 );
 
@@ -57,10 +70,15 @@ router.get("/userList", adminAuth.isLogout, usersController.userListLoad);
 
 router.patch("/blockUnblockuser/:id", usersController.userBlockUnblock);
 
-router.get("/orders", adminAuth.isLogout,orderController.adminOrderPageLoad);
+router.get("/orders", adminAuth.isLogout, orderController.adminOrderPageLoad);
 
 router.put("/orderStatusChange", orderController.changeOrderStatus);
 
-router.get("/orderDetails/:id",orderController.orderDetails)
+router.get("/orderDetails/:id", orderController.orderDetails);
+
+router.patch(
+  "/orderStatusChangeForEachProduct/:orderId/:productId",
+  orderController.changeOrderStatusOfEachProduct
+);
 
 module.exports = router;
