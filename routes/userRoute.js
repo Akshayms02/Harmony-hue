@@ -67,6 +67,8 @@ router.put("/deleteAddress/:id", userController.deleteAddress);
 
 router.get("/profile", userAuth.isLogout, userController.userProfileLoad);
 
+router.get("/orderDetails/:id", userAuth.isLogout, orderController.orderDetails);
+
 router.put("/updateUserDetails", userController.updateUserDetails);
 
 router.get("/checkout", userAuth.isLogout, orderController.checkoutLoad);
@@ -80,5 +82,7 @@ router.get(
 );
 
 router.patch("/cancelOrder/:id", orderController.cancelOrder);
+
+router.patch("/cancelSingleOrder", orderController.cancelSingleOrder);
 
 module.exports = router;

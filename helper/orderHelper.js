@@ -2,6 +2,8 @@ const orderModel = require("../models/orderModel");
 const cartModel = require("../models/cartModel");
 const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
+const { resolveInclude } = require("ejs");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const placeOrder = (body, userId) => {
   return new Promise(async (resolve, reject) => {
@@ -64,8 +66,68 @@ const getOrderDetails = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const orderDetails = await orderModel.find({ user: userId });
-      console.log(orderDetails);
+      console.log(orderDetails[0].products.product);
       resolve(orderDetails);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+const getOrderDetailsOfEachProduct = (orderId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const orderDetails = await orderModel.aggregate([
+        {
+          $match: {
+            _id: new ObjectId(orderId),
+          },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "products.product",
+            foreignField: "_id",
+            as: "orderedProduct",
+          },
+        },
+        {
+          $unwind: "$orderedProduct",
+        },
+      ]);
+      console.log(orderDetails);
+
+      resolve(orderDetails);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+const getSingleOrderDetails = (orderId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const singleOrderDetails = await orderModel.aggregate([
+        {
+          $match: {
+            _id: new ObjectId(orderId),
+          },
+        },
+        {
+          $project: {
+            user: 1,
+            totalAmount: 1,
+            paymentMethod: 1,
+            orderedOn: 1,
+            status: 1,
+          },
+        },
+      ]);
+      console.log(singleOrderDetails);
+      resolve(singleOrderDetails);
     } catch (error) {
       console.log(error);
     }
@@ -78,6 +140,9 @@ const cancelOrder = (orderId) => {
       const order = await orderModel.findOne({ _id: orderId });
       if (order) {
         order.status = "cancelled";
+        for (const singleProduct of order.products) {
+          singleProduct.status = "cancelled";
+        }
         order.save();
         resolve(order);
       } else {
@@ -119,10 +184,34 @@ const changeOrderStatus = (orderId, changeStatus) => {
   });
 };
 
+const cancelSingleOrder = (orderId, singleOrderId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+     
+      const cancelled = await orderModel.updateOne(
+        {
+          _id: new ObjectId(orderId),
+          "products._id": new ObjectId(singleOrderId),
+        },
+        {
+          $set: { "products.$.status": "cancelled" },
+        }
+      );
+      console.log(cancelled)
+      resolve(cancelled);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
 module.exports = {
   placeOrder,
   getOrderDetails,
+  getOrderDetailsOfEachProduct,
   cancelOrder,
   getAllOrders,
   changeOrderStatus,
+  getSingleOrderDetails,
+  cancelSingleOrder,
 };

@@ -18,8 +18,23 @@ const orderSchema = new mongoose.Schema({
         type: String,
       },
       productPrice: {
-        type:Number,
-      }
+        type: Number,
+      },
+      status: {
+        type: String,
+        enum: [
+          "pending",
+          "processing",
+          "confirmed",
+          "outForDelivery",
+          "shipped",
+          "delivered",
+          "cancelled",
+          "return pending",
+          "returned",
+        ],
+        default: "pending",
+      },
     },
   ],
   address: {
@@ -43,7 +58,17 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending","processing","confirmed","outForDelivery", "shipped", "delivered", "cancelled"],
+    enum: [
+      "pending",
+      "processing",
+      "confirmed",
+      "outForDelivery",
+      "shipped",
+      "delivered",
+      "cancelled",
+      "return pending",
+      "returned",
+    ],
     default: "pending",
   },
   orderId: {

@@ -256,7 +256,8 @@
                                                                 <th>Date</th>
                                                                 <th>Status</th>
                                                                 <th>Total</th>
-                                                                <th>Actions</th>
+                                                                <th>Action</th>
+                                                                <th>View</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -274,7 +275,11 @@
                                                                         <%= element.formattedTotal %> for <%=
                                                                                 element.quantity %> item
                                                                     </td>
-                                                                    <% if (element.status=="pending"||element.status=="processing"||element.status=="shipped"||element.status=="confirmed"||element.status=="outForDelivery" ) { %>
+                                                                    <% if (element.status=="pending"
+                                                                        ||element.status=="processing"
+                                                                        ||element.status=="shipped"
+                                                                        ||element.status=="confirmed"
+                                                                        ||element.status=="outForDelivery" ) { %>
                                                                         <td><a onclick="cancelOrder('<%= element._id %>')"
                                                                                 class="btn-small d-block text-danger">Cancel</a>
                                                                         </td>
@@ -288,6 +293,10 @@
                                                                                         class="badge bg-danger rounded">Cancelled</span>
                                                                                 </td>
                                                                                 <% } %>
+                                                                                    <td>
+                                                                                        <a href="/orderDetails/<%=element._id%>"
+                                                                                            class="btn-small d-block text-primary">View</a>
+                                                                                    </td>
                                                                 </tr>
 
                                                                 <% }) %>
@@ -372,19 +381,22 @@
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name</label>
-                                                            <input class="form-control square" name="name" type="text" id="name2">
+                                                            <input class="form-control square" name="name" type="text"
+                                                                id="name2">
                                                             <span id="name-error" class="text-danger"></span>
                                                         </div>
 
                                                         <div class="form-group col-md-12">
                                                             <label>House</label>
-                                                            <input class="form-control square" name="house" type="text" id="house">
+                                                            <input class="form-control square" name="house" type="text"
+                                                                id="house">
                                                             <span id="house-error" class="text-danger"></span>
                                                         </div>
 
                                                         <div class="form-group col-md-6">
                                                             <label>State</label>
-                                                            <input class="form-control square" name="state" type="text" id="state">
+                                                            <input class="form-control square" name="state" type="text"
+                                                                id="state">
                                                             <span id="state-error" class="text-danger"></span>
                                                         </div>
 
@@ -397,7 +409,8 @@
 
                                                         <div class="form-group col-md-6">
                                                             <label>City</label>
-                                                            <input class="form-control square" name="city" type="text" id="city">
+                                                            <input class="form-control square" name="city" type="text"
+                                                                id="city">
                                                             <span id="city-error" class="text-danger"></span>
                                                         </div>
 
@@ -680,6 +693,7 @@
         });
 
     </script>
+
     <script>
         function validateForm() {
             const nameRegex = /^[a-zA-Z\s]+$/;
