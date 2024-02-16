@@ -185,7 +185,7 @@
               <div class="panel-body">
                 <% for( let i=0; i < coupons.length; i++ ) { %>
                   <p>
-                    <%=coupons[i].couponName%>
+                    <%=coupons[i].couponName%>: <%= coupons[i].code %>
                   </p><br>
                   <% } %>
 
@@ -291,7 +291,7 @@
                         </tr>
                         <tr>
                           <th>Total</th>
-                          <td colspan="2" class="product-subtotal"><span class="font-xl text-dark fw-900">
+                          <td colspan="2" class="product-subtotal"><span class="font-xl text-dark fw-900" id="totalAmount">
                               <%=totalandSubTotal%>
                             </span></td>
                         </tr>
@@ -393,7 +393,28 @@
           data:formData,
           success:(response)=>{
             if(status){
-              console.log(true)
+              Toastify({
+                text: `${response.message}`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                stopOnFocus: true,
+                style: {
+                  background: "green",
+                },
+              }).showToast();
+              
+            }else{
+              Toastify({
+                text: `${response.message}`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                stopOnFocus: true,
+                style: {
+                  background: "red",
+                },
+              }).showToast();
             }
 
           },
