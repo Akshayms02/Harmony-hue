@@ -223,7 +223,7 @@
             url: `/cancelSingleOrder?orderId=${orderId}&singleOrderId=${singleOrderId}`,
             method: "PATCH",
           }).done(response => {
-            Swal.fire("Successfull", `Address Deleted`, "success").then(() => {
+            Swal.fire("Successfull", `Order Cancelled`, "success").then(() => {
               location.reload();
             })
           }).fail((error) => {

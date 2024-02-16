@@ -219,7 +219,7 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
         }
       );
 
-      console.log(result);
+     
 
       resolve(cancelled);
     } catch (error) {

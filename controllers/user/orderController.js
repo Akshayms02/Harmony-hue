@@ -90,8 +90,12 @@ const cancelSingleOrder = async (req, res) => {
   try {
     const orderId = req.query.orderId;
     const singleOrderId = req.query.singleOrderId;
-    console.log(singleOrderId);
     const result = await orderHelper.cancelSingleOrder(orderId, singleOrderId);
+    if (result) {
+      res.json({status:true})
+    } else {
+      res.json({status:false})
+    }
   } catch (error) {
     console.log(error);
   }
