@@ -2,7 +2,6 @@ const orderModel = require("../models/orderModel");
 const cartModel = require("../models/cartModel");
 const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
-const { resolveInclude } = require("ejs");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const placeOrder = (body, userId) => {

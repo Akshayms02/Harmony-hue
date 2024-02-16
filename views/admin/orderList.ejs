@@ -31,7 +31,7 @@
                   <% for( let i=0; i < allOrders.length; i++ ) { %>
                     <tr>
                       <td width="10%">
-                        <%= allOrders[i].orderId %>
+                        #<%= allOrders[i].orderId %>
                       </td>
                       <td width="8%">
                         <%= allOrders[i].userOrderDetails[0].name %>
@@ -40,7 +40,7 @@
                         <%= allOrders[i].formattedDate %>
                       </td>
                       <td width="7%">
-                        <%= allOrders[i].totalAmount %>
+                        ₹ <%= allOrders[i].totalAmount %>
                       </td>
                       <td width="7%">
                         <%= allOrders[i].paymentMethod %>

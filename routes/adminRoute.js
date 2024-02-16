@@ -61,4 +61,6 @@ router.get("/orders", adminAuth.isLogout,orderController.adminOrderPageLoad);
 
 router.put("/orderStatusChange", orderController.changeOrderStatus);
 
+router.get("/orderDetails/:id",orderController.orderDetails)
+
 module.exports = router;

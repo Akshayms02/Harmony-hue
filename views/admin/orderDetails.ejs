@@ -1,0 +1,243 @@
+<%- include("../layouts/adminLayout/admin-header") %>
+
+
+  <main class="main">
+    <div class="page-header breadcrumb-wrap">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="/userHome" rel="nofollow">Home</a>
+          <span></span> Shop
+          <span></span> Order Details
+        </div>
+      </div>
+    </div>
+    <section class="mt-50 mb-50">
+
+      <div class="container">
+
+        <div class="row">
+
+          <div class="col-12">
+
+            <h3 class="mb-3">Order Status: <span class="h3 text-primary">
+                <%= productDetails[0].status %>
+              </span></h3>
+              <h4 class="mb-4">Order ID: #<%=productDetails[0].orderId %></h4>
+            <div class="card">
+
+            </div>
+            
+
+            <div class="table-responsive container mb-150" >
+              <table class="table shopping-summery text-center clean" id="orderDetailsTable">
+                <thead>
+                  <tr class="main-heading">
+                    <th scope="col" class="text-center">Image</th>
+                    <th scope="col" class="text-center">Name</th>
+                    <th scope="col" class="text-center">Price</th>
+                    <th scope="col" class="text-center">Size</th>
+                    <th scope="col" class="text-center">Quantity</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for( let i=0; i < productDetails.length; i++ ) { %>
+                    <tr>
+                      <td class="image product-thumbnail"><img  width="80" src="/<%= productDetails[i].orderedProduct.image[0] %>"
+                          alt="#">
+                      </td>
+                      <td class="product-des product-name" style="vertical-align: middle;">
+                        <h5 class="product-name"><a href="shop-product-right.html" style="color: black;">
+                            <%= productDetails[i].orderedProduct.productName %>
+                          </a></h5>
+
+                      </td>
+                      <td class="price" data-title="Price" id="price-span" style="vertical-align: middle;"><span>
+                        ₹ <%= productDetails[i].products.productPrice %>
+                        </span></td>
+                      <td class="size" data-title="Size" id="size" style="vertical-align: middle;">
+                        <%= productDetails[i].products.size %>
+                      </td>
+                      <td class="text-center" data-title="Stock" style="vertical-align: middle;">
+                        <%= productDetails[i].products.quantity %>
+                      </td>
+
+                      <td class="text-center" data-title="status" style="vertical-align: middle;">
+
+                        <% if (productDetails[i].products.status=="pending" ) { %>
+                          <span class="badge text-dark bg-warning">
+                            <%= productDetails[i].products.status %>
+                          </span>
+                          <% } else if (productDetails[i].products.status=="processing" ) { %>
+                            <span class="badge text-dark bg-muted">
+                              <%= productDetails[i].products.status %>
+                            </span>
+                            <% } else if (productDetails[i].products.status=="confirmed" ) { %>
+                              <span class="badge text-dark bg-success">
+                                <%= productDetails[i].products.status %>
+                              </span>
+                              <% } else if (productDetails[i].products.status=="outForDelivery" ) { %>
+                                <span class="badge text-dark bg-success">
+                                  <%= productDetails[i].products.status %>
+                                </span>
+                                <% } else if (productDetails[i].products.status=="shipped" ) { %>
+                                  <span class="badge text-dark bg-primary">
+                                    <%= productDetails[i].products.status %>
+                                  </span>
+                                  <% } else if (productDetails[i].products.status=="delivered" ) { %>
+                                    <span class="badge text-dark bg-success">
+                                      <%= productDetails[i].products.status %>
+                                    </span>
+                                    <% } else if (productDetails[i].products.status=="cancelled" ) { %>
+                                      <span class="badge text-dark bg-danger">
+                                        <%= productDetails[i].products.status %>
+                                      </span>
+                                      <% } else if (productDetails[i].products.status=="return pending" ) { %>
+                                        <span class="badge text-dark bg-warning">
+                                          <%= productDetails[i].products.status %>
+                                        </span>
+                                        <% } else if (productDetails[i].products.status=="returned" ) { %>
+                                          <span class="badge text-dark bg-success">
+                                            <%= productDetails[i].products.status %>
+                                          </span>
+
+                                          <% } %>
+                      </td>
+
+
+                      <td class="action" data-title="Remove" style="vertical-align: middle;">
+                        <% if (productDetails[i].products.status=="cancelled" ) { %>
+                          <a href="#" class="text-muted">Cancelled</a>
+
+                          <% } else if (productDetails[i].products.status=="delivered" ) { %>
+                            <a onclick="returnOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products._id%>')"
+                              class="text-Primary">Return</a>
+                            <% } else if (productDetails[i].products.status=="return pending" ) { %>
+                              <a href="#" class="text-muted">Return Pending</a>
+                              <% } else if (productDetails[i].products.status=="returned" ) { %>
+                                <a href="#" class="text-muted">Returned</a>
+                                <% } else { %>
+                                  <a onclick="cancelOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products._id%>')"
+                                    class="text-danger">Cancel</a>
+
+                                  <% } %>
+                      </td>
+                    </tr>
+                    <% } %>
+
+
+
+                </tbody>
+              </table>
+            </div>
+            <div class="cart-action text-end" style="margin-top: 40px;">
+             
+              
+            </div>
+     
+            <div class="row mb-50">
+              <div class="col-lg-6 col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3>
+                      Address
+                    </h3>
+
+                  </div>
+                  <div class="card-body">
+                    <p><strong >Name:</strong> &nbsp;<%= productDetails[0].address.name %> </p>
+                    <p><strong>House:</strong> &nbsp;<%= productDetails[0].address.house %> </p>
+                    <p><strong>State:</strong>&nbsp; <%= productDetails[0].address.state%> </p>
+                    <p><strong>Country:</strong> &nbsp;<%= productDetails[0].address.country %> </p>
+                    <p><strong>City:</strong> &nbsp;<%= productDetails[0].address.city %> </p>
+                    <p><strong>Pincode:</strong> &nbsp;<%= productDetails[0].address.pincode %> </p>
+                    <p><strong>Mobile No:</strong> &nbsp;<%= productDetails[0].address.mobile %> </p>
+                  </div>
+                </div>
+              </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="border p-md-4 p-30 border-radius cart-totals">
+                    <div class="heading_s1 mb-3">
+                      <h4>Order Totals</h4>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td class="cart_total_label">Order Subtotal</td>
+                            <td class="cart_total_amount"><span class="font-lg fw-900 text-dark" id="totalAmount"
+                                style="color: black;">
+                                ₹ <%= productDetails[0].totalAmount%>
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="cart_total_label">Shipping</td>
+                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
+                              Shipping</td>
+                          </tr>
+                          <tr>
+                            <td class="cart_total_label">Total</td>
+                            <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
+                                  style="color: black;" id="totalAmountFinal">
+                                  ₹ <%=  productDetails[0].totalAmount %>
+                                </span></strong>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                   
+                  </div>
+                </div>
+              
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+
+
+  <script>
+    const cancelOrder = (orderId, singleOrderId) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to undo this',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+      }).then((response) => {
+        console.log(response);
+        if (response.isConfirmed) {
+          $.ajax({
+            url: `/cancelSingleOrder?orderId=${orderId}&singleOrderId=${singleOrderId}`,
+            method: "PATCH",
+          }).done(response => {
+            Swal.fire("Successfull", `Address Deleted`, "success").then(() => {
+              location.reload();
+            })
+          }).fail((error) => {
+            Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+              location.reload()
+            })
+          })
+        }
+      })
+
+    }
+
+  </script>
+
+
+
+
+
+  <%- include("../layouts/adminLayout/admin-footer") %>

@@ -31,7 +31,21 @@ const changeOrderStatus = async (req, res, next) => {
     return next(error);
   }
 };
+const orderDetails = async(req, res) => {
+  try {
+    const orderId = req.params.id;
+    const orderDetails = await orderHelper.getSingleOrderDetails(orderId);
+    const productDetails = await orderHelper.getOrderDetailsOfEachProduct(orderId);
+
+    if (orderDetails && productDetails) {
+      res.render("admin/orderDetails", { orderDetails, productDetails });
+    }
+    console.log(productDetails)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 module.exports = {
-  changeOrderStatus,adminOrderPageLoad,
+  changeOrderStatus,adminOrderPageLoad,orderDetails
 }

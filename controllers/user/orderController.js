@@ -42,7 +42,7 @@ const checkoutLoad = async (req, res) => {
 const placeOrder = async (req, res) => {
   const body = req.body;
   const userId = req.session.user;
-  
+
   const result = await orderHelper.placeOrder(body, userId);
   if (result) {
     const cart = await cartHelper.clearAllCartItems(userId);
@@ -70,31 +70,32 @@ const cancelOrder = async (req, res) => {
   }
 };
 
-const orderDetails = async(req, res) => {
+const orderDetails = async (req, res) => {
   try {
     const orderId = req.params.id;
     const orderDetails = await orderHelper.getSingleOrderDetails(orderId);
-    const productDetails = await orderHelper.getOrderDetailsOfEachProduct(orderId);
+    const productDetails = await orderHelper.getOrderDetailsOfEachProduct(
+      orderId
+    );
 
     if (orderDetails && productDetails) {
       res.render("user/orderDetails", { orderDetails, productDetails });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 const cancelSingleOrder = async (req, res) => {
   try {
     const orderId = req.query.orderId;
     const singleOrderId = req.query.singleOrderId;
-    console.log(singleOrderId)
-    const result = await orderHelper.cancelSingleOrder(orderId,singleOrderId);
-    
+    console.log(singleOrderId);
+    const result = await orderHelper.cancelSingleOrder(orderId, singleOrderId);
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
@@ -104,12 +105,11 @@ const currencyFormatter = (amount) => {
   });
 };
 
-
-
 module.exports = {
   checkoutLoad,
   cancelOrder,
   orderSuccessPageLoad,
   placeOrder,
-  orderDetails,cancelSingleOrder,
+  orderDetails,
+  cancelSingleOrder,
 };
