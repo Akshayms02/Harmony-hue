@@ -89,7 +89,19 @@
           url:"/resendOtp",
           method:"POST",
           success:(response)=>{
-            console.log(response);
+            Toastify({
+              text: `Otp Resend`,
+              duration: 3000,
+              gravity: "top",
+              position: "center",
+              stopOnFocus: true,
+              style: {
+                background: "green",
+              },
+            }).showToast();
+            setTimeout(() => {
+              location.reload()
+            }, 1000);;
           }
         })
       }

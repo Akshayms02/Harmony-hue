@@ -86,14 +86,15 @@ const applyCoupon = (userId, couponCode) => {
     let coupon = await couponModel.findOne({ code: couponCode })
     if (coupon && coupon.isActive === "Active") {
       if (!coupon.usedBy.includes(userId)) {
-        let cart = await cartModel.findOne({ user: new ObjectId(userId) });
+        let cart = await cartModel.findOne({ user: new ObjectId(userId)});
         console.log(cart)
         const discount = coupon.discount;
 
-        cart.discountedTotal = cart.totalAmount - coupon.discount;
+        cart.totalAmount = cart.totalAmount - discount;
         cart.coupon = couponCode;
 
         await cart.save();
+        console.log(cart)
 
         coupon.usedBy.push(userId);
         await coupon.save();

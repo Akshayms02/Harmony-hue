@@ -47,29 +47,33 @@ const totalSubtotal = (userId, cartItems) => {
     console.log(userId);
     let cart = await cartModel.findOne({ user: userId });
     let total = 0;
-
     if (cart) {
-      if (cartItems.length) {
-        for (let i = 0; i < cartItems.length; i++) {
-          total =
-            total +
-            cartItems[i].quantity *
-              parseInt(
-                cartItems[i].product.productPrice -
-                  (cartItems[i].product.productPrice *
-                    cartItems[i].product.productDiscount) /
-                    100
-              );
-        }
+      if (cart.coupon == null) {
+          if (cartItems.length) {
+            for (let i = 0; i < cartItems.length; i++) {
+              total =
+                total +
+                cartItems[i].quantity *
+                  parseInt(
+                    cartItems[i].product.productPrice -
+                      (cartItems[i].product.productPrice *
+                        cartItems[i].product.productDiscount) /
+                        100
+                  );
+            }
+          }
+          cart.totalAmount = parseFloat(total);
+    
+          await cart.save();
+    
+          resolve(total);
+      } else {
+        resolve(cart.totalAmount);
       }
-      cart.totalAmount = parseFloat(total);
-
-      await cart.save();
-
-      resolve(total);
     } else {
-      resolve(total);
+      resolve(total)
     }
+    
   });
 };
 

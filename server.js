@@ -5,23 +5,9 @@ const nocache = require("nocache");
 const userRoute = require("./routes/userRoute");
 require("dotenv").config();
 const adminRoute = require("./routes/adminRoute");
-const mongoose = require("mongoose");
+const connectDB = require("./database/dataBase");
 const flash = require("express-flash");
 const methodOverride = require("method-override");
-
-mongoose.connect("mongodb://127.0.0.1:27017/HarmonyHue");
-mongoose.connection.on("connected", () => {
-  console.log("Connected to mongoDB");
-});
-
-mongoose.connection.on("disconnected", () => {
-  console.log("Disconnected to mongoDB");
-});
-
-mongoose.connection.on("error", () => {
-  console.log("error");
-});
-
 const app = express();
 
 const PORT = process.env.PORT || 3002;
