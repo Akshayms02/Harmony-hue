@@ -254,9 +254,9 @@
                                                             <tr>
                                                                 <th>Order</th>
                                                                 <th>Date</th>
-                                                                <th>Status</th>
+                                                            
                                                                 <th>Total</th>
-                                                                <th>Action</th>
+                                                              
                                                                 <th>View</th>
                                                             </tr>
                                                         </thead>
@@ -268,31 +268,12 @@
                                                                     <td>
                                                                         <%= element.formattedDate %>
                                                                     </td>
-                                                                    <td>
-                                                                        <%= element.status %>
-                                                                    </td>
+                                                                  
                                                                     <td>
                                                                         <%= element.formattedTotal %> for <%=
                                                                                 element.quantity %> item
                                                                     </td>
-                                                                    <% if (element.status=="pending"
-                                                                        ||element.status=="processing"
-                                                                        ||element.status=="shipped"
-                                                                        ||element.status=="confirmed"
-                                                                        ||element.status=="outForDelivery" ) { %>
-                                                                        <td><a onclick="cancelOrder('<%= element._id %>')"
-                                                                                class="btn-small d-block text-danger">Cancel</a>
-                                                                        </td>
-                                                                        <% } else if (element.status==='delivered' ) {
-                                                                            %>
-                                                                            <td><span
-                                                                                    class="badge bg-success rounded">Delivered</span>
-                                                                            </td>
-                                                                            <% } else { %>
-                                                                                <td><span
-                                                                                        class="badge bg-danger rounded">Cancelled</span>
-                                                                                </td>
-                                                                                <% } %>
+                                                                    
                                                                                     <td>
                                                                                         <a href="/orderDetails/<%=element._id%>"
                                                                                             class="btn-small d-block text-primary">View</a>
@@ -508,22 +489,22 @@
                                                                 name="password" id="password" type="password">
                                                             <span class="text-danger" id="passwordError"></span>
                                                         </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>New Password <span class="required">*</span></label>
-                                                            <input class="form-control square" name="npassword"
-                                                                type="password" id="npassword">
-                                                            <span id="npasswordError" class="text-danger"></span>
+
+                                                        <div class="d-flex">
+                                                            <div class="col-md-4">
+                                                                <button type="submit" class="btn btn-fill-out submit"
+                                                                    value="Submit">Save</button>
+                                                            </div>
+
                                                         </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Confirm Password <span
-                                                                    class="required">*</span></label>
-                                                            <input class="form-control square" name="cpassword"
-                                                                type="password" id="cpassword">
-                                                            <span id="cpasswordError" class="text-danger"></span>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit"
-                                                                value="Submit">Save</button>
+                                                        <div class="col-md-4 mt-4">
+
+                                                            <button type="button" class="btn btn-primary"
+                                                                style="background-color: black;" data-bs-toggle="modal"
+                                                                data-bs-target="#changePassword"
+                                                                data-bs-whatever="@getbootstrap">Change
+                                                                Password</button>
+
                                                         </div>
                                                     </div>
                                                 </form>
@@ -533,6 +514,45 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="changePassword" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Change Password </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/changePassword" method="post" id="changePasswordForm">
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Current Password</label>
+                                    <input type="password" class="form-control" name="currentPassword"
+                                        id="currentPassword">
+                                    <span class="text-danger" id="currentPasswordError"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">New Password</label>
+                                    <input type="password" class="form-control" name="npassword" id="npassword">
+                                    <span id="npasswordError" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" name="cpassword" id="cpassword">
+                                    <span id="cpasswordError" class="text-danger"></span>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-dark" style="background-color: black;">Change
+                                        Password</button>
+                                </div>
+
+                            </form>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -689,10 +709,60 @@
     </script>
 
     <script> $(document).ready(function () {
-            $('#orderTable').DataTable();
+            $('#orderTable').DataTable({
+                ordering: false,
+            });
         });
 
     </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#changePasswordForm").submit(function (event) {
+                event.preventDefault();
+                const validate = validateForm3();
+                if (validate) {
+                    let data = $(this).serialize();
+                    $.ajax({
+                        url: "/changePassword",
+                        method: "PUT",
+                        data: data,
+                        success: (response) => {
+                            if (response.status) {
+                                Toastify({
+                                    text: `Password has been Changed`,
+                                    duration: 3000,
+                                    gravity: "top",
+                                    position: "center",
+                                    stopOnFocus: true,
+                                    style: {
+                                        background: "linear-gradient(to right, aqua, blue)",
+                                    },
+                                }).showToast();
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Toastify({
+                                    text: `Invalid Current Password`,
+                                    duration: 3000,
+                                    gravity: "top",
+                                    position: "center",
+                                    stopOnFocus: true,
+                                    style: {
+                                        background: "red",
+                                    },
+                                }).showToast();
+                            }
+
+                        }
+                    })
+                }
+
+            })
+        })
+    </script>
+
 
     <script>
         function validateForm() {
@@ -719,27 +789,19 @@
             } else {
                 document.getElementById("mobileError").innerHTML = ""
             }
-            if (document.getElementById("npassword").value && !passwordRegex.test(document.getElementById("npassword").value)) {
-                document.getElementById("npasswordError").innerHTML = "Password must be at least 8 characters and should contain an uppercase letter, number, or special symbol.";
-                isValid = false;
-            }
-            if (document.getElementById("npassword").value && document.getElementById("npassword").value !== document.getElementById("cpassword").value) {
-                document.getElementById("cpasswordError").innerHTML = "Password doesnt match";
-                isValid = false;
-            } else {
-                document.getElementById("cpasswordError").innerHTML = "";
-            }
+
             return isValid;
         }
     </script>
     <script>
         function validateForm2() {
+
             const nameRegex = /^[a-zA-Z\s]+$/;
-            const houseRegex = /^[a-zA-Z0-9\s]+$/; // Assuming house number can have alphanumeric characters and spaces
-            const stateRegex = /^[a-zA-Z ]+$/; // Assuming state name can have only letters and spaces
-            const countryRegex = /^[a-zA-Z ]+$/; // Assuming country name can have only letters and spaces
-            const cityRegex = /^[a-zA-Z ]+$/; // Assuming city name can have only letters and spaces
-            const pincodeRegex = /^\d{6}$/; // Assuming pincode is 6 digits
+            const houseRegex = /^[a-zA-Z0-9\s]+$/;
+            const stateRegex = /^[a-zA-Z ]+$/;
+            const countryRegex = /^[a-zA-Z ]+$/;
+            const cityRegex = /^[a-zA-Z ]+$/;
+            const pincodeRegex = /^\d{6}$/;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const passwordRegex = /^(?=.[A-Za-z])(?=.\d)(?=.*[^A-Za-z\d]).{8,}$/;
             let isValid = true;
@@ -801,5 +863,40 @@
             }
         })
     </script>
+    <script>
+        function validateForm3() {
+            let isValid = true;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()~_?|:;'"<,>./`{}+-=]).{8,}$/;
+            if (document.getElementById("npassword").value.trim() === "") {
+                document.getElementById("npasswordError").innerHTML = "Required*";
+                isValid = false;
+            }
+            if (document.getElementById("currentPassword").value.trim() === "") {
+                document.getElementById("currentPasswordError").innerHTML = "Required*";
+                isValid = false;
+            }
+            if (document.getElementById("cpassword").value.trim() === "") {
+                document.getElementById("cpasswordError").innerHTML = "Required*";
+                isValid = false;
+            }
+
+            if (document.getElementById("npassword").value && !passwordRegex.test(document.getElementById("npassword").value)) {
+                console.log(document.getElementById("npassword").value)
+                document.getElementById("npasswordError").innerHTML = "Password must be at least 8 characters and should contain an uppercase letter, number, or special symbol.";
+                isValid = false;
+            }
+            if (document.getElementById("npassword").value && document.getElementById("npassword").value !== document.getElementById("cpassword").value) {
+                document.getElementById("cpasswordError").innerHTML = "Password doesnt match";
+                isValid = false;
+            } else {
+                document.getElementById("cpasswordError").innerHTML = "";
+            }
+            return isValid;
+        }
+
+    </script>
+
+
+
 
     <%- include("../layouts/userLayout/userHomeFooter") %>

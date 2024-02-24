@@ -5,6 +5,7 @@ const productHelper = require("../../helper/productHelper");
 const orderHelper = require("../../helper/orderHelper");
 const userModel = require("../../models/userModel");
 const userHelper = require("../../helper/userHelper");
+const bcrypt = require("bcrypt");
 const moment = require("moment");
 
 const loadUserHome = async (req, res) => {
@@ -64,6 +65,7 @@ const userProfileLoad = async (req, res) => {
       order.quantity = quantity;
       quantity = 0;
     }
+    console.log(orderDetails)
     if (user) {
       res.render("user/userProfile", {
         userData: user,
@@ -126,6 +128,21 @@ const forgotPasswordChange = async (req, res) => {
   res.redirect("/");
 };
 
+const changePassword = async (req, res) => {
+  const { currentPassword, npassword, cpassword } = req.body;
+  const userId = req.session.user;
+  const user = await userModel.findOne({ _id: userId });
+  console.log(currentPassword);
+  if (await bcrypt.compare(currentPassword, user.password)) {
+    const newPassword = await bcrypt.hash(npassword, 10);
+    user.password = newPassword;
+    await user.save();
+    res.json({ status: true });
+  } else {
+    res.json({ status: false });
+  }
+};
+
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
     style: "currency",
@@ -140,6 +157,7 @@ module.exports = {
   addAddress,
   deleteAddress,
   updateUserDetails,
+  changePassword,
   forgotPasswordLoad,
   forgotPasswordChange,
 };

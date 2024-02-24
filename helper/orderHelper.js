@@ -64,8 +64,8 @@ const placeOrder = (body, userId) => {
 const getOrderDetails = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const orderDetails = await orderModel.find({ user: userId });
-      console.log(orderDetails[0].products.product);
+      const orderDetails = await orderModel.find({ user: userId }).sort({orderedOn:-1});
+      
       resolve(orderDetails);
     } catch (error) {
       console.log(error);

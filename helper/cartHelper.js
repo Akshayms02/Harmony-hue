@@ -1,5 +1,6 @@
 const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
+const couponModel = require("../models/couponModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const addToCart = (userId, productId, size) => {
@@ -49,31 +50,30 @@ const totalSubtotal = (userId, cartItems) => {
     let total = 0;
     if (cart) {
       if (cart.coupon == null) {
-          if (cartItems.length) {
-            for (let i = 0; i < cartItems.length; i++) {
-              total =
-                total +
-                cartItems[i].quantity *
-                  parseInt(
-                    cartItems[i].product.productPrice -
-                      (cartItems[i].product.productPrice *
-                        cartItems[i].product.productDiscount) /
-                        100
-                  );
-            }
+        if (cartItems.length) {
+          for (let i = 0; i < cartItems.length; i++) {
+            total =
+              total +
+              cartItems[i].quantity *
+                parseInt(
+                  cartItems[i].product.productPrice -
+                    (cartItems[i].product.productPrice *
+                      cartItems[i].product.productDiscount) /
+                      100
+                );
           }
-          cart.totalAmount = parseFloat(total);
-    
-          await cart.save();
-    
-          resolve(total);
+        }
+        cart.totalAmount = parseFloat(total);
+
+        await cart.save();
+
+        resolve(total);
       } else {
         resolve(cart.totalAmount);
       }
     } else {
-      resolve(total)
+      resolve(total);
     }
-    
   });
 };
 
@@ -188,6 +188,37 @@ const removeItemFromCart = (userId, productId) => {
   });
 };
 
+const clearCoupon = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const cart = await cartModel.findOne({ user: userId });
+      if (cart.coupon != null) {
+        const couponCode = cart.coupon;
+        const removeUser = await couponModel.updateOne(
+          { code: couponCode },
+          {
+            $pull: {
+              usedBy: userId,
+            },
+          }
+        );
+        const result = await cartModel.updateOne(
+          { user: userId },
+          {
+            $set: { coupon: null },
+          }
+        );
+
+        resolve({ status: true });
+      } else {
+        resolve({ status: false });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
 const clearAllCartItems = (userId) => {
   return new Promise(async (resolve, reject) => {
     const result = await cartModel.deleteOne({ user: userId });
@@ -204,4 +235,5 @@ module.exports = {
   incDecProductQuantity,
   removeItemFromCart,
   clearAllCartItems,
+  clearCoupon,
 };

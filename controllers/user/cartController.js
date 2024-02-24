@@ -13,6 +13,8 @@ const userCartLoad = async (req, res) => {
 
     const wishListCount = await wishlistHelper.getWishListCount(userData);
 
+    const ifCouponAppliedInCart = await cartHelper.clearCoupon(userData);
+
     let totalandSubTotal = await cartHelper.totalSubtotal(userData, cartItems);
 
     let totalAmountOfEachProduct = [];

@@ -71,6 +71,8 @@ router.get("/orderDetails/:id", userAuth.isLogout, orderController.orderDetails)
 
 router.put("/updateUserDetails", userController.updateUserDetails);
 
+router.put("/changePassword", userController.changePassword);
+
 router.get("/checkout", userAuth.isLogout, orderController.checkoutLoad);
 
 router.post("/placeOrder", orderController.placeOrder);

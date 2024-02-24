@@ -22,8 +22,8 @@
                     <th scope="col">DATE</th>
                     <th scope="col">AMOUNT</th>
                     <th scope="col">PAYMENT TYPE</th>
-                    <th scope="col">STATUS</th>
-                    <th scope="col">CHANGE STATUS</th>
+                    <!-- <th scope="col">STATUS</th>
+                    <th scope="col">CHANGE STATUS</th> -->
                     <th scope="col">VIEW DETAILS </th>
                   </tr>
                 </thead>
@@ -45,7 +45,7 @@
                       <td width="7%">
                         <%= allOrders[i].paymentMethod %>
                       </td>
-                      <td width="7%">
+                      <!-- <td width="7%">
                         <% if (allOrders[i].status=='pending' ) { %>
                           <span id="status<%= allOrders[i]._id %>" class="badge rounded-pill alert-warning">
                             <%= allOrders[i].status %>
@@ -104,7 +104,7 @@
                                       <% } else if (allOrders[i].status=='delivered' ) { %>
                                         <span class="badge bg-success">Delivered</span>
                                         <% } %>
-                      </td>
+                      </td> -->
 
                       <td width="10%">
                         <a href="/admin/orderDetails/<%= allOrders[i]._id %>"
