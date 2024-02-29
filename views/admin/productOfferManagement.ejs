@@ -1,0 +1,322 @@
+<%- include("../layouts/adminLayout/admin-header") %>
+  <section class="content-main">
+    <div class="content-header">
+      <h2 class="content-title">Product-Offer Management</h2>
+      <div>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCoupon"
+          data-bs-whatever="@getbootstrap" style="background-color: black;">Add Offer +</button>
+
+      </div>
+
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="table-responsive">
+          <% if (locals.message) { %>
+            <input type="text" id="message" value="<%= message %>" hidden >
+          <% } %>
+          
+          <% if (!offers.length) { %>
+
+            <h1>No Offers Are Added Yet</h1>
+
+            <% }else{ %>
+
+              <table class="table table-hover" id="couponTable">
+                <thead>
+                  <tr class="text-left">
+                    <th class="text-center">No</th>
+                    <th class="text-center">Offer Name</th>
+                    <th class="text-center">Product</th>
+                    <th class="text-center">Discount</th>
+                    <th class="text-center">Starting date</th>
+                    <th class="text-center">Ending date</th>
+
+                    <th class="text-center">Edit</th>
+                    <th class="text-center">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for( let i=0; i < offers.length; i++ ) { %>
+
+
+                    <tr class="text-left">
+                      <td class="text-center" width="10%">
+                        <%= i+1 %>
+                      </td>
+                      <td class="text-center" width="20%">
+                        <%= offers[i].offerName%>
+                      </td>
+                      <td class="text-center" width="15%">
+                        <%= offers[i].productOffer.product.productName %>
+                      </td>
+                      <td class="text-center" width="15%">
+                        <%= offers[i].productOffer.discount %>
+                      </td>
+                      <td class="text-center" width="20%">
+                        <%= offers[i].formattedStartingDate %>
+                      </td>
+                      <td class="text-center" width="10%">
+                        <%= offers[i].formattedEndingDate%>
+                      </td>
+
+                      <td class="text-center" width="10%"><a onclick="getOfferData('<%= offers[i]._id %>')"
+                          class="btn btn-sm btn-success rounded font-sm mt-15" type="button" data-bs-toggle="modal"
+                          data-bs-target="#editCoupon" data-bs-whatever="@getbootstrap">Edit</a></td>
+                      <td class="text-center" width="20%">
+                        <% if (offers[i].status) { %>
+                          <button id="delete-productOffer<%= offers[i]._id %>"
+                            class="btn btn-sm btn-success rounded font-sm mt-15"
+                            onclick="deleteProductOffer('<%= offers[i]._id %>')">
+                            Listed
+                          </button>
+                          <% } else { %>
+                            <button id="delete-productOffer<%= offers[i]._id %>"
+                              class="btn btn-sm btn-danger rounded font-sm mt-15"
+                              onclick="deleteProductOffer('<%= offers[i]._id %>')">
+                              Unlisted
+                            </button>
+                            <% } %>
+                      </td>
+                    </tr>
+
+                    <% } %>
+                </tbody>
+              </table> <!-- table-responsive.// -->
+              <% } %>
+
+        </div>
+      </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+
+  </section> <!-- content-main end// -->
+
+
+  <!-- Modal Add Coupon -->
+
+
+  <div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Offer </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin/productAddOffer" method="post">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Offer Name</label>
+              <input type="text" class="form-control" name="offerName" id="">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Product</label>
+              <select name="productName" id="" class="form-select">
+                <% for( let i = 0; i < products.length; i++ ) { %>
+                <option class="form-option" value="<%= products[i]._id %>"><%= products[i].productName %></option>
+                <% } %>
+              </select>
+              <!-- <input type="text" class="form-control" name="couponName" id="couponName"> -->
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Discount Amount</label>
+              <input type="text" class="form-control" name="discountAmount" id="">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Starting date</label>
+              <input type="date" class="form-control" name="startDate" id="couponExpiry" placeholder="DD/MM/YYYY">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Ending date</label>
+              <input type="date" class="form-control" name="endDate" id="couponExpiry" placeholder="DD/MM/YYYY">
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" style="background-color: black;">Create Offer</button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--End Modal  Add Coupon-->
+
+
+  <!-- Modal Edit Coupon -->
+
+
+  <div class="modal fade" id="editCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Offer </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin/editOffer" method="post">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Offer Name</label>
+              <input type="text" class="form-control" name="offerName" id="offerName">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Product</label>
+              <select name="productName" id="productName" class="form-select">
+                <% for( let i = 0; i < products.length; i++ ) { %>
+                  <option class="form-option" value="<%= products[i]._id %>"><%= products[i].productName %></option>
+                  <% } %>
+              </select>
+              
+            </div>
+            <!-- <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Coupon Code</label>
+                        <input type="text" class="form-control" name="couponCode" id="couponCode">
+                    </div> -->
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Discount Amount</label>
+              <input type="text" class="form-control" name="discountAmount" id="discountAmount">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Starting Date (YYYY/MM/DD)</label>
+              <input type="date" class="form-control" name="startDate" id="startDate">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Ending Date (YYYY/MM/DD)</label>
+              <input type="date" class="form-control" name="endDate" id="endDate">
+            </div>
+            <div class="mb-3">
+              <input type="hidden" class="form-control" id="offerId" name="offerId" />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" style="background-color: black;">Update Offer</button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--End Modal Edit Coupon-->
+
+
+
+  <!-- sweetalert -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+  <script>
+    function getOfferData(offerId) {
+   
+      $.ajax({
+        url: "/admin/productEditOffer/" + offerId,
+        method: 'GET',
+      })
+        .done((res) => {
+          if (res) {
+            console.log(res)
+            document.getElementById("productName").value=res.productOffer.product
+            document.getElementById('offerName').value = res.offerName;
+            document.getElementById('discountAmount').value = res.productOffer.discount;
+            document.getElementById('startDate').value = res.formattedStartingDate;
+            document.getElementById("endDate").value=res.formattedEndingDate;
+            document.getElementById('offerId').value = res._id;
+
+            $("#editCoupon").modal("show");
+
+          }
+        })
+        .fail((error) => {
+          console.log(error);
+        })
+
+    }
+  </script>
+
+
+  <script>
+    function deleteProductOffer(offerId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You wont be able to undo this!!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Update it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+      }).then((response) => {
+        console.log(response);
+        if (response.isConfirmed) {
+          $.ajax({
+            url: "/admin/deleteProductOffer/" + offerId,
+            type: "get",
+          }).done((res) => {
+            if (res) {
+              if (res.listed) {  //to show green button and green toast message
+
+                Toastify({
+                  text: `${res.message}`,
+                  duration: 3000,
+                  gravity: "top", // top or bottom
+                  position: "center", // left, center or right
+                  stopOnFocus: true, // Prevents dismissing of toast on hover
+                  style: {
+                    background: "green",
+                  },
+                }).showToast();
+
+                const button = document.getElementById(
+                  "delete-productOffer" + offerId
+                );
+                document.getElementById("delete-productOffer" + offerId).classList.remove("btn-danger");
+                document.getElementById("delete-productOffer" + offerId).classList.add("btn-success");
+                button.innerHTML = "Listed";
+              } else {
+
+                Toastify({
+                  text: `${res.message}`,
+                  duration: 3000,
+                  gravity: "top", // top or bottom
+                  position: "center", // left, center or right
+                  stopOnFocus: true, // Prevents dismissing of toast on hover
+                  style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                  },
+                }).showToast();
+
+                const button = document.getElementById("delete-productOffer" + offerId);
+                document.getElementById("delete-productOffer" + offerId).classList.add("btn-danger");
+                document.getElementById("delete-productOffer" + offerId).classList.remove("btn-success");
+                button.innerHTML = "UnListed";
+              }
+              console.log(res.listed);
+            }
+          })
+        }
+      })
+    }
+
+
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded",()=>{
+      const message=document.getElementById("message");
+      console.log(message)
+      if(message.value!=null){
+        Swal.fire("Successfull", `Offer Updated`, "success").then(() => {
+        })
+      }
+    })
+  </script>
+
+
+  <%- include("../layouts/adminLayout/admin-footer") %>

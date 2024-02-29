@@ -1,0 +1,296 @@
+<%- include("../layouts/adminLayout/admin-header") %>
+  <section class="content-main">
+    <div class="content-header">
+      <h2 class="content-title">Category-Offer Management</h2>
+      <div>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCoupon"
+          data-bs-whatever="@getbootstrap">Add Offer +</button>
+
+      </div>
+
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="table-responsive">
+          <% if (!offers.length) { %>
+
+            <h1>No Offers Are Added Yet</h1>
+
+            <% }else{ %>
+
+              <table class="table table-hover" id="couponTable">
+                <thead>
+                  <tr class="text-left">
+                    <th>No</th>
+                    <th>Offer Name</th>
+                    <th>Category/th>
+                    <th>Discount</th>
+                    <th>Starting date</th>
+                    <th>Ending date</th>
+
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for( let i=0; i < offers.length; i++ ) { %>
+
+
+                    <tr class="text-left">
+                      <td width="15%">
+                        <%= i+1 %>
+                      </td>
+                      <td width="20%">
+                        <%= offers[i].name %>
+                      </td>
+                      <td width="15%">
+                        <%= offers[i].categoryOffer.category %>
+                      </td>
+                      <td width="15%">
+                        <%= offers[i].categoryOffer.discount %>
+                      </td>
+                      <td width="20%">
+                        <%= offers[i].startingDate %>
+                      </td>
+                      <td width="10%">
+                        <%= offers[i].endingDate%>
+                      </td>
+
+                      <td width="10%"><a onclick="getOfferData('<%= offers[i]._id %>')"
+                          class="btn btn-sm btn-success rounded font-sm mt-15" type="button" data-bs-toggle="modal"
+                          data-bs-target="#editCoupon" data-bs-whatever="@getbootstrap">Edit</a></td>
+                      <td width="20%">
+                        <% if (offers[i].status) { %>
+                          <button id="delete-categoryOffer<%= offers[i]._id %>"
+                            class="btn btn-sm btn-success rounded font-sm mt-15"
+                            onclick="deleteCategoryOffer('<%= offers[i]._id %>')">
+                            Listed
+                          </button>
+                          <% } else { %>
+                            <button id="delete-categoryOffer<%= offers[i]._id %>"
+                              class="btn btn-sm btn-danger rounded font-sm mt-15"
+                              onclick="deleteCategoryOffer('<%= offers[i]._id %>')">
+                              Unlisted
+                            </button>
+                            <% } %>
+                      </td>
+                    </tr>
+
+                    <% } %>
+                </tbody>
+              </table> <!-- table-responsive.// -->
+              <% } %>
+
+        </div>
+      </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+
+  </section> <!-- content-main end// -->
+
+
+  <!-- Modal Add Coupon -->
+
+
+  <div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Offer </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin/add-offer" method="post">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Offer Name</label>
+              <input type="text" class="form-control" name="couponName" id="couponName">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Category</label>
+              <input type="text" class="form-control" name="couponName" id="couponName">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Discount Amount</label>
+              <input type="text" class="form-control" name="couponAmount" id="couponAmount">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Starting date</label>
+              <input type="text" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Ending date</label>
+              <input type="text" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Create Offer</button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--End Modal  Add Coupon-->
+
+
+  <!-- Modal Edit Coupon -->
+
+
+  <div class="modal fade" id="editCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Offer </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin/editOffer" method="post">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Offer Name</label>
+              <input type="text" class="form-control" name="couponName" id="couponNme">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Category</label>
+              <input type="text" class="form-control" name="couponName" id="couponNme">
+            </div>
+            <!-- <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Coupon Code</label>
+                      <input type="text" class="form-control" name="couponCode" id="couponCode">
+                  </div> -->
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Discount Amount</label>
+              <input type="text" class="form-control" name="couponAmount" id="couponAmont">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Starting Date (YYYY/MM/DD)</label>
+              <input type="text" class="form-control" name="couponExpiry" id="couponExpiring">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Ending Date (YYYY/MM/DD)</label>
+              <input type="text" class="form-control" name="couponExpiry" id="couponExpiring">
+            </div>
+            <div class="mb-3">
+              <input type="hidden" class="form-control" id="couponIdd" name="couponId" />
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Update Offer</button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--End Modal Edit Coupon-->
+
+
+
+  <!-- sweetalert -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    function deleteCategoryOffer(offerId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You wont be able to undo this!!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Update it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+      }).then((response) => {
+        console.log(response);
+        if (response.isConfirmed) {
+          $.ajax({
+            url: "/admin/deleteCategoryOffer/" + offerId,
+            type: "get",
+          }).done((res) => {
+            if (res) {
+              if (res.listed) {  //to show green button and green toast message
+
+                Toastify({
+                  text: `${res.message}`,
+                  duration: 3000,
+                  gravity: "top", // top or bottom
+                  position: "center", // left, center or right
+                  stopOnFocus: true, // Prevents dismissing of toast on hover
+                  style: {
+                    background: "green",
+                  },
+                }).showToast();
+
+                const button = document.getElementById(
+                  "delete-categoryOffer" + offerId
+                );
+                document.getElementById("delete-categoryOffer" + offerId).classList.remove("btn-danger");
+                document.getElementById("delete-categoryOffer" + offerId).classList.add("btn-success");
+                button.innerHTML = "Listed";
+              } else {
+
+                Toastify({
+                  text: `${res.message}`,
+                  duration: 3000,
+                  gravity: "top", // top or bottom
+                  position: "center", // left, center or right
+                  stopOnFocus: true, // Prevents dismissing of toast on hover
+                  style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                  },
+                }).showToast();
+
+                const button = document.getElementById("delete-categoryOffer" + offerId);
+                document.getElementById("delete-categoryOffer" + offerId).classList.add("btn-danger");
+                document.getElementById("delete-categoryOffer" + offerId).classList.remove("btn-success");
+                button.innerHTML = "UnListed";
+              }
+              console.log(res.listed);
+            }
+          })
+        }
+      })
+    }
+
+  </script>
+
+  <script>
+    function getCouponData(couponId) {
+      console.log("clicked", couponId);
+      $.ajax({
+        url: "/admin/edit-coupon/" + couponId,
+        type: 'get',
+      })
+        .done((res) => {
+          console.log(res, 'reeeeeeeeeeeeesssssssssssssssssss');
+          if (res) {
+            document.getElementById('couponNme').value = res.couponName;
+            // document.getElementById('couponCode').value = res.code;
+            document.getElementById('couponAmont').value = res.discount;
+            document.getElementById('couponExpiring').value = res.expiryDate;
+            document.getElementById('couponIdd').value = res._id;
+
+            $("#editCoupon").modal("show");
+
+          }
+        })
+        .fail((error) => {
+          console.log(error);
+        })
+
+    }
+  </script>
+
+
+
+
+ 
+
+  <%- include("../layouts/adminLayout/admin-footer") %>
