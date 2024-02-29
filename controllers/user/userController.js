@@ -47,6 +47,44 @@ const loadUserHome = async (req, res) => {
   }
 };
 
+const shopLoad = async (req, res) => {
+  try {
+    let userId = req.session.user;
+    const categories = await categoryHelper.getAllcategory();
+
+    let cartCount = await cartHelper.getCartCount(userId);
+
+    let wishListCount = await wishlistHelper.getWishListCount(userId);
+
+    let products = await productHelper.getAllActiveProducts();
+    for (const product of products) {
+      const cartStatus = await cartHelper.isAProductInCart(userId, product._id);
+      const wishlistStatus = await wishlistHelper.isInWishlist(
+        userId,
+        product._id
+      );
+
+      const offerPrice =
+        product.productPrice -
+        (product.productPrice * product.productDiscount) / 100;
+      product.discountedPrice = currencyFormatter(Math.round(offerPrice));
+      product.cartStatus = cartStatus;
+      product.wishlistStatus = wishlistStatus;
+      product.productPrice = currencyFormatter(product.productPrice);
+    }
+
+    res.render("user/shop", {
+      products,
+      userData: req.session.user,
+      cartCount,
+      wishListCount,
+      categories,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const userProfileLoad = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -65,7 +103,7 @@ const userProfileLoad = async (req, res) => {
       order.quantity = quantity;
       quantity = 0;
     }
-    console.log(orderDetails)
+    console.log(orderDetails);
     if (user) {
       res.render("user/userProfile", {
         userData: user,
@@ -153,6 +191,7 @@ const currencyFormatter = (amount) => {
 
 module.exports = {
   loadUserHome,
+  shopLoad,
   userProfileLoad,
   addAddress,
   deleteAddress,

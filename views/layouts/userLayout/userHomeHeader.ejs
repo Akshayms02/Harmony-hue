@@ -35,23 +35,23 @@
           </div>
           <div class="header-right">
             <div class="search-style-2">
-             
-                <div>
-                  <form action="#" method="post">
-                      <div class="header-search-wrapper">
-                          
-                          <div>
-                              <input type="search" class="form-control" id="searchInput"
-                                  placeholder="Search in..." required autocomplete="off">
-                              <a href="#" class="search-toggle" role="button">
-                                  <i class="icon-search"></i>
-                              </a>
-                          </div>
-                      </div><!-- End .header-search-wrapper -->
-                  </form>
-                  <ul id="suggestionList"></ul>
+
+              <div>
+                <form action="#" method="post">
+                  <div class="header-search-wrapper w-100">
+
+                    <div>
+                      <input type="search" class="form-control w-100" id="searchInput" placeholder="Search in..."
+                        required autocomplete="off">
+                      <a href="#" class="search-toggle" role="button">
+                        <i class="icon-search"></i>
+                      </a>
+                    </div>
+                  </div><!-- End .header-search-wrapper -->
+                </form>
+                <ul id="suggestionList"></ul>
               </div>
-           
+
             </div>
             <div class="header-action-right">
               <div class="header-action-2">
@@ -114,7 +114,7 @@
                     <a href="#">About</a>
                   </li>
                   <li>
-                    <a href="#">Shop <i class="fi-rs-angle-down"></i></a>
+                    <a href="/shop">Shop <i class="fi-rs-angle-down"></i></a>
 
                   </li>
 
@@ -137,3 +137,54 @@
       </div>
     </div>
   </header>
+
+  <script>
+    document.addEventListener('click', function (event) {
+      const suggestionList = document.getElementById('suggestionList');
+      const isClickInside = suggestionList.contains(event.target);
+
+      if (!isClickInside) {
+        suggestionList.innerHTML = ''; // Hide the suggestions by clearing the innerHTML
+      }
+    });
+
+    let searchElement = document.getElementById('searchInput');
+    searchElement.onkeyup = function () {
+      let searchWord = searchElement.value;
+      console.log("searchWord", searchWord);
+      if (searchWord != '') {
+        loadData(searchWord);
+      } else {
+        document.getElementById('suggestionList').innerHTML = ''
+      }
+
+    }
+
+    function loadData(query = '') {
+      fetch('/searchProduct', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ payload: query })
+      })
+        .then(res => res.json())
+        .then((data) => {
+          console.log("res block start");
+          console.log(data);
+          let searchResult = data.searchResult;
+          console.log("Hiii", searchResult);
+
+          let html = ''
+          console.log(data.searchResult.length);
+          if (data.searchResult.length > 0) {
+            for (let i = 0; i < data.searchResult.length; i++) {
+              console.log("in loop", data.searchResult[i].productName);
+              html += `<a href="/productDisplay/${data.searchResult[i]._id}"><li style="display:flex;justify-content:space-evenly;text-align: center; border-bottom: 2px solid #acb1b5; width:80%% ;padding:10px"> ${data.searchResult[i].productName} <img  class="img-thumbnail" width="50" src="/${data.searchResult[i].image[0]}" alt="no image avalable"></li></a>`;
+              document.getElementById('suggestionList').innerHTML = html
+            }
+          }
+          console.log("end");
+        })
+    }
+  </script>

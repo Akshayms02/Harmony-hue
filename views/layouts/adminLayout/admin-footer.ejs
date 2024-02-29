@@ -42,7 +42,9 @@
         $('#prodTable').DataTable();
     });
     $(document).ready(function () {
-        $('#orderTable').DataTable();
+        $('#orderTable').DataTable({
+            ordering:false
+        });
     });
     $(document).ready(function () {
         $('#orderDetailsTable').DataTable();

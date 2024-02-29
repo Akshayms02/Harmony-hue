@@ -41,6 +41,8 @@ router.post("/verify", userAuth.otpAuthenticator, authController.signUpUser);
 
 router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
+router.get("/shop", userAuth.isLogout, userController.shopLoad);
+
 router.get(
   "/userHome/productView/:id",
   userAuth.isLogout,
@@ -88,6 +90,8 @@ router.patch("/cancelOrder/:id", orderController.cancelOrder);
 router.patch("/cancelSingleOrder", orderController.cancelSingleOrder);
 
 router.post("/applyCoupon", couponController.applyCoupon);
+
+router.post("/searchProduct", productController.searchProduct);
 
 
 module.exports = router;

@@ -64,8 +64,10 @@ const placeOrder = (body, userId) => {
 const getOrderDetails = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const orderDetails = await orderModel.find({ user: userId }).sort({orderedOn:-1});
-      
+      const orderDetails = await orderModel
+        .find({ user: userId })
+        .sort({ orderedOn: -1 });
+
       resolve(orderDetails);
     } catch (error) {
       console.log(error);
@@ -154,16 +156,18 @@ const cancelOrder = (orderId) => {
 
 const getAllOrders = () => {
   return new Promise(async (resolve, reject) => {
-    const result = await orderModel.aggregate([
-      {
-        $lookup: {
-          from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "userOrderDetails",
+    const result = await orderModel
+      .aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "userOrderDetails",
+          },
         },
-      },
-    ]);
+      ])
+      .sort({ orderedOn: -1 });
     if (result) {
       resolve(result);
     }
@@ -218,8 +222,6 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
           },
         }
       );
-
-     
 
       resolve(cancelled);
     } catch (error) {
