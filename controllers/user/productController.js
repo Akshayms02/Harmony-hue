@@ -1,5 +1,6 @@
 const cartHelper = require("../../helper/cartHelper");
 const wishlistHelper = require("../../helper/wishlistHelper");
+const offerHelper = require("../../helper/offerHelper");
 
 const productModel = require("../../models/productModel");
 
@@ -15,6 +16,8 @@ const productViewLoad = async (req, res) => {
     .findById({ _id: id })
     .populate("productCategory")
     .lean();
+  const offerPrice = await offerHelper.offerCheckForProduct(product);
+  console.log(offerPrice);
 
   const cartStatus = await cartHelper.isAProductInCart(userData, product._id);
 
@@ -22,16 +25,16 @@ const productViewLoad = async (req, res) => {
     userData,
     product._id
   );
-  const offerPrice =
-    product.productPrice -
-    (product.productPrice * product.productDiscount) / 100;
+  // const offerPrice =
+  //   product.productPrice -
+  //   (product.productPrice * product.productDiscount) / 100;
   product.cartStatus = cartStatus;
   product.wishlistStatus = wishlistStatus;
-  product.discountedPrice = currencyFormatter(Math.round(offerPrice));
-  product.productPrice = currencyFormatter(product.productPrice);
+  // product.discountedPrice = currencyFormatter(Math.round(offerPrice));
+  // product.productPrice = currencyFormatter(product.productPrice);
 
   res.render("user/viewProduct", {
-    product,
+    product: offerPrice,
     cartCount,
     wishListCount,
     userData,
@@ -63,7 +66,7 @@ const searchProduct = async (req, res, next) => {
     res.json({ searchResult });
   } catch (error) {
     // res.status(500).render("error", { error, layout: false });
-    console.log(error)
+    console.log(error);
   }
 };
 
@@ -75,7 +78,8 @@ const currencyFormatter = (amount) => {
   });
 };
 
-
 module.exports = {
-  productViewLoad,addToCart,searchProduct,
+  productViewLoad,
+  addToCart,
+  searchProduct,
 };

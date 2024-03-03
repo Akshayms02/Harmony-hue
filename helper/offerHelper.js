@@ -200,6 +200,70 @@ const findOffer = (products) => {
   });
 };
 
+const offerCheckForProduct = (product) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const currentDate = new Date();
+      const offer = await getActiveOffer(currentDate);
+      
+        const productOffer = offer.find((item) =>
+          item.productOffer?.product?.toString()==product._id
+        );
+        console.log("fyghjgg");
+        console.log(productOffer);
+        const categoryOffer = offer.find((item) =>
+          item.categoryOffer?.category?.toString()==
+            product.productCategory._id  
+        );
+        
+        if (productOffer!=undefined && categoryOffer!=undefined) {
+          if (
+            productOffer.productOffer.discount >
+            categoryOffer.categoryOffer.discount
+          ) {
+            const offerPrice =
+              product.productPrice -
+              (product.productPrice * productOffer.productOffer.discount) /
+                100;
+            product.offerPrice = currencyFormatter(Math.round(offerPrice));
+          } else {
+            const offerPrice =
+              product.productPrice -
+              (product.productPrice *
+                categoryOffer.categoryOffer.discount) /
+                100;
+            product.offerPrice = currencyFormatter(Math.round(offerPrice));
+          }
+        } else if (productOffer!=undefined) {
+          const offerPrice =
+            product.productPrice -
+            (product.productPrice * productOffer.productOffer.discount) /
+              100;
+          product.offerPrice = currencyFormatter(Math.round(offerPrice));
+        } else if (categoryOffer!=undefined) {
+          const offerPrice =
+            product.productPrice -
+            (product.productPrice * categoryOffer.categoryOffer.discount) /
+              100;
+          product.offerPrice = currencyFormatter(Math.round(offerPrice));
+        } else {
+          const offerPrice =
+            product.productPrice -
+            (product.productPrice * product.productDiscount) / 100;
+          product.offerPrice = currencyFormatter(Math.round(offerPrice));
+        }
+      product.productPrice = currencyFormatter(product.productPrice); 
+
+      resolve(product);
+      
+
+     
+    } catch (error) {
+      console.log(error)
+   }
+ }) 
+}
+
 const getActiveOffer = (currentDate) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -249,4 +313,6 @@ module.exports = {
   createCategoryOffer,
   editCategoryOffer,
   findOffer,
+  offerCheckForProduct,
+
 };
