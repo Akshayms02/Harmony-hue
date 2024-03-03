@@ -254,9 +254,9 @@
                                                             <tr>
                                                                 <th>Order</th>
                                                                 <th>Date</th>
-                                                            
+
                                                                 <th>Total</th>
-                                                              
+
                                                                 <th>View</th>
                                                             </tr>
                                                         </thead>
@@ -268,16 +268,16 @@
                                                                     <td>
                                                                         <%= element.formattedDate %>
                                                                     </td>
-                                                                  
+
                                                                     <td>
                                                                         <%= element.formattedTotal %> for <%=
                                                                                 element.quantity %> item
                                                                     </td>
-                                                                    
-                                                                                    <td>
-                                                                                        <a href="/orderDetails/<%=element._id%>"
-                                                                                            class="btn-small d-block text-primary">View</a>
-                                                                                    </td>
+
+                                                                    <td>
+                                                                        <a href="/orderDetails/<%=element._id%>"
+                                                                            class="btn-small d-block text-primary">View</a>
+                                                                    </td>
                                                                 </tr>
 
                                                                 <% }) %>
@@ -339,7 +339,9 @@
                                                                                                 %>
                                                                     </address>
 
-                                                                    <span href="#" class="badge bg-danger">Delete</span>
+                                                                    <span href="#"
+                                                                        onclick="deleteAddress('<%=userData.address[i]._id%>')"
+                                                                        class="badge bg-danger">Delete</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -637,7 +639,6 @@
 
     <script>
         const deleteAddress = (addressId) => {
-
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'You will not be able to recover this address!',

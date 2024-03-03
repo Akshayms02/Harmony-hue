@@ -45,11 +45,27 @@ const softDeleteCategory = async (categoryId) => {
   });
 };
 
+const getAllActiveCategory = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const categories = await categoryModel.find({ status: true });
+      if (categories) {
+        resolve(categories);
+      } else {
+        resolve({ message: "No Active Categories" });
+      }
+    } catch (error) {
+      console.log(error)
+    }
+   
+  });
+}
+
 
 
 module.exports = {
   getAllcategory,
   softDeleteCategory,
-  addCategory,
+  addCategory,getAllActiveCategory
   
 };

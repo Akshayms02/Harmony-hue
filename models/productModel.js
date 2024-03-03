@@ -32,7 +32,10 @@ const productSchema = new mongoose.Schema(
     ],
     productDiscount: {
       type: Number,
-      required: true,
+      default: 0,
+    },
+    discountExpiry: {
+      type: Date,
     },
     image: [
       {
@@ -51,6 +54,14 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+productSchema.pre("save", function (next) {
+  const now = new Date();
+  if (this.discountExpiry < now) {
+    this.productDiscount = 0;
+  }
+  next();
+});
 
 const Product = mongoose.model("Product", productSchema);
 

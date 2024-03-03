@@ -22,7 +22,7 @@ const offerSchema = new mongoose.Schema({
     },
   },
   categoryOffer: {
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     discount: { type: Number },
     offerStatus: {
       type: Boolean,

@@ -1,4 +1,5 @@
 <%- include("../layouts/userLayout/userHomeHeader") %>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <div class="mobile-header-active mobile-header-wrapper-style">
     <div class="mobile-header-wrapper-inner">
       <div class="mobile-header-top">
@@ -206,7 +207,8 @@
                     <input type="text" placeholder="Enter Coupon Code..." name="couponCode">
                   </div>
                   <div class="form-group">
-                    <button class="btn  btn-md" name="login" style="background-color: black;" type="submit">Apply Coupon</button>
+                    <button class="btn  btn-md" name="login" style="background-color: black;" type="submit">Apply
+                      Coupon</button>
                   </div>
                 </form>
               </div>
@@ -291,7 +293,8 @@
                         </tr>
                         <tr>
                           <th>Total</th>
-                          <td colspan="2" class="product-subtotal"><span class="font-xl text-dark fw-900" id="totalAmount">
+                          <td colspan="2" class="product-subtotal"><span class="font-xl text-dark fw-900"
+                              id="totalAmount">
                               <%=totalandSubTotal%>
                             </span></td>
                         </tr>
@@ -326,9 +329,9 @@
                   </div>
                   <div class="custome-radio">
                     <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5"
-                      checked="">
+                      value="Razorpay" checked="">
                     <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal"
-                      aria-controls="paypal">Paypal</label>
+                      aria-controls="paypal">Razorpay</label>
                     <div class="form-group collapse in" id="paypal">
                       <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a
                         PayPal account.</p>
@@ -355,44 +358,158 @@
           addressId: address,
           paymentOption: payment,
         }
-        $.ajax({
-          url: "/placeOrder",
-          method: "POST",
-          data: data,
-          success: (response) => {
-            if (response) {
-              window.location.href = response.url
-            } else {
-              Toastify({
-                text: `Something went wrong`,
-                duration: 3000,
-                gravity: "top",
-                position: "center",
-                stopOnFocus: true,
-                style: {
-                  background: "linear-gradient(to right, aqua, blue)",
-                },
-              }).showToast();
+
+        const totalAmount = document.getElementById("totalAmount");
+        const totalPrice = convertRupeeToNumber(totalAmount.textContent);
+        console.log(totalPrice)
+
+        function convertRupeeToNumber(rupeeString) {
+          // Remove the rupee symbol (₹) and any commas from the string.
+          const numberString = rupeeString.replace(/₹|,/g, "");
+
+          // Parse the number string into a number and return it.
+          return parseInt(numberString);
+        }
+
+        if (payment === "COD") {
+          $.ajax({
+            url: "/placeOrder",
+            method: "POST",
+            data: data,
+            success: (response) => {
+              if (response) {
+                window.location.href = response.url
+              } else {
+                Toastify({
+                  text: `Something went wrong`,
+                  duration: 3000,
+                  gravity: "top",
+                  position: "center",
+                  stopOnFocus: true,
+                  style: {
+                    background: "linear-gradient(to right, aqua, blue)",
+                  },
+                }).showToast();
+              }
             }
-          }
-        })
+          })
+        } else if (payment === "Razorpay") {
+          console.log("razorpay selected");
+
+          fetch('/createorder', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ totalPrice })
+          }).then(response => response.json())
+            .then(data => {
+              const parseAmount = parseInt(totalPrice)
+              console.log(data);
+              var options = {
+                "key": "rzp_test_8NIpILQrGaZLRj",
+                "amount": 100000,
+                "currency": "INR",
+                "name": "Harmony Hue",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": data.orderId.id,
+                "handler": function (response) {
+                  console.log(response);
+                  console.log("Hello")
+
+                  verify(response, data.orderId.id)
+                  console.log("hey")
+                },
+                "prefill": {
+                  "name": "Gaurav Kumar",
+                  "email": "gaurav.kumar@example.com",
+                  "contact": "9000090000"
+                },
+                "notes": {
+                  "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                  "color": "#3399cc"
+                }
+              };
+              var rzp = new Razorpay(options)
+              rzp.open();
+
+              function verify(response, orderId) {
+                console.log(response, orderId);
+                fetch('/paymentSuccess', {
+                  method: 'post',
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    paymentid: response.razorpay_payment_id,
+                    razorpayorderid: response.razorpay_order_id,
+                    signature: response.razorpay_signature,
+                    orderId
+                  })
+                })
+                  .then(response => response.json())
+                  .then((data) => {
+                    if (data.success) {
+
+                      fetch('/placeOrder', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(
+                          {
+                            addressId: address,
+                            paymentOption: payment,
+                          }
+                        ),
+
+                      })
+
+                        .then(response => response.json())
+                        .then(data => {
+                          console.log(data);
+                          window.location.href = '/orderSuccessPage'
+                        })
+                        .catch((error) => {
+                          console.error('Error:', error);
+                        })
+                    } else {
+
+                      console.error('Payment failed:', data.error);
+
+                      alert('Payment failed. Please try again later.');
+                    }
+                  })
+                  .catch(error => {
+                    // Handle any errors that occur during the fetch operation
+                    console.error('Error:', error);
+                  });
+              }
+            })
+
+
+        }
+
       })
 
     })
   </script>
   <script>
-    $(document).ready(function(){
-      $("#couponForm").submit(function(event){
+    $(document).ready(function () {
+      $("#couponForm").submit(function (event) {
         console.log("hey")
         event.preventDefault();
-        let formData=$(this).serialize();
+        let formData = $(this).serialize();
         console.log(formData)
         $.ajax({
-          url:"/applyCoupon",
-          method:"POST",
-          data:formData,
-          success:(response)=>{
-            if(response.status){
+          url: "/applyCoupon",
+          method: "POST",
+          data: formData,
+          success: (response) => {
+            if (response.status) {
               Toastify({
                 text: `${response.message}`,
                 duration: 3000,
@@ -404,8 +521,8 @@
                 },
               }).showToast();
               location.reload();
-              
-            }else{
+
+            } else {
               Toastify({
                 text: `${response.message}`,
                 duration: 3000,
@@ -419,14 +536,16 @@
             }
 
           },
-          error:(error)=>{
+          error: (error) => {
             console.log(error)
           }
         })
-        
+
 
       })
 
     })
   </script>
+
+
   <%- include("../layouts/userLayout/userHomeFooter") %>

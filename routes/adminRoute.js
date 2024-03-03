@@ -6,7 +6,7 @@ const categoryController = require("../controllers/admin/categoryController");
 const orderController = require("../controllers/admin/orderController");
 const productController = require("../controllers/admin/productController");
 const usersController = require("../controllers/admin/usersController");
-const couponController = require("../controllers/admin/couponController")
+const couponController = require("../controllers/admin/couponController");
 const offerController = require("../controllers/admin/offerController");
 const adminAuth = require("../middleware/adminAuth");
 const multer = require("../middleware/multer");
@@ -87,20 +87,42 @@ router.get("/coupons", adminAuth.isLogout, couponController.couponListLoad);
 
 router.post("/addCoupon", couponController.addCoupon);
 
-router.get("/editCoupon/:id", adminAuth.isLogout, couponController.getEditCoupon);
+router.get(
+  "/editCoupon/:id",
+  adminAuth.isLogout,
+  couponController.getEditCoupon
+);
 
 router.post("/editCoupon", couponController.editCoupon);
 
 router.delete("/deleteCoupon/:id", couponController.deleteCoupon);
 
-router.get("/productOffers", adminAuth.isLogout, offerController.productOfferLoad);
+router.get(
+  "/productOffers",
+  adminAuth.isLogout,
+  offerController.productOfferLoad
+);
 
 router.post("/productAddOffer", offerController.productAddOffer);
 
-router.get("/productEditOffer/:id", adminAuth.isLogout, offerController.productEditLoad);
+router.get(
+  "/productEditOffer/:id",
+  adminAuth.isLogout,
+  offerController.productEditLoad
+);
 
-router.post("/prouductEditOffer", offerController.productEditOffer);
+router.post("/productEditOffer", offerController.productEditOffer);
 
+router.get(
+  "/categoryOffers",
+  adminAuth.isLogout,
+  offerController.categoryOfferLoad
+);
 
+router.post("/categoryAddOffer", offerController.addCategoryOffer);
+
+router.get("/categoryEditOffer/:id", adminAuth.isLogout, offerController.categoryEditLoad);
+
+router.post("/categoryEditOffer",offerController.categoryEditOffer)
 
 module.exports = router;

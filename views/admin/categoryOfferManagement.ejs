@@ -5,92 +5,94 @@
       <div>
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCoupon"
-          data-bs-whatever="@getbootstrap">Add Offer +</button>
+          data-bs-whatever="@getbootstrap" style="background-color: black;">Add Offer +</button>
 
       </div>
 
     </div>
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="table-responsive">
-          <% if (!offers.length) { %>
+    <% if (locals.message) { %>
+      <input type="text" id="message" value="<%= message %>" hidden>
+      <% } %>
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="table-responsive">
+              <% if (!offers.length) { %>
 
-            <h1>No Offers Are Added Yet</h1>
+                <h1>No Offers Are Added Yet</h1>
 
-            <% }else{ %>
+                <% }else{ %>
 
-              <table class="table table-hover" id="couponTable">
-                <thead>
-                  <tr class="text-left">
-                    <th>No</th>
-                    <th>Offer Name</th>
-                    <th>Category/th>
-                    <th>Discount</th>
-                    <th>Starting date</th>
-                    <th>Ending date</th>
+                  <table class="table table-hover" id="categoryOfferTable">
+                    <thead>
+                      <tr class="text-left">
+                        <th class="text-center">No</th>
+                        <th class="text-center">Offer Name</th>
+                        <th class="text-center">Category</th>
+                        <th class="text-center">Discount</th>
+                        <th class="text-center">Starting date</th>
+                        <th class="text-center">Ending date</th>
 
-                    <th>Edit</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for( let i=0; i < offers.length; i++ ) { %>
+                        <th class="text-center">Edit</th>
+                        <th class="text-center">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for( let i=0; i < offers.length; i++ ) { %>
 
 
-                    <tr class="text-left">
-                      <td width="15%">
-                        <%= i+1 %>
-                      </td>
-                      <td width="20%">
-                        <%= offers[i].name %>
-                      </td>
-                      <td width="15%">
-                        <%= offers[i].categoryOffer.category %>
-                      </td>
-                      <td width="15%">
-                        <%= offers[i].categoryOffer.discount %>
-                      </td>
-                      <td width="20%">
-                        <%= offers[i].startingDate %>
-                      </td>
-                      <td width="10%">
-                        <%= offers[i].endingDate%>
-                      </td>
+                        <tr class="text-center">
+                          <td width="15%">
+                            <%= i+1 %>
+                          </td>
+                          <td width="20%">
+                            <%= offers[i].offerName %>
+                          </td>
+                          <td width="15%">
+                            <%= offers[i].categoryOffer.category.categoryName %>
+                          </td>
+                          <td width="15%">
+                            <%= offers[i].categoryOffer.discount %>
+                          </td>
+                          <td width="20%">
+                            <%= offers[i].formattedStartingDate %>
+                          </td>
+                          <td width="10%">
+                            <%= offers[i].formattedEndingDate%>
+                          </td>
 
-                      <td width="10%"><a onclick="getOfferData('<%= offers[i]._id %>')"
-                          class="btn btn-sm btn-success rounded font-sm mt-15" type="button" data-bs-toggle="modal"
-                          data-bs-target="#editCoupon" data-bs-whatever="@getbootstrap">Edit</a></td>
-                      <td width="20%">
-                        <% if (offers[i].status) { %>
-                          <button id="delete-categoryOffer<%= offers[i]._id %>"
-                            class="btn btn-sm btn-success rounded font-sm mt-15"
-                            onclick="deleteCategoryOffer('<%= offers[i]._id %>')">
-                            Listed
-                          </button>
-                          <% } else { %>
-                            <button id="delete-categoryOffer<%= offers[i]._id %>"
-                              class="btn btn-sm btn-danger rounded font-sm mt-15"
-                              onclick="deleteCategoryOffer('<%= offers[i]._id %>')">
-                              Unlisted
-                            </button>
-                            <% } %>
-                      </td>
-                    </tr>
+                          <td width="10%"><a onclick="getOfferData('<%= offers[i]._id %>')"
+                              class="btn btn-sm btn-dark rounded font-sm mt-15" type="button" data-bs-toggle="modal"
+                              data-bs-target="#editCoupon" data-bs-whatever="@getbootstrap">Edit</a></td>
+                          <td width="20%">
+                            <% if (offers[i].status) { %>
+                              <button id="delete-categoryOffer<%= offers[i]._id %>"
+                                class="btn btn-sm btn-success rounded font-sm mt-15"
+                                onclick="deleteCategoryOffer('<%= offers[i]._id %>')">
+                                Listed
+                              </button>
+                              <% } else { %>
+                                <button id="delete-categoryOffer<%= offers[i]._id %>"
+                                  class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                  onclick="deleteCategoryOffer('<%= offers[i]._id %>')">
+                                  Unlisted
+                                </button>
+                                <% } %>
+                          </td>
+                        </tr>
 
-                    <% } %>
-                </tbody>
-              </table> <!-- table-responsive.// -->
-              <% } %>
+                        <% } %>
+                    </tbody>
+                  </table> <!-- table-responsive.// -->
+                  <% } %>
 
-        </div>
-      </div> <!-- card-body end// -->
-    </div> <!-- card end// -->
+            </div>
+          </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
 
   </section> <!-- content-main end// -->
 
 
   <!-- Modal Add Coupon -->
-
 
   <div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -100,31 +102,38 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="/admin/add-offer" method="post">
+          <form action="/admin/categoryAddOffer" method="post">
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Offer Name</label>
-              <input type="text" class="form-control" name="couponName" id="couponName">
+              <input type="text" class="form-control" name="offerName" id="">
             </div>
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Category</label>
-              <input type="text" class="form-control" name="couponName" id="couponName">
+              <label for="recipient-name" class="col-form-label">Product</label>
+              <select name="categoryName" id="" class="form-select">
+                <% for( let i=0; i < categories.length; i++ ) { %>
+                  <option class="form-option" value="<%= categories[i]._id %>">
+                    <%= categories[i].categoryName %>
+                  </option>
+                  <% } %>
+              </select>
+              <!-- <input type="text" class="form-control" name="couponName" id="couponName"> -->
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Discount Amount</label>
-              <input type="text" class="form-control" name="couponAmount" id="couponAmount">
+              <input type="text" class="form-control" name="discountAmount" id="">
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Starting date</label>
-              <input type="text" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
+              <input type="date" class="form-control" name="startDate" id="couponExpiry" placeholder="YYYY-MM-DD">
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Ending date</label>
-              <input type="text" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
+              <input type="date" class="form-control" name="endDate" id="couponExpiry" placeholder="YYYY-MM-DD">
             </div>
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Create Offer</button>
+              <button type="submit" class="btn btn-primary" style="background-color: black;">Create Offer</button>
             </div>
 
           </form>
@@ -133,7 +142,6 @@
       </div>
     </div>
   </div>
-
   <!--End Modal  Add Coupon-->
 
 
@@ -148,38 +156,45 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="/admin/editOffer" method="post">
+          <form action="/admin/categoryEditOffer" method="post">
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Offer Name</label>
-              <input type="text" class="form-control" name="couponName" id="couponNme">
+              <input type="text" class="form-control" name="offerName" id="offerName">
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Category</label>
-              <input type="text" class="form-control" name="couponName" id="couponNme">
+              <select name="categoryName" id="categoryName" class="form-select">
+                <% for( let i=0; i < categories.length; i++ ) { %>
+                  <option class="form-option" value="<%= categories[i]._id %>">
+                    <%= categories[i].categoryName %>
+                  </option>
+                  <% } %>
+              </select>
+
             </div>
             <!-- <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">Coupon Code</label>
-                      <input type="text" class="form-control" name="couponCode" id="couponCode">
-                  </div> -->
+                        <label for="recipient-name" class="col-form-label">Coupon Code</label>
+                        <input type="text" class="form-control" name="couponCode" id="couponCode">
+                    </div> -->
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Discount Amount</label>
-              <input type="text" class="form-control" name="couponAmount" id="couponAmont">
+              <input type="text" class="form-control" name="discountAmount" id="discountAmount">
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Starting Date (YYYY/MM/DD)</label>
-              <input type="text" class="form-control" name="couponExpiry" id="couponExpiring">
+              <input type="date" class="form-control" name="startDate" id="startDate">
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Ending Date (YYYY/MM/DD)</label>
-              <input type="text" class="form-control" name="couponExpiry" id="couponExpiring">
+              <input type="date" class="form-control" name="endDate" id="endDate">
             </div>
             <div class="mb-3">
-              <input type="hidden" class="form-control" id="couponIdd" name="couponId" />
+              <input type="hidden" class="form-control" id="offerId" name="offerId" />
             </div>
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Update Offer</button>
+              <button type="submit" class="btn btn-primary" style="background-color: black;">Update Offer</button>
             </div>
 
           </form>
@@ -262,20 +277,20 @@
   </script>
 
   <script>
-    function getCouponData(couponId) {
-      console.log("clicked", couponId);
+    function getOfferData(offerId) {
       $.ajax({
-        url: "/admin/edit-coupon/" + couponId,
-        type: 'get',
+        url: "/admin/categoryEditOffer/" + offerId,
+        method: 'GET',
       })
         .done((res) => {
-          console.log(res, 'reeeeeeeeeeeeesssssssssssssssssss');
           if (res) {
-            document.getElementById('couponNme').value = res.couponName;
-            // document.getElementById('couponCode').value = res.code;
-            document.getElementById('couponAmont').value = res.discount;
-            document.getElementById('couponExpiring').value = res.expiryDate;
-            document.getElementById('couponIdd').value = res._id;
+            console.log(res)
+            document.getElementById("categoryName").value = res.categoryOffer.category
+            document.getElementById('offerName').value = res.offerName;
+            document.getElementById('discountAmount').value = res.categoryOffer.discount;
+            document.getElementById('startDate').value = convertDateFormat(res.formattedStartingDate)
+            document.getElementById("endDate").value = convertDateFormat(res.formattedEndingDate)
+            document.getElementById('offerId').value = res._id;
 
             $("#editCoupon").modal("show");
 
@@ -288,9 +303,49 @@
     }
   </script>
 
+  <script>
+    function convertDateFormat(dateString) {
+      try {
+        // Split the date string into components
+        const [year, month, day] = dateString.split('/');
+
+        // Validate month and day values (optional)
+        if (month < 1 || month > 12 || day < 1 || day > 31) {
+          throw new Error("Invalid month or day value.");
+        }
+
+        // Format the date in the desired format (YYYY-MM-DD)
+        return year + '-' + month.padStart(2, '0') + '-' + day.padStart(2, '0');
+      } catch (error) {
+        console.error("Invalid date format. Please provide a date string in the format 'yyyy/mm/dd'.", error);
+        return null; // Or return any other default value if conversion fails
+      }
+    }
+  </script>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const message = document.getElementById("message");
+      console.log(message)
+      if (message.value != null) {
+        Swal.fire("Successfull", `Offer Updated`, "success").then(() => {
+        })
+      }
+    })
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $('#categoryOfferTable').DataTable({
+        ordering: false,
+      });
+    });
+  </script>
 
 
 
- 
+
+
 
   <%- include("../layouts/adminLayout/admin-footer") %>

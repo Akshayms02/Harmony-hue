@@ -1,7 +1,55 @@
 const cartHelper = require("../../helper/cartHelper");
 const orderHelper = require("../../helper/orderHelper");
-const couponHelper=require("../../helper/couponHelper")
+const couponHelper = require("../../helper/couponHelper");
 const userModel = require("../../models/userModel");
+const Razorpay = require("razorpay");
+
+const { KEY_ID, KEY_SECRET } = process.env;
+
+var razorpay = new Razorpay({
+  key_id: "rzp_test_8NIpILQrGaZLRj",
+  key_secret: "sNRox6FKchnUjeUZkg7Yb9yF",
+});
+
+const createOrder = async (req, res) => {
+  try {
+    const amount = parseInt(req.body.totalPrice);
+    console.log(amount);
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: req.session.user,
+    });
+
+    console.log(order);
+
+    res.json({ orderId: order });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const paymentSuccess = (req, res) => {
+  try {
+    const { paymentid, signature, orderId } = req.body;
+    const { createHmac } = require("node:crypto");
+
+    const hash = createHmac("sha256", "sNRox6FKchnUjeUZkg7Yb9yF")
+      .update(orderId + "|" + paymentid)
+      .digest("hex");
+
+    if (hash === signature) {
+      console.log("success");
+      res.status(200).json({ success: true, message: "Payment successful" });
+    } else {
+      console.log("error");
+      res.json({ success: false, message: "Invalid payment details" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
 const checkoutLoad = async (req, res) => {
   const userId = req.session.user;
@@ -36,7 +84,8 @@ const checkoutLoad = async (req, res) => {
       cartItems,
       totalAmountOfEachProduct,
       totalandSubTotal,
-      userData,coupons
+      userData,
+      coupons,
     });
   }
 };
@@ -94,9 +143,9 @@ const cancelSingleOrder = async (req, res) => {
     const singleOrderId = req.query.singleOrderId;
     const result = await orderHelper.cancelSingleOrder(orderId, singleOrderId);
     if (result) {
-      res.json({status:true})
+      res.json({ status: true });
     } else {
-      res.json({status:false})
+      res.json({ status: false });
     }
   } catch (error) {
     console.log(error);
@@ -118,4 +167,6 @@ module.exports = {
   placeOrder,
   orderDetails,
   cancelSingleOrder,
+  createOrder,
+  paymentSuccess,
 };

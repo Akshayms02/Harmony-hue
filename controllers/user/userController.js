@@ -3,6 +3,7 @@ const cartHelper = require("../../helper/cartHelper");
 const wishlistHelper = require("../../helper/wishlistHelper");
 const productHelper = require("../../helper/productHelper");
 const orderHelper = require("../../helper/orderHelper");
+const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
 const userHelper = require("../../helper/userHelper");
 const bcrypt = require("bcrypt");
@@ -11,7 +12,7 @@ const moment = require("moment");
 const loadUserHome = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   try {
-    let userId = req.session.user;
+    const userId = req.session.user;
     const categories = await categoryHelper.getAllcategory();
 
     let cartCount = await cartHelper.getCartCount(userId);
@@ -26,17 +27,19 @@ const loadUserHome = async (req, res) => {
         product._id
       );
 
-      const offerPrice =
-        product.productPrice -
-        (product.productPrice * product.productDiscount) / 100;
-      product.discountedPrice = currencyFormatter(Math.round(offerPrice));
+      // const offerPrice =
+      //   product.productPrice -
+      //   (product.productPrice * product.productDiscount) / 100;
+      // product.discountedPrice = currencyFormatter(Math.round(offerPrice));
       product.cartStatus = cartStatus;
       product.wishlistStatus = wishlistStatus;
-      product.productPrice = currencyFormatter(product.productPrice);
+      // product.productPrice = currencyFormatter(product.productPrice);
     }
+    const offerPrice = await offerHelper.findOffer(products);
+   
 
     res.render("user/userHome", {
-      products,
+      products:offerPrice,
       userData: req.session.user,
       cartCount,
       wishListCount,

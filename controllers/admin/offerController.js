@@ -1,5 +1,6 @@
 const offerHelper = require("../../helper/offerHelper");
 const productHelper = require("../../helper/productHelper");
+const categoryHelper = require("../../helper/categoryHelper");
 
 const productOfferLoad = async (req, res) => {
   try {
@@ -56,9 +57,66 @@ const productEditOffer = async (req, res) => {
   }
 };
 
+const categoryOfferLoad = async (req, res) => {
+  try {
+    const offers = await offerHelper.getAllOffersOfCategories();
+    const categories = await categoryHelper.getAllActiveCategory();
+    const message = req.flash("message");
+    if (message.length > 0) {
+      console.log(message);
+      res.render("admin/categoryOfferManagement", { offers, categories, message });
+    } else {
+      res.render("admin/categoryOfferManagement", { offers, categories });
+    }
+    
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const addCategoryOffer = async (req, res) => {
+  try {
+    const offer = await offerHelper.createCategoryOffer(req.body);
+    if (offer) {
+      req.flash("message", "Offer Added");
+      res.redirect("/admin/categoryOffers");
+    } 
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const categoryEditLoad = async (req, res) => {
+  try {
+    console.log('reached')
+    const offerId = req.params.id;
+    const response = await offerHelper.getOfferDetails(offerId);
+    res.json(response);
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const categoryEditOffer = async (req, res) => {
+  try {
+    const result = await offerHelper.editCategoryOffer(req.body);
+    if (result) {
+      req.flash("message", "Offer edited");
+      res.redirect("/admin/productOffers");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   productOfferLoad,
   productAddOffer,
   productEditOffer,
   productEditLoad,
+  categoryOfferLoad,
+  addCategoryOffer,
+  categoryEditLoad,
+  categoryEditOffer,
 };
