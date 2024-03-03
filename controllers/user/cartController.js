@@ -1,6 +1,7 @@
 const cartHelper = require("../../helper/cartHelper");
 const cartModel = require("../../models/cartModel");
 const wishlistHelper = require("../../helper/wishlistHelper");
+const offerHelper = require("../../helper/offerHelper");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const userCartLoad = async (req, res) => {
@@ -8,6 +9,10 @@ const userCartLoad = async (req, res) => {
     const userData = req.session.user;
 
     const cartItems = await cartHelper.getAllCartItems(userData);
+
+    const offerPrice = await offerHelper.findOfferInCart(cartItems);
+
+    console.log(offerPrice);
 
     const cartCount = await cartHelper.getCartCount(userData);
 
@@ -19,29 +24,23 @@ const userCartLoad = async (req, res) => {
 
     let totalAmountOfEachProduct = [];
     for (i = 0; i < cartItems.length; i++) {
-      cartItems[i].product.productPrice = Math.round(
-        cartItems[i].product.productPrice -
-          (cartItems[i].product.productPrice *
-            cartItems[i].product.productDiscount) /
-            100
-      );
       let total =
-        cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
-      total = currencyFormatter(total);
+        cartItems[i].quantity * parseInt(cartItems[i].product.offerPrice);
+      // total = currencyFormatter(total);
       totalAmountOfEachProduct.push(total);
     }
 
-    totalandSubTotal = currencyFormatter(totalandSubTotal);
-    for (i = 0; i < cartItems.length; i++) {
-      cartItems[i].product.productPrice = currencyFormatter(
-        cartItems[i].product.productPrice
-      );
-    }
+    // totalandSubTotal = currencyFormatter(totalandSubTotal);
+    // for (i = 0; i < cartItems.length; i++) {
+    //   cartItems[i].product.productPrice = currencyFormatter(
+    //     cartItems[i].product.productPrice
+    //   );
+    // }
     console.log(cartItems);
 
     res.render("user/userCart", {
       userData: req.session.user,
-      cartItems,
+      cartItems: offerPrice,
       cartCount,
       wishListCount,
       totalAmount: totalandSubTotal,
@@ -62,6 +61,7 @@ const updateCartQuantity = async (req, res) => {
     quantity
   );
   const cartItems = await cartHelper.getAllCartItems(userId);
+  const offerPrice = await offerHelper.findOfferInCart(cartItems);
 
   if (update.status) {
     const cart = await cartModel.aggregate([
@@ -74,11 +74,19 @@ const updateCartQuantity = async (req, res) => {
       },
     ]);
     console.log(cart);
+    if (offerPrice) {
+      cart[0].products.totalPrice = currencyFormatter(
+        Math.round(update.price - (update.price * update.discount) / 100) *
+          cart[0].products.quantity
+      );
+    } else {
+      cart[0].products.totalPrice = currencyFormatter(
+        Math.round(update.price - (update.price * update.discount) / 100) *
+          cart[0].products.quantity
+      );
+    }
 
-    cart[0].products.totalPrice = currencyFormatter(
-      Math.round(update.price - (update.price * update.discount) / 100) *
-        cart[0].products.quantity
-    );
+   
 
     const totalSubtotal = await cartHelper.totalSubtotal(userId, cartItems);
     console.log(totalSubtotal);

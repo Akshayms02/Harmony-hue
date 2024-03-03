@@ -41,7 +41,7 @@
                         </p>
                       </td>
                       <td class="price" data-title="Price" id="price-span<%= cartItems[i].product._id %>"><span>
-                          <%= cartItems[i].product.productPrice %>
+                        ₹ <%= cartItems[i].product.offerPrice %>
                         </span></td>
                       <td class="size" data-title="Size" id="size">
                         <%= cartItems[i].size %>
@@ -60,7 +60,7 @@
                       </td>
                       <td class="text-right" id="text-right<%= cartItems[i].product._id %>" data-title="Cart">
                         <span id="individualTotal<%= cartItems[i].product._id %>">
-                          <%=totalAmountOfEachProduct[i]%>
+                          ₹ <%=totalAmountOfEachProduct[i]%>
                         </span>
                       </td>
                       <td class="action" data-title="Remove"><a
@@ -120,7 +120,7 @@
                             <td class="cart_total_label">Cart Subtotal</td>
                             <td class="cart_total_amount"><span class="font-lg fw-900 text-dark" id="totalAmount"
                                 style="color: black;">
-                                <%= totalAmount %>
+                                ₹ <%= totalAmount %>
                               </span>
 
 
@@ -135,7 +135,7 @@
                             <td class="cart_total_label">Total</td>
                             <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
                                   style="color: black;" id="totalAmountFinal">
-                                  <%= totalAmount %>
+                                  ₹ <%= totalAmount %>
                                 </span></strong>
                             </td>
                           </tr>

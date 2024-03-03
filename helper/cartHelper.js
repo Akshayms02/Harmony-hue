@@ -58,7 +58,7 @@ const totalSubtotal = (userId, cartItems) => {
                 parseInt(
                   cartItems[i].product.productPrice -
                     (cartItems[i].product.productPrice *
-                      cartItems[i].product.productDiscount) /
+                      cartItems[i].product.productOffer) /
                       100
                 );
           }

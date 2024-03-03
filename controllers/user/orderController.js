@@ -1,6 +1,7 @@
 const cartHelper = require("../../helper/cartHelper");
 const orderHelper = require("../../helper/orderHelper");
 const couponHelper = require("../../helper/couponHelper");
+const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
 const Razorpay = require("razorpay");
 
@@ -54,6 +55,7 @@ const paymentSuccess = (req, res) => {
 const checkoutLoad = async (req, res) => {
   const userId = req.session.user;
   const cartItems = await cartHelper.getAllCartItems(userId);
+  const offerPrice = await offerHelper.findOfferInCart(cartItems);
   let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartItems);
   const userData = await userModel.findOne({ _id: userId });
   const coupons = await couponHelper.findAllCoupons();
@@ -62,23 +64,17 @@ const checkoutLoad = async (req, res) => {
   console.log(cartItems);
   let totalAmountOfEachProduct = [];
   for (i = 0; i < cartItems.length; i++) {
-    cartItems[i].product.productPrice = Math.round(
-      cartItems[i].product.productPrice -
-        (cartItems[i].product.productPrice *
-          cartItems[i].product.productDiscount) /
-          100
-    );
     let total =
-      cartItems[i].quantity * parseInt(cartItems[i].product.productPrice);
+      cartItems[i].quantity * parseInt(cartItems[i].product.offerPrice);
     total = currencyFormatter(total);
     totalAmountOfEachProduct.push(total);
   }
   totalandSubTotal = currencyFormatter(totalandSubTotal);
-  for (i = 0; i < cartItems.length; i++) {
-    cartItems[i].product.productPrice = currencyFormatter(
-      cartItems[i].product.productPrice
-    );
-  }
+  // for (i = 0; i < cartItems.length; i++) {
+  //   cartItems[i].product.productPrice = currencyFormatter(
+  //     cartItems[i].product.productPrice
+  //   );
+  // }
   if (cartItems) {
     res.render("user/checkout", {
       cartItems,

@@ -131,7 +131,7 @@ const editCategoryOffer = (data) => {
           },
         }
       );
-      resolve(result)
+      resolve(result);
     } catch (error) {
       console.log(error);
     }
@@ -145,17 +145,18 @@ const findOffer = (products) => {
       const offer = await getActiveOffer(currentDate);
       console.log(offer);
       for (let i = 0; i < products.length; i++) {
-        const productOffer = offer.find((item) =>
-          item.productOffer?.product?.toString()==products[i]._id
+        const productOffer = offer.find(
+          (item) => item.productOffer?.product?.toString() == products[i]._id
         );
         console.log("fyghjgg");
         console.log(productOffer);
-        const categoryOffer = offer.find((item) =>
-          item.categoryOffer?.category?.toString()==
-            products[i].productCategory._id  
+        const categoryOffer = offer.find(
+          (item) =>
+            item.categoryOffer?.category?.toString() ==
+            products[i].productCategory._id
         );
-        
-        if (productOffer!=undefined && categoryOffer!=undefined) {
+
+        if (productOffer != undefined && categoryOffer != undefined) {
           if (
             productOffer.productOffer.discount >
             categoryOffer.categoryOffer.discount
@@ -173,13 +174,13 @@ const findOffer = (products) => {
                 100;
             products[i].offerPrice = currencyFormatter(Math.round(offerPrice));
           }
-        } else if (productOffer!=undefined) {
+        } else if (productOffer != undefined) {
           const offerPrice =
             products[i].productPrice -
             (products[i].productPrice * productOffer.productOffer.discount) /
               100;
           products[i].offerPrice = currencyFormatter(Math.round(offerPrice));
-        } else if (categoryOffer!=undefined) {
+        } else if (categoryOffer != undefined) {
           const offerPrice =
             products[i].productPrice -
             (products[i].productPrice * categoryOffer.categoryOffer.discount) /
@@ -200,81 +201,160 @@ const findOffer = (products) => {
   });
 };
 
-const offerCheckForProduct = (product) => {
+const findOfferInCart = (cartItems) => {
   return new Promise(async (resolve, reject) => {
     try {
       const currentDate = new Date();
       const offer = await getActiveOffer(currentDate);
-      
-        const productOffer = offer.find((item) =>
-          item.productOffer?.product?.toString()==product._id
+      console.log(offer);
+      for (let i = 0; i < cartItems.length; i++) {
+        const productOffer = offer.find(
+          (item) => item.productOffer?.product?.toString() == cartItems[i].item
         );
         console.log("fyghjgg");
         console.log(productOffer);
-        const categoryOffer = offer.find((item) =>
-          item.categoryOffer?.category?.toString()==
-            product.productCategory._id  
+        const categoryOffer = offer.find(
+          (item) =>
+            item.categoryOffer?.category?.toString() ==
+            cartItems[i].product.productCategory
         );
-        
-        if (productOffer!=undefined && categoryOffer!=undefined) {
+
+        if (productOffer != undefined && categoryOffer != undefined) {
           if (
             productOffer.productOffer.discount >
             categoryOffer.categoryOffer.discount
           ) {
             const offerPrice =
-              product.productPrice -
-              (product.productPrice * productOffer.productOffer.discount) /
+              cartItems[i].product.productPrice -
+              (cartItems[i].product.productPrice *
+                productOffer.productOffer.discount) /
                 100;
-            product.offerPrice = currencyFormatter(Math.round(offerPrice));
+            cartItems[i].product.offerPrice = Math.round(offerPrice);
+
+            cartItems[i].product.productOffer =
+              productOffer.productOffer.discount;
           } else {
             const offerPrice =
-              product.productPrice -
-              (product.productPrice *
+              cartItems[i].product.productPrice -
+              (cartItems[i].product.productPrice *
                 categoryOffer.categoryOffer.discount) /
                 100;
-            product.offerPrice = currencyFormatter(Math.round(offerPrice));
+            cartItems[i].product.offerPrice = Math.round(offerPrice);
+
+            cartItems[i].product.productOffer =
+              categoryOffer.categoryOffer.discount;
           }
-        } else if (productOffer!=undefined) {
+        } else if (productOffer != undefined) {
+          const offerPrice =
+            cartItems[i].product.productPrice -
+            (cartItems[i].product.productPrice *
+              productOffer.productOffer.discount) /
+              100;
+          cartItems[i].product.offerPrice = Math.round(offerPrice);
+
+          cartItems[i].product.productOffer =
+            productOffer.productOffer.discount;
+        } else if (categoryOffer != undefined) {
+          const offerPrice =
+            cartItems[i].product.productPrice -
+            (cartItems[i].product.productPrice *
+              categoryOffer.categoryOffer.discount) /
+              100;
+          cartItems[i].product.offerPrice = Math.round(offerPrice);
+
+          cartItems[i].product.productOffer =
+            categoryOffer.categoryOffer.discount;
+        } else {
+          const offerPrice =
+            cartItems[i].product.productPrice -
+            (cartItems[i].product.productPrice *
+              cartItems[i].product.productDiscount) /
+            100;
+          cartItems[i].product.offerPrice=Math.round(offerPrice)
+          cartItems[i].product.productOffer =
+            cartItems[i].product.productDiscount;
+          // cartItems[i].product.offerPrice = currencyFormatter(
+          //   Math.round(offerPrice)
+          // );
+        }
+        // cartItems[i].product.productPrice = currencyFormatter(
+        //   cartItems[i].product.productPrice
+        // );
+      }
+      resolve(cartItems);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+const offerCheckForProduct = (product) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const currentDate = new Date();
+      const offer = await getActiveOffer(currentDate);
+
+      const productOffer = offer.find(
+        (item) => item.productOffer?.product?.toString() == product._id
+      );
+      console.log("fyghjgg");
+      console.log(productOffer);
+      const categoryOffer = offer.find(
+        (item) =>
+          item.categoryOffer?.category?.toString() ==
+          product.productCategory._id
+      );
+
+      if (productOffer != undefined && categoryOffer != undefined) {
+        if (
+          productOffer.productOffer.discount >
+          categoryOffer.categoryOffer.discount
+        ) {
           const offerPrice =
             product.productPrice -
-            (product.productPrice * productOffer.productOffer.discount) /
-              100;
-          product.offerPrice = currencyFormatter(Math.round(offerPrice));
-        } else if (categoryOffer!=undefined) {
-          const offerPrice =
-            product.productPrice -
-            (product.productPrice * categoryOffer.categoryOffer.discount) /
-              100;
+            (product.productPrice * productOffer.productOffer.discount) / 100;
           product.offerPrice = currencyFormatter(Math.round(offerPrice));
         } else {
           const offerPrice =
             product.productPrice -
-            (product.productPrice * product.productDiscount) / 100;
+            (product.productPrice * categoryOffer.categoryOffer.discount) / 100;
           product.offerPrice = currencyFormatter(Math.round(offerPrice));
         }
-      product.productPrice = currencyFormatter(product.productPrice); 
+      } else if (productOffer != undefined) {
+        const offerPrice =
+          product.productPrice -
+          (product.productPrice * productOffer.productOffer.discount) / 100;
+        product.offerPrice = currencyFormatter(Math.round(offerPrice));
+      } else if (categoryOffer != undefined) {
+        const offerPrice =
+          product.productPrice -
+          (product.productPrice * categoryOffer.categoryOffer.discount) / 100;
+        product.offerPrice = currencyFormatter(Math.round(offerPrice));
+      } else {
+        const offerPrice =
+          product.productPrice -
+          (product.productPrice * product.productDiscount) / 100;
+        product.offerPrice = currencyFormatter(Math.round(offerPrice));
+      }
+      product.productPrice = currencyFormatter(product.productPrice);
 
       resolve(product);
-      
-
-     
     } catch (error) {
-      console.log(error)
-   }
- }) 
-}
+      console.log(error);
+    }
+  });
+};
 
 const getActiveOffer = (currentDate) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const result = await offerModel
-        .find({
-          startingDate: { $lte: currentDate },
-          endingDate: { $gte: currentDate },
-          status: true,
-        })
-        // .populate("productOffer.product")
-        // .populate("categoryOffer.category");
+      const result = await offerModel.find({
+        startingDate: { $lte: currentDate },
+        endingDate: { $gte: currentDate },
+        status: true,
+      });
+      // .populate("productOffer.product")
+      // .populate("categoryOffer.category");
 
       resolve(result);
     } catch (error) {
@@ -314,5 +394,5 @@ module.exports = {
   editCategoryOffer,
   findOffer,
   offerCheckForProduct,
-
+  findOfferInCart,
 };
