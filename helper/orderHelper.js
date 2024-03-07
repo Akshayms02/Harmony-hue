@@ -196,6 +196,8 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
         },
         {
           $set: { "products.$.status": "cancelled" },
+        }, {
+          new:true
         }
       );
       const result = await orderModel.aggregate([
@@ -222,6 +224,7 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
           },
         }
       );
+      
 
       resolve(cancelled);
     } catch (error) {
@@ -246,6 +249,8 @@ const changeOrderStatusOfEachProduct = (orderId, productId, status) => {
     }
   });
 };
+
+
 
 module.exports = {
   placeOrder,
