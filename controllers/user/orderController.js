@@ -5,12 +5,14 @@ const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
 const Razorpay = require("razorpay");
 
-const { KEY_ID, KEY_SECRET } = process.env;
+
 
 var razorpay = new Razorpay({
-  key_id: "rzp_test_8NIpILQrGaZLRj",
-  key_secret: "sNRox6FKchnUjeUZkg7Yb9yF",
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.KEY_SECRET,
 });
+
+
 
 const createOrder = async (req, res) => {
   try {
@@ -35,7 +37,7 @@ const paymentSuccess = (req, res) => {
     const { paymentid, signature, orderId } = req.body;
     const { createHmac } = require("node:crypto");
 
-    const hash = createHmac("sha256", "sNRox6FKchnUjeUZkg7Yb9yF")
+    const hash = createHmac("sha256", process.env.KEY_SECRET)
       .update(orderId + "|" + paymentid)
       .digest("hex");
 

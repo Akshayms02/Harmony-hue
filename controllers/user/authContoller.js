@@ -16,6 +16,7 @@ const loginLoad = (req, res) => {
 };
 
 const logUser = async (req, res) => {
+
   await userHelper
     .loginHelper(req.body)
     .then((response) => {

@@ -9,8 +9,8 @@ const otpGenerator = () =>
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "ratedr12345678910@gmail.com",
-    pass: "jwpu ddgw puss fsnh",
+    user: process.env.APP_EMAIL,
+    pass: process.env.APP_PASS,
   },
 });
 

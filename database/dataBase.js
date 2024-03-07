@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://127.0.0.1:27017/HarmonyHue");
+mongoose.connect(process.env.DB_URL);
 mongoose.connection.on("connected", () => {
   console.log("Connected to mongoDB");
 });

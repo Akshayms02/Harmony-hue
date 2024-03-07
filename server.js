@@ -1,9 +1,9 @@
 const express = require("express");
+require("dotenv").config();
 const session = require("express-session");
 const path = require("path");
 const nocache = require("nocache");
 const userRoute = require("./routes/userRoute");
-require("dotenv").config();
 const adminRoute = require("./routes/adminRoute");
 const connectDB = require("./database/dataBase");
 const flash = require("express-flash");
@@ -44,6 +44,7 @@ app.use("/", nocache());
 
 app.use("/", userRoute);
 app.use("/admin", adminRoute);
+
 
 app.listen(PORT, () => {
   console.log(
