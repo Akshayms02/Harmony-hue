@@ -27,6 +27,7 @@ const getAllProducts = () => {
 const getAllActiveProducts = () => {
   return new Promise(async (resolve, reject) => {
     try {
+
       const result = await productModel.aggregate([
         {
           $lookup: {

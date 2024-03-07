@@ -95,7 +95,9 @@ router.post("/searchProduct", productController.searchProduct);
 
 router.post("/createOrder", orderController.createOrder);
 
-router.post('/paymentSuccess', orderController.paymentSuccess)
+router.post('/paymentSuccess', orderController.paymentSuccess);
+
+router.post("/sortedProducts", userController.sortedProductsLoad);
 
 
 module.exports = router;

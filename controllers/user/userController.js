@@ -5,6 +5,7 @@ const productHelper = require("../../helper/productHelper");
 const orderHelper = require("../../helper/orderHelper");
 const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
+const productModel = require("../../models/productModel");
 const userHelper = require("../../helper/userHelper");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
@@ -36,10 +37,9 @@ const loadUserHome = async (req, res) => {
       // product.productPrice = currencyFormatter(product.productPrice);
     }
     const offerPrice = await offerHelper.findOffer(products);
-   
 
     res.render("user/userHome", {
-      products:offerPrice,
+      products: offerPrice,
       userData: req.session.user,
       cartCount,
       wishListCount,
@@ -52,37 +52,121 @@ const loadUserHome = async (req, res) => {
 
 const shopLoad = async (req, res) => {
   try {
-    let userId = req.session.user;
-    const categories = await categoryHelper.getAllcategory();
+    if (req.query.search) {
+      let payload = req.query.search.trim();
+      let searchResult = await productModel
+        .find({
+          productName: { $regex: new RegExp("^" + payload + ".*", "i") },
+        })
+        .populate("productCategory")
+        .exec();
+      if (searchResult) {
+        var sorted = true;
+      }
 
-    let cartCount = await cartHelper.getCartCount(userId);
+      let userId = req.session.user;
+      const categories = await categoryHelper.getAllcategory();
 
-    let wishListCount = await wishlistHelper.getWishListCount(userId);
+      let cartCount = await cartHelper.getCartCount(userId);
 
-    let products = await productHelper.getAllActiveProducts();
-    for (const product of products) {
-      const cartStatus = await cartHelper.isAProductInCart(userId, product._id);
-      const wishlistStatus = await wishlistHelper.isInWishlist(
-        userId,
-        product._id
-      );
+      let wishListCount = await wishlistHelper.getWishListCount(userId);
 
-      const offerPrice =
-        product.productPrice -
-        (product.productPrice * product.productDiscount) / 100;
-      product.discountedPrice = currencyFormatter(Math.round(offerPrice));
-      product.cartStatus = cartStatus;
-      product.wishlistStatus = wishlistStatus;
-      product.productPrice = currencyFormatter(product.productPrice);
+      let products = await productHelper.getAllActiveProducts();
+      for (const product of products) {
+        const cartStatus = await cartHelper.isAProductInCart(
+          userId,
+          product._id
+        );
+        const wishlistStatus = await wishlistHelper.isInWishlist(
+          userId,
+          product._id
+        );
+
+        const offerPrice =
+          product.productPrice -
+          (product.productPrice * product.productDiscount) / 100;
+        product.discountedPrice = currencyFormatter(Math.round(offerPrice));
+        product.cartStatus = cartStatus;
+        product.wishlistStatus = wishlistStatus;
+        product.productPrice = currencyFormatter(product.productPrice);
+      }
+
+      res.render("user/shop", {
+        products: searchResult,
+        userData: req.session.user,
+        cartCount,
+        wishListCount,
+        categories,
+        sorted,
+      });
+    } else {
+      let userId = req.session.user;
+      const categories = await categoryHelper.getAllcategory();
+
+      let cartCount = await cartHelper.getCartCount(userId);
+
+      let wishListCount = await wishlistHelper.getWishListCount(userId);
+
+      let products = await productHelper.getAllActiveProducts();
+      for (const product of products) {
+        const cartStatus = await cartHelper.isAProductInCart(
+          userId,
+          product._id
+        );
+        const wishlistStatus = await wishlistHelper.isInWishlist(
+          userId,
+          product._id
+        );
+
+        const offerPrice =
+          product.productPrice -
+          (product.productPrice * product.productDiscount) / 100;
+        product.discountedPrice = currencyFormatter(Math.round(offerPrice));
+        product.cartStatus = cartStatus;
+        product.wishlistStatus = wishlistStatus;
+        product.productPrice = currencyFormatter(product.productPrice);
+      }
+      const sorted = false;
+
+      res.render("user/shop", {
+        products,
+        userData: req.session.user,
+        cartCount,
+        wishListCount,
+        categories,
+        sorted,
+      });
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-    res.render("user/shop", {
-      products,
-      userData: req.session.user,
-      cartCount,
-      wishListCount,
-      categories,
-    });
+const sortedProductsLoad = async (req, res) => {
+  try {
+    if (req.query.category) {
+      const products = JSON.parse(req.body.products);
+      const specifiedCategoryId = req.query.category;
+      console.log(products, specifiedCategoryId);
+
+      const itemsWithSpecifiedCategory = products.filter((item) => {
+        if (item.productCategory._id) {
+          return (
+            item.productCategory._id.toString() ===
+            specifiedCategoryId.toString()
+          );
+        } else {
+          return (
+            item.productCategory.toString() === specifiedCategoryId.toString()
+          );
+        }
+      });
+
+      console.log(itemsWithSpecifiedCategory);
+      res.json({ products: itemsWithSpecifiedCategory });
+    } else if (req.query.price) {
+    } else if (req.query.category && req.query.price) {
+    }
   } catch (error) {
     console.log(error);
   }
@@ -202,4 +286,5 @@ module.exports = {
   changePassword,
   forgotPasswordLoad,
   forgotPasswordChange,
+  sortedProductsLoad,
 };
