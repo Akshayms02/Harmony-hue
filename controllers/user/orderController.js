@@ -150,6 +150,21 @@ const cancelSingleOrder = async (req, res) => {
   }
 };
 
+const returnSingleOrder = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    const singleOrderId = req.query.singleOrderId;
+    const result = await orderHelper.returnSingleOrder(orderId, singleOrderId);
+    if (result) {
+      res.json({ status: true });
+    } else {
+      res.json({ status: false });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
     style: "currency",
@@ -167,4 +182,5 @@ module.exports = {
   cancelSingleOrder,
   createOrder,
   paymentSuccess,
+  returnSingleOrder,
 };

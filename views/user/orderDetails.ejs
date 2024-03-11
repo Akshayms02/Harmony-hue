@@ -21,11 +21,12 @@
             <h3 class="mb-3">Order Status: <span class="h3 text-primary">
                 <%= productDetails[0].status %>
               </span></h3>
-              <h4 class="mb-4">Order ID: #<%=productDetails[0].orderId %></h4>
+            <h4 class="mb-4">Order ID: #<%=productDetails[0].orderId %>
+            </h4>
             <div class="card">
 
             </div>
-            
+
 
             <div class="table-responsive container">
               <table class="table shopping-summery text-center clean" id="cartTable">
@@ -53,7 +54,7 @@
 
                       </td>
                       <td class="price" data-title="Price" id="price-span"><span>
-                        ₹ <%= productDetails[i].products.productPrice %>
+                          ₹ <%= productDetails[i].products.productPrice %>
                         </span></td>
                       <td class="size" data-title="Size" id="size">
                         <%= productDetails[i].products.size %>
@@ -148,52 +149,66 @@
 
                   </div>
                   <div class="card-body">
-                    <p><strong>Name:</strong><%= productDetails[0].address.name %> </p>
-                    <p><strong>House:</strong><%= productDetails[0].address.house %> </p>
-                    <p><strong>State:</strong><%= productDetails[0].address.state%> </p>
-                    <p><strong>Country:</strong><%= productDetails[0].address.country %> </p>
-                    <p><strong>City:</strong><%= productDetails[0].address.city %> </p>
-                    <p><strong>Pincode:</strong><%= productDetails[0].address.pincode %> </p>
-                    <p><strong>Mobile No:</strong><%= productDetails[0].address.mobile %> </p>
+                    <p><strong>Name:</strong>
+                      <%= productDetails[0].address.name %>
+                    </p>
+                    <p><strong>House:</strong>
+                      <%= productDetails[0].address.house %>
+                    </p>
+                    <p><strong>State:</strong>
+                      <%= productDetails[0].address.state%>
+                    </p>
+                    <p><strong>Country:</strong>
+                      <%= productDetails[0].address.country %>
+                    </p>
+                    <p><strong>City:</strong>
+                      <%= productDetails[0].address.city %>
+                    </p>
+                    <p><strong>Pincode:</strong>
+                      <%= productDetails[0].address.pincode %>
+                    </p>
+                    <p><strong>Mobile No:</strong>
+                      <%= productDetails[0].address.mobile %>
+                    </p>
                   </div>
                 </div>
               </div>
-                <div class="col-lg-6 col-md-12">
-                  <div class="border p-md-4 p-30 border-radius cart-totals">
-                    <div class="heading_s1 mb-3">
-                      <h4>Order Totals</h4>
-                    </div>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <td class="cart_total_label">Order Subtotal</td>
-                            <td class="cart_total_amount"><span class="font-lg fw-900 text-dark" id="totalAmount"
-                                style="color: black;">
-                                ₹ <%= productDetails[0].totalAmount%>
-                              </span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="cart_total_label">Shipping</td>
-                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
-                              Shipping</td>
-                          </tr>
-                          <tr>
-                            <td class="cart_total_label">Total</td>
-                            <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
-                                  style="color: black;" id="totalAmountFinal">
-                                  ₹ <%=  productDetails[0].totalAmount %>
-                                </span></strong>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                   
+              <div class="col-lg-6 col-md-12">
+                <div class="border p-md-4 p-30 border-radius cart-totals">
+                  <div class="heading_s1 mb-3">
+                    <h4>Order Totals</h4>
                   </div>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                        <tr>
+                          <td class="cart_total_label">Order Subtotal</td>
+                          <td class="cart_total_amount"><span class="font-lg fw-900 text-dark" id="totalAmount"
+                              style="color: black;">
+                              ₹ <%= productDetails[0].totalAmount%>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="cart_total_label">Shipping</td>
+                          <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
+                            Shipping</td>
+                        </tr>
+                        <tr>
+                          <td class="cart_total_label">Total</td>
+                          <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
+                                style="color: black;" id="totalAmountFinal">
+                                ₹ <%= productDetails[0].totalAmount %>
+                              </span></strong>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
                 </div>
-              
+              </div>
+
 
 
             </div>
@@ -204,7 +219,36 @@
   </main>
 
 
+  <script>
+    const returnOrder = (orderId, singleOrderId) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to undo this',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, return it!',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+      }).then((response) => {
+        console.log(response);
+        if (response.isConfirmed) {
+          $.ajax({
+            url: `/returnSingleOrder?orderId=${orderId}&singleOrderId=${singleOrderId}`,
+            method: "PATCH",
+          }).done(response => {
+            Swal.fire("Successfull", `Order Returned`, "success").then(() => {
+              location.reload();
+            })
+          }).fail((error) => {
+            Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
+              location.reload()
+            })
+          })
+        }
+      })
 
+    }
+  </script>
 
   <script>
     const cancelOrder = (orderId, singleOrderId) => {
@@ -228,7 +272,7 @@
             })
           }).fail((error) => {
             Swal.fire("Successfull", `${error.responseJSON.message}`, "success").then(() => {
-              location.reload() 
+              location.reload()
             })
           })
         }

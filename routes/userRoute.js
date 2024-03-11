@@ -89,6 +89,8 @@ router.patch("/cancelOrder/:id", orderController.cancelOrder);
 
 router.patch("/cancelSingleOrder", orderController.cancelSingleOrder);
 
+router.patch("/returnSingleOrder", orderController.returnSingleOrder);
+
 router.post("/applyCoupon", couponController.applyCoupon);
 
 router.post("/searchProduct", productController.searchProduct);

@@ -232,6 +232,54 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
     }
   });
 };
+const returnSingleOrder = (orderId, singleOrderId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const cancelled = await orderModel.findOneAndUpdate(
+        {
+          _id: new ObjectId(orderId),
+          "products._id": new ObjectId(singleOrderId),
+        },
+        {
+          $set: { "products.$.status": "return pending" },
+        }, {
+          new:true
+        }
+      );
+      const result = await orderModel.aggregate([
+        {
+          $unwind: "$products",
+        },
+        {
+          $match: {
+            _id: new ObjectId(orderId),
+            "products._id": new ObjectId(singleOrderId),
+          },
+        },
+      ]);
+      const singleProductId = result[0].products.product;
+      const singleProductSize = result[0].products.size;
+      const singleProductQuantity = result[0].products.quantity;
+
+      const stockIncrease = await productModel.updateOne(
+        { _id: singleProductId, "productQuantity.size": singleProductSize },
+        {
+          $inc: {
+            "productQuantity.$.quantity": singleProductQuantity,
+            totalQuantity: singleProductQuantity,
+          },
+        }
+      );
+      
+
+      resolve(cancelled);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+
+
 
 const changeOrderStatusOfEachProduct = (orderId, productId, status) => {
   return new Promise(async (resolve, reject) => {
@@ -262,4 +310,5 @@ module.exports = {
   getSingleOrderDetails,
   cancelSingleOrder,
   changeOrderStatusOfEachProduct,
+  returnSingleOrder,
 };
