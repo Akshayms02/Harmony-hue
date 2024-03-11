@@ -464,6 +464,7 @@
                     function updateProductGrid(products) {
                         const productGrid = document.querySelector('.product-grid-3');
                         productGrid.innerHTML = ''; // Clear the existing product grid
+                        console.log(products)
 
                         products.forEach(product => {
                             const productDiv = document.createElement('div');

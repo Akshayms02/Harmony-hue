@@ -6,6 +6,7 @@ const orderHelper = require("../../helper/orderHelper");
 const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
 const productModel = require("../../models/productModel");
+const categoryModel = require("../../models/categoryModel");
 const userHelper = require("../../helper/userHelper");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
@@ -65,7 +66,7 @@ const shopLoad = async (req, res) => {
       }
 
       let userId = req.session.user;
-      const categories = await categoryHelper.getAllcategory();
+      const categories = await categoryHelper.getAllActiveCategory();
 
       let cartCount = await cartHelper.getCartCount(userId);
 
@@ -148,6 +149,7 @@ const sortedProductsLoad = async (req, res) => {
       const products = JSON.parse(req.body.products);
       const specifiedCategoryId = req.query.category;
       console.log(products, specifiedCategoryId);
+      const categories = await categoryModel.find();
 
       const itemsWithSpecifiedCategory = products.filter((item) => {
         if (item.productCategory._id) {
@@ -155,14 +157,26 @@ const sortedProductsLoad = async (req, res) => {
             item.productCategory._id.toString() ===
             specifiedCategoryId.toString()
           );
-        } else {
+        } else { 
           return (
             item.productCategory.toString() === specifiedCategoryId.toString()
           );
         }
       });
-
       console.log(itemsWithSpecifiedCategory);
+      for (const item of itemsWithSpecifiedCategory) {
+        if (typeof item.productCategory === "string") {
+          const category = categories.find(
+            (element) => item.productCategory == element._id
+          );
+          console.log(category);
+          item.productCategory = category;
+        } else {
+          continue;
+        }
+      }
+
+      // console.log(itemsWithSpecifiedCategory);
       res.json({ products: itemsWithSpecifiedCategory });
     } else if (req.query.price) {
     } else if (req.query.category && req.query.price) {
