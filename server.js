@@ -3,8 +3,7 @@ require("dotenv").config();
 const session = require("express-session");
 const path = require("path");
 const nocache = require("nocache");
-const userRoute = require("./routes/userRoute");
-const adminRoute = require("./routes/adminRoute");
+const { userRoute, adminRoute } = require("./routes/");
 const connectDB = require("./database/dataBase");
 const flash = require("express-flash");
 const methodOverride = require("method-override");
@@ -13,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); 
+app.use(express.json());
 app.use("/public", express.static(path.join(__dirname, "/public")));
 app.use("/assets", express.static(path.join(__dirname, "/public/assets")));
 
@@ -44,7 +43,6 @@ app.use("/", nocache());
 
 app.use("/", userRoute);
 app.use("/admin", adminRoute);
-
 
 app.listen(PORT, () => {
   console.log(

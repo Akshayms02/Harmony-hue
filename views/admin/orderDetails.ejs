@@ -156,17 +156,16 @@
                                             <td class="text-center">
                                                 <% if (element.products.status=="cancelled" ) { %>
                                                     <span class="badge rounded-pill alert-danger text-center">
-                                                        cancelled by the user 
+                                                        cancelled by the user
                                                     </span>
                                                     <% } else if (element.products.status=="returned" ) { %>
                                                         <span class="badge rounded-pill alert-success text-center">
-                                                             returned
+                                                            returned
                                                         </span>
                                                         <% } else { %>
                                                             <div class="text-center">
                                                                 <select class="form-select d-inline-block"
-                                                                    name="status">
-                                                                    <option>Change status</option>
+                                                                    name="status" id="select<%= element.products._id %>">                                                        
                                                                     <option value="pending">Pending</option>
                                                                     <option value="shipped">Shipped</option>
                                                                     <option value="processing">Processing</option>
@@ -225,13 +224,13 @@
                             </div>
                         </div> col// -->
                 </div>
-            </div> <!-- card-body end// -->
-        </div> <!-- card end// -->
-    </section> <!-- content-main end// -->
+            </div>
+        </div>
+    </section>
 
     <script>
         function changeStatus(orderId, productId) {
-            var status = $("select[name='status']").val();
+            var status = document.getElementById("select"+productId).value;
             console.log(status, orderId, productId);
             $.ajax({
                 url: `/admin/orderStatusChangeForEachProduct/${orderId}/${productId}`,
