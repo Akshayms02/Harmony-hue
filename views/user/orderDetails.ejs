@@ -22,9 +22,12 @@
               <div class="col-lg-6 col-md-6 mb-lg-0  pt-3">
 
               </div>
-              <div class="col-lg-6 col-md-6 mb-lg-0  pt-3">
-                <button class="btn btn-dark text-end" id="invoice">Download Invoice</button>
-              </div>
+              <% if (productDetails.deliveryStatus) { %>
+                <div class="col-lg-6 col-md-6 mb-lg-0  pt-3">
+                  <button class="btn btn-dark text-end" id="invoice">Download Invoice</button>
+                </div>
+                <% } %>
+
             </div>
 
 
@@ -202,10 +205,12 @@
                         <tr>
                           <td class="cart_total_label">Coupon</td>
                           <% if (productDetails[0].couponAmount>0) { %>
-                           <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> ₹<%= productDetails[0].couponAmount %></td>
-                           <% } else { %>
-                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> No Coupon</td>
-                          <% } %>                         
+                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> ₹<%=
+                                productDetails[0].couponAmount %>
+                            </td>
+                            <% } else { %>
+                              <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> No Coupon</td>
+                              <% } %>
                         </tr>
                         <tr>
                           <td class="cart_total_label">Total</td>
@@ -314,18 +319,26 @@
           cancelButtonText: 'Cancel'
         }).then((result) => {
           if (result.isConfirmed) {
-            let products = productDetails.map((product) => ({
+            let filteredProducts = productDetails.filter((product) => {
+              return product.products.status !== "cancelled";
+            });
+            let products = filteredProducts.map((product) => ({
               quantity: product.products.quantity,
               description: product.orderedProduct.productName,
               tax: 0,
               price: product.orderedProduct.productPrice
             }));
-            products.push({
-              quantity: 1,
-              description: "Coupon Deduction",
-              tax: 0,
-              price: -productDetails[0].couponAmount,
-            })
+            console.log(products)
+
+            if (filteredProducts[0].couponAmount > 0) {
+              products.push({
+                quantity: 1,
+                description: "Coupon Deduction",
+                tax: 0,
+                price: -productDetails[0].couponAmount,
+              })
+            }
+
 
 
             const data = {

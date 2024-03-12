@@ -38,7 +38,7 @@ const placeOrder = (body, userId) => {
         );
       }
       if (cart.coupon != null) {
-        console.log("entered")
+        console.log("entered");
         const result = await couponModel.findOne({ code: cart.coupon });
         var couponAmount = result.discount;
       } else {
@@ -109,6 +109,23 @@ const getOrderDetailsOfEachProduct = (orderId) => {
           $unwind: "$orderedProduct",
         },
       ]);
+      let check = true;
+      let count = 0;
+
+      for (const order of orderDetails) {
+        if (order.products.status == "delivered") {
+          check = true;
+          count++;
+        } else if (order.products.status == "cancelled") {
+          check = true;
+        } else {
+          check = false;
+          break;
+        }
+      }
+      if (check == true && count >= 1) {
+        orderDetails.deliveryStatus = true;
+      }
 
       resolve(orderDetails);
     } catch (error) {
