@@ -157,7 +157,7 @@ const sortedProductsLoad = async (req, res) => {
             item.productCategory._id.toString() ===
             specifiedCategoryId.toString()
           );
-        } else { 
+        } else {
           return (
             item.productCategory.toString() === specifiedCategoryId.toString()
           );
@@ -192,6 +192,12 @@ const userProfileLoad = async (req, res) => {
     const cartCount = await cartHelper.getCartCount(userId);
     const wishListCount = await wishlistHelper.getWishListCount(userId);
     const user = await userModel.findOne({ _id: userId });
+    const walletData = await userHelper.getWalletDetails(userId);
+
+    for (const amount of walletData.wallet.details) {
+      amount.formattedDate = moment(amount.date).format("MMM Do, YYYY");
+    }
+
     const orderDetails = await orderHelper.getOrderDetails(userId);
     for (const order of orderDetails) {
       const dateString = order.orderedOn;
@@ -211,6 +217,7 @@ const userProfileLoad = async (req, res) => {
         orderDetails,
         cartCount,
         wishListCount,
+        walletData,
       });
     }
   } catch (error) {

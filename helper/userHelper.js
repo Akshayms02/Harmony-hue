@@ -96,9 +96,8 @@ const deleteAddress = (addressId, userId) => {
 
 const updateUserDetails = (userId, userDetails) => {
   return new Promise(async (resolve, reject) => {
-   
     const user = await userModel.findById(userId);
-    
+
     let response = {};
     if (user) {
       if (user.isActive) {
@@ -106,7 +105,7 @@ const updateUserDetails = (userId, userDetails) => {
           userDetails.password,
           user.password
         );
-    
+
         if (success) {
           if (userDetails.name) {
             user.name = userDetails.name;
@@ -135,6 +134,18 @@ const updateUserDetails = (userId, userDetails) => {
   });
 };
 
+const getWalletDetails = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    const result = await userModel.findOne({ _id: userId });
+
+    if (result) {
+      resolve(result);
+    } else {
+      console.log("not found");
+    }
+  });
+};
+
 module.exports = {
   loginHelper,
   signupHelper,
@@ -142,4 +153,5 @@ module.exports = {
   addAddress,
   deleteAddress,
   updateUserDetails,
+  getWalletDetails,
 };

@@ -3,6 +3,7 @@ const cartModel = require("../models/cartModel");
 const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
 const couponModel = require("../models/couponModel");
+const walletHelper = require("../helper/walletHelper");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const placeOrder = (body, userId) => {
@@ -206,6 +207,7 @@ const changeOrderStatus = (orderId, changeStatus) => {
       const order = await orderModel.findOne({ _id: orderId });
       order.status = changeStatus;
       await order.save();
+
       resolve(order);
     } catch (error) {
       reject(new Error("Something wrong!!!"));
@@ -306,15 +308,24 @@ const returnSingleOrder = (orderId, singleOrderId) => {
   });
 };
 
-const changeOrderStatusOfEachProduct = (orderId, productId, status) => {
+const changeOrderStatusOfEachProduct = (orderId, productId, status,price) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const result = await orderModel.updateOne(
+    
+      const result = await orderModel.findOneAndUpdate(
         { _id: new ObjectId(orderId), "products._id": new ObjectId(productId) },
         {
           $set: { "products.$.status": status },
-        }
+        },
+        {new:true}
       );
+
+      if (status === "returned") {
+        const walletUpdation = await walletHelper.walletAmountAdding(result.user,price);
+      }
+
+
+
       console.log(result);
       resolve(result);
     } catch (error) {

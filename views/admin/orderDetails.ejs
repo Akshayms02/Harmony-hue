@@ -79,6 +79,7 @@
                                         <th width="40%" class="text-center">Product</th>
                                         <th width="10%" class="text-center">Unit Price</th>
                                         <th width="10%" class="text-center">Quantity</th>
+                                        <th width="10%" class="text-center">Sub-Total</th>
                                         <th width="10%" class="text-center ">Status</th>
                                         <th width="30%" class="text-center">Change Status</th>
                                         <th width="30%" class="text-center">Update</th>
@@ -100,55 +101,64 @@
                                                 </a>
                                             </td>
                                             <td class="text-center">
-                                                <%= element.products.formattedProductPrice %>
+                                                ₹<span>
+                                                    <%= element.products.formattedProductPrice %>
+                                                </span>
                                             </td>
                                             <td class="text-center">
                                                 <%= element.products.quantity %>
                                             </td>
+                                            <td class="text-center">
+                                                ₹<span id="<%= element.products._id %>">
+                                                    <%= element.products.quantity*element.products.formattedProductPrice
+                                                        %>
+                                                </span>
 
-                                            <td width="7%">
+                                            </td>
+
+                                            <td width="7%" class="text-center">
                                                 <% if (element.products.status=='pending' ) { %>
                                                     <span id="status<%= element.products._id %>"
-                                                        class="badge rounded-pill alert-warning">
+                                                        class="badge rounded-pill alert-warning text-center">
                                                         <%= element.products.status %>
                                                     </span>
                                                     <% } else if (element.products.status=='processing' ) {%>
                                                         <span id="status<%= element.products._id %>"
-                                                            class="badge rounded-pill alert-secondary">
+                                                            class="badge rounded-pill alert-secondary text-center">
                                                             <%= element.products.status %>
                                                         </span>
                                                         <% } else if (element.products.status=='confirmed' ) {%>
                                                             <span id="status<%= element.products._id %>"
-                                                                class="badge rounded-pill alert-dark">
+                                                                class="badge rounded-pill alert-dark text-center">
                                                                 <%= element.products.status %>
                                                             </span>
                                                             <% } else if (element.products.status=='shipped' ) {%>
                                                                 <span id="status<%= element.products._id %>"
-                                                                    class="badge rounded-pill alert-info">
+                                                                    class="badge rounded-pill alert-info text-center">
                                                                     <%= element.products.status %>
                                                                 </span>
                                                                 <% } else if (element.products.status=='outForDelivery'
                                                                     ) {%>
                                                                     <span id="status<%= element.products._id %>"
-                                                                        class="badge rounded-pill alert-warning">
+                                                                        class="badge rounded-pill alert-warning text-center">
                                                                         <%= element.products.status %>
                                                                     </span>
                                                                     <% } else if (element.products.status=='delivered' )
                                                                         {%>
                                                                         <span id="status<%= element.products._id %>"
-                                                                            class="badge rounded-pill alert-success">
+                                                                            class="badge rounded-pill alert-success text-center">
                                                                             <%= element.products.status %>
                                                                         </span>
                                                                         <% } else if
                                                                             (element.products.status=='cancelled' ) {%>
                                                                             <span id="status<%= element.products._id %>"
-                                                                                class="badge rounded-pill alert-danger">
+                                                                                class="badge rounded-pill alert-danger text-center">
                                                                                 <%= element.products.status %>
                                                                             </span>
                                                                             <% } else {%>
                                                                                 <span
                                                                                     id="status<%= element.products._id %>"
-                                                                                    class="badge rounded-pill alert-danger">
+                                                                                    class="badge rounded-pill alert-danger text-center">
                                                                                     <%= element.products.status %>
                                                                                 </span>
                                                                                 <% } %>
@@ -164,8 +174,8 @@
                                                         </span>
                                                         <% } else { %>
                                                             <div class="text-center">
-                                                                <select class="form-select d-inline-block"
-                                                                    name="status" id="select<%= element.products._id %>">                                                        
+                                                                <select class="form-select d-inline-block" name="status"
+                                                                    id="select<%= element.products._id %>">
                                                                     <option value="pending">Pending</option>
                                                                     <option value="shipped">Shipped</option>
                                                                     <option value="processing">Processing</option>
@@ -230,12 +240,15 @@
 
     <script>
         function changeStatus(orderId, productId) {
-            var status = document.getElementById("select"+productId).value;
+            var status = document.getElementById("select" + productId).value;
             console.log(status, orderId, productId);
+            
+            const price = $(`#${productId}`).html()
+            console.log(price)
             $.ajax({
                 url: `/admin/orderStatusChangeForEachProduct/${orderId}/${productId}`,
                 method: "PATCH",
-                data: { status: status },
+                data: { status: status, price: price },
                 success: (response) => {
                     if (response.status) {
                         Toastify({

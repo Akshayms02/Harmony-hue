@@ -36,10 +36,13 @@ const changeOrderStatusOfEachProduct = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
   const status = req.body.status;
+  const price = req.body.price;
+  console.log("price",price)
   const result = await orderHelper.changeOrderStatusOfEachProduct(
     orderId,
     productId,
-    status
+    status,
+    price
   );
   if (result) {
     res.json({ status: true });
@@ -60,9 +63,7 @@ const orderDetails = async (req, res) => {
       const dateString = product.orderedOn;
       product.formattedDate = moment(dateString).format("MMMM Do, YYYY");
       product.formattedTotal = currencyFormatter(product.totalAmount);
-      product.products.formattedProductPrice = currencyFormatter(
-        product.products.productPrice
-      );
+      product.products.formattedProductPrice = product.products.productPrice;
     }
 
     if (orderDetails && productDetails) {
@@ -103,7 +104,7 @@ const loadSalesReport = async (req, res) => {
 const loadSalesReportDateSort = async (req, res) => {
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
-  console.log(startDate,endDate)
+  console.log(startDate, endDate);
   orderHelper
     .salesReportDateSort(startDate, endDate)
     .then((response) => {
