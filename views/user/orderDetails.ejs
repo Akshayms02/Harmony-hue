@@ -200,9 +200,13 @@
                           </td>
                         </tr>
                         <tr>
-                          <td class="cart_total_label">Shipping</td>
-                          <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
-                            Shipping</td>
+                          <td class="cart_total_label">Coupon</td>
+                          <% if (productDetails[0].couponAmount>0) { %>
+                           <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> ₹<%= productDetails[0].couponAmount %></td>
+                           <% } else { %>
+                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> No Coupon</td>
+                          <% } %>
+                          
                         </tr>
                         <tr>
                           <td class="cart_total_label">Total</td>
@@ -311,8 +315,22 @@
           cancelButtonText: 'Cancel'
         }).then((result) => {
           if (result.isConfirmed) {
+            let products = productDetails.map((product) => ({
+              quantity: product.products.quantity,
+              description: product.orderedProduct.productName,
+              tax: 0,
+              price: product.orderedProduct.productPrice
+            }));
+            products.push({
+              quantity: 1,
+              description: "Coupon Deduction",
+              tax: 0,
+              price: -productDetails[0].couponAmount,
+            })
+
+
             const data = {
-              "apiKey": "free", 
+              "apiKey": "free",
               "mode": "development",
               "documentTitle": "INVOICE Harmony Hue",
               "currency": "INR",
@@ -338,12 +356,7 @@
               },
               "invoiceNumber": "2021.0001",
               "invoiceDate": "12-03-2024",
-              "products": productDetails.map((product) => ({
-                quantity: productDetails.length,
-                description: product.orderedProduct.productName,
-                tax: 0,
-                price: product.orderedProduct.productPrice
-              })),
+              "products": products,
               "bottomNotice": "Thank you for your business."
             };
             console.log(data)

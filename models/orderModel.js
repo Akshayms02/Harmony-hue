@@ -78,6 +78,10 @@ const orderSchema = new mongoose.Schema({
   totalAmount: {
     type: Number,
   },
+  couponAmount: {
+    type: Number,
+    default:0,
+  }
 });
 
 const Order = mongoose.model("Order", orderSchema);

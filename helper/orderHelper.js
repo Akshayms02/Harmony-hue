@@ -2,6 +2,7 @@ const orderModel = require("../models/orderModel");
 const cartModel = require("../models/cartModel");
 const userModel = require("../models/userModel");
 const productModel = require("../models/productModel");
+const couponModel = require("../models/couponModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const placeOrder = (body, userId) => {
@@ -25,6 +26,7 @@ const placeOrder = (body, userId) => {
           size: product.size,
           productPrice: product.price,
         });
+
         let changeStock = await productModel.updateOne(
           { _id: product.productItemId, "productQuantity.size": product.size },
           {
@@ -34,6 +36,13 @@ const placeOrder = (body, userId) => {
             },
           }
         );
+      }
+      if (cart.coupon != null) {
+        console.log("entered")
+        const result = await couponModel.findOne({ code: cart.coupon });
+        var couponAmount = result.discount;
+      } else {
+        var couponAmount = 0;
       }
 
       if (cart && address) {
@@ -51,6 +60,7 @@ const placeOrder = (body, userId) => {
           },
           paymentMethod: body.paymentOption,
           totalAmount: cart.totalAmount,
+          couponAmount: couponAmount,
         });
 
         resolve(result);
@@ -320,7 +330,6 @@ const salesReport = async () => {
 
 const salesReportDateSort = async (startDate, endDate) => {
   try {
-  
     const startDateSort = new Date(startDate);
     const endDateSort = new Date(endDate);
 
