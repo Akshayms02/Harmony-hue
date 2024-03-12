@@ -196,8 +196,9 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
         },
         {
           $set: { "products.$.status": "cancelled" },
-        }, {
-          new:true
+        },
+        {
+          new: true,
         }
       );
       const result = await orderModel.aggregate([
@@ -224,7 +225,6 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
           },
         }
       );
-      
 
       resolve(cancelled);
     } catch (error) {
@@ -242,8 +242,9 @@ const returnSingleOrder = (orderId, singleOrderId) => {
         },
         {
           $set: { "products.$.status": "return pending" },
-        }, {
-          new:true
+        },
+        {
+          new: true,
         }
       );
       const result = await orderModel.aggregate([
@@ -270,7 +271,6 @@ const returnSingleOrder = (orderId, singleOrderId) => {
           },
         }
       );
-      
 
       resolve(cancelled);
     } catch (error) {
@@ -278,8 +278,6 @@ const returnSingleOrder = (orderId, singleOrderId) => {
     }
   });
 };
-
-
 
 const changeOrderStatusOfEachProduct = (orderId, productId, status) => {
   return new Promise(async (resolve, reject) => {
@@ -298,7 +296,59 @@ const changeOrderStatusOfEachProduct = (orderId, productId, status) => {
   });
 };
 
+const salesReport = async () => {
+  try {
+    const result = await orderModel.aggregate([
+      { $unwind: "$products" },
+      { $match: { "products.status": "delivered" } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.product",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+    ]);
 
+    return result;
+  } catch (error) {
+    console.log("Error:", error);
+    throw error; // Re-throwing the error to be caught elsewhere if needed.
+  }
+};
+
+const salesReportDateSort = async (startDate, endDate) => {
+  try {
+  
+    const startDateSort = new Date(startDate);
+    const endDateSort = new Date(endDate);
+
+    const result = await orderModel.aggregate([
+      {
+        $match: {
+          orderedOn: { $gte: startDateSort, $lte: endDateSort },
+        },
+      },
+      { $unwind: "$products" },
+      { $match: { "products.status": "delivered" } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.product",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      { $sort: { orderedOn: 1 } }, // 1 for ascending order, -1 for descending
+    ]);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log("Error:", error);
+    throw error; // Re-throwing the error to be caught elsewhere if needed.
+  }
+};
 
 module.exports = {
   placeOrder,
@@ -311,4 +361,6 @@ module.exports = {
   cancelSingleOrder,
   changeOrderStatusOfEachProduct,
   returnSingleOrder,
+  salesReport,
+  salesReportDateSort,
 };

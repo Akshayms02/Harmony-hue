@@ -36,19 +36,22 @@ const changeOrderStatusOfEachProduct = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
   const status = req.body.status;
-  const result = await orderHelper.changeOrderStatusOfEachProduct(orderId, productId, status);
+  const result = await orderHelper.changeOrderStatusOfEachProduct(
+    orderId,
+    productId,
+    status
+  );
   if (result) {
     res.json({ status: true });
-
   } else {
-    res.json({status:false})
+    res.json({ status: false });
   }
 };
 
 const orderDetails = async (req, res) => {
   try {
     const orderId = req.params.id;
-   
+
     const productDetails = await orderHelper.getOrderDetailsOfEachProduct(
       orderId
     );
@@ -71,6 +74,57 @@ const orderDetails = async (req, res) => {
   }
 };
 
+const loadSalesReport = async (req, res) => {
+  try {
+    orderHelper
+      .salesReport()
+      .then((response) => {
+        console.log(response);
+        response.forEach((order) => {
+          const orderDate = new Date(order.orderedOn);
+          const formattedDate = orderDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          });
+          order.orderedOn = formattedDate;
+        });
+
+        res.render("admin/salesReport", { sales: response });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadSalesReportDateSort = async (req, res) => {
+  const startDate = req.body.startDate;
+  const endDate = req.body.endDate;
+  console.log(startDate,endDate)
+  orderHelper
+    .salesReportDateSort(startDate, endDate)
+    .then((response) => {
+      console.log(response);
+      response.forEach((order) => {
+        const orderDate = new Date(order.orderedOn);
+        const formattedDate = orderDate.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+        order.orderedOn = formattedDate;
+      });
+
+      res.json({ sales: response });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
     style: "currency",
@@ -84,4 +138,6 @@ module.exports = {
   adminOrderPageLoad,
   orderDetails,
   changeOrderStatusOfEachProduct,
+  loadSalesReport,
+  loadSalesReportDateSort,
 };

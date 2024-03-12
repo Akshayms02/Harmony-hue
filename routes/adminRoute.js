@@ -123,6 +123,10 @@ router.post("/categoryAddOffer", offerController.addCategoryOffer);
 
 router.get("/categoryEditOffer/:id", adminAuth.isLogout, offerController.categoryEditLoad);
 
-router.post("/categoryEditOffer",offerController.categoryEditOffer)
+router.post("/categoryEditOffer", offerController.categoryEditOffer);
+
+router.get("/salesReport", orderController.loadSalesReport);
+
+router.post("/salesReport", orderController.loadSalesReportDateSort);
 
 module.exports = router;

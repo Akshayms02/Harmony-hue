@@ -18,12 +18,20 @@
 
           <div class="col-12">
 
-            <h3 class="mb-3">Order Status: <span class="h3 text-primary">
-                <%= productDetails[0].status %>
-              </span></h3>
+            <div class="row text-end">
+              <div class="col-lg-6 col-md-6 mb-lg-0  pt-3">
+
+              </div>
+              <div class="col-lg-6 col-md-6 mb-lg-0  pt-3">
+                <button class="btn btn-dark text-end" id="invoice">Download Invoice</button>
+              </div>
+            </div>
+
+
             <h4 class="mb-4">Order ID: #<%=productDetails[0].orderId %>
             </h4>
             <div class="card">
+
 
             </div>
 
@@ -131,6 +139,8 @@
                 </tbody>
               </table>
             </div>
+            <input value="<%= JSON.stringify(productDetails) %>" id="productDetails" type="hidden">
+
             <div class="cart-action text-end" style="margin-top: 40px;">
               <!-- <a class="btn  mr-10 mb-sm-15" style="background-color: black;"><i class="fi-rs-shuffle mr-10"></i>Update
                 Cart</a> -->
@@ -219,6 +229,7 @@
   </main>
 
 
+
   <script>
     const returnOrder = (orderId, singleOrderId) => {
       Swal.fire({
@@ -281,7 +292,71 @@
     }
 
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/easyinvoice/dist/easyinvoice.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#invoice').click((e) => {
 
+        let productDetails = JSON.parse(document.getElementById('productDetails').value);
+
+
+        console.log(productDetails);
+
+        e.preventDefault();
+
+        Swal.fire({
+          title: 'Do you want to download Invoice?',
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const data = {
+              "apiKey": "free", 
+              "mode": "development",
+              "documentTitle": "INVOICE Harmony Hue",
+              "currency": "INR",
+              "taxNotation": "GST",
+              "marginTop": 25,
+              "marginRight": 25,
+              "marginLeft": 25,
+              "marginBottom": 25,
+              "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png",
+              "sender": {
+                "company": "Harmony Hue",
+                "address": "Maradu,Kundanoor",
+                "zip": "1234 AB",
+                "city": "Kochi",
+                "country": "India"
+              },
+              "client": {
+                "company": productDetails[0].address.name,
+                "address": productDetails[0].address.house,
+                "zip": "5678 CD",
+                "city": productDetails[0].address.city,
+                "country": productDetails[0].address.country
+              },
+              "invoiceNumber": "2021.0001",
+              "invoiceDate": "12-03-2024",
+              "products": productDetails.map((product) => ({
+                quantity: productDetails.length,
+                description: product.orderedProduct.productName,
+                tax: 0,
+                price: product.orderedProduct.productPrice
+              })),
+              "bottomNotice": "Thank you for your business."
+            };
+            console.log(data)
+
+            easyinvoice.createInvoice(data, function (result) {
+              easyinvoice.download('Harmony-Hue-invoice.pdf', result.pdf);
+              console.log("success")
+            });
+          }
+        });
+      });
+    });
+  </script>
 
 
 

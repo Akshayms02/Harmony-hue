@@ -1,0 +1,255 @@
+<%- include("../layouts/adminLayout/admin-header") %>
+
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Sales Report </h2>
+      </div>
+      <div>
+        <a id="xlsheet" onclick="ExportToExcel()" class="btn btn-light rounded font-md">Download XLSheet</a>
+        <a href="#" id="pdf" data-value="" class="btn btn-light rounded  font-md">Download PDF</a>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <header class="card-header">
+        <form id="date-wise-report" method="post" action="/admin/loadSalesReportDateSort">
+          <div class="row gx-3">
+            <div class="col-lg-2 col-6 col-md-3">
+              <label class="form-label">Start Date</label>
+              <input type="date" name="startDate" value="" class="form-control" required>
+            </div>
+            <div class="col-lg-2 col-6 col-md-3">
+              <label class="form-label">End Date</label>
+              <input type="date" name="endDate" value="" class="form-control" required>
+            </div>
+            <div class="col-lg-4 col-md-6 me-auto">
+              <button type="submit" class="btn btn-primary mt-4  btn-sm rounded">Get Report</button>
+            </div>
+          </div>
+        </form>
+      </header> <!-- card-header end// -->
+      <div id="sales-report" class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover" id="sales-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th class="text-center">Order Id</th>
+                <th class="text-center">Customer</th>
+                <th class="text-center">Order Date</th>
+                <th class="text-center">Payment Method</th>
+                <th class="text-center">Order Status</th>
+                <th class="text-center">Total Amount</th>
+              </tr>
+            </thead>
+            <tbody id="defaultReport">
+              <% for( let i=sales.length-1; i>= 0; i-- ) { %>
+                <tr class="text-center">
+                  <td>
+                    <%= sales.length - i %>
+                  </td>
+                  <td><b>
+                      <%= sales[i].orderId %>
+                    </b></td>
+                  <td>
+                    <%= sales[i].address.name %>
+                  </td>
+                  <td>
+                    <%= sales[i].orderedOn %>
+                  </td>
+                  <td style="padding-left: 2rem;">
+                    <%= sales[i].paymentMethod %>
+                  </td>
+                  <td><span class="badge rounded-pill alert-warning ">
+                      <%= sales[i].products.status %>
+                    </span></td>
+                  <td>
+                    ₹<%= sales[i].totalAmount %>
+                  </td>
+
+                </tr>
+                <% } %>
+
+            </tbody>
+          </table>
+          <!-- <input type="hidden" id="salesReportStore" value="ejsout sales "> -->
+        </div> <!-- table-responsive //end -->
+      </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+
+  </section> <!-- content-main end// -->
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
+
+  <script>
+    $('#date-wise-report').on('submit', function (e) {
+      e.preventDefault();
+      console.log("clicked");
+
+      $.ajax({
+        url: '/admin/salesReport',
+        method: 'POST',
+        data: $('#date-wise-report').serialize()
+      })
+        .done((res) => {
+          let sales = res.sales;
+          console.log("hi");
+          console.log(sales);
+          $('#defaultReport').empty(); // Clear the table body before appending new data
+
+          for (let i = 0; i < sales.length; i++) {
+            console.log(sales[i]._id);
+            $('#defaultReport').append(`
+                      <tr>
+                          <td class="text-center">`+ (i + 1) + `</td>
+                          <td class="text-center"><b>`+ sales[i].orderId + `</b></td>
+                          <td class="text-center">`+ sales[i].address.name + `</td>
+                          <td class="text-center">`+ sales[i].orderedOn + `</td>
+                          <td class="text-center">`+ sales[i].paymentMethod + `</td>
+                          <td class="text-center"><span class="badge rounded-pill alert-warning">`+ sales[i].products.status + `</span></td>
+                          <td class="text-center">`+ `₹` + sales[i].totalAmount + `</td>
+                      </tr>
+                  `);
+          }
+
+          // document.getElementById('salesReportStore').value = sales;
+        })
+
+
+    });
+
+
+
+    $('#pdf').on('click', function (e) {
+      e.preventDefault();
+      Swal.fire({
+        title: 'Do you want to download this PDF?',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          event.preventDefault();
+          console.log('pdf');
+          let element = document.getElementById('sales-report');
+          const randomNumber = Math.floor(Math.random() * 10000);
+          console.log(randomNumber);
+
+          var opt = {
+            margin: 0,
+            filename: `myfile${randomNumber}.pdf`,
+            html2canvas: { scale: 10 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+
+          html2pdf().set(opt).from(element).save();
+        }
+      });
+    })
+
+    function ExportToExcel() {
+      Swal.fire({
+        title: 'Do you want to download this Excel Sheet?',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var elt = document.getElementById('sales-table');
+          var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+
+          // Adjust column widths
+          var ws = wb.Sheets['sheet1'];
+          var columnWidths = [
+            { wch: 5 },   // Width for column "No"
+            { wch: 15 },  // Width for column "Order Id"
+            { wch: 20 },  // Width for column "Customer"
+            { wch: 15 },  // Width for column "Order Date"
+            { wch: 20 },  // Width for column "Payment Method"
+            { wch: 15 },  // Width for column "Order Status"
+            { wch: 15 }   // Width for column "Total Amount"
+          ];
+
+          // Set column widths
+          columnWidths.forEach(function (width, index) {
+            var col = XLSX.utils.encode_col(index);
+            ws['!cols'] = ws['!cols'] || [];
+            ws['!cols'][index] = width;
+          });
+
+          XLSX.writeFile(wb, 'sales-table.xlsx');
+        }
+      });
+    }
+
+
+
+  </script>
+
+
+  <script>
+    // Get the start date input element
+    const startDateInput = document.querySelector('input[name="startDate"]');
+    // Get the end date input element
+    const endDateInput = document.querySelector('input[name="endDate"]');
+
+    // Function to format a date as YYYY-MM-DD
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Get the current date
+    const currentDate = new Date();
+
+    // Set the maximum selectable date for the end date input to the current date
+    endDateInput.max = formatDate(currentDate);
+    startDateInput.max = formatDate(currentDate);
+
+    // Event listener for start date input
+    startDateInput.addEventListener('input', function () {
+      // Set the minimum selectable date for the end date input to the selected start date
+      endDateInput.min = this.value;
+
+      // If the end date is before the start date, reset it to the start date
+      if (endDateInput.value < this.value) {
+        endDateInput.value = this.value;
+      }
+    });
+
+    // Event listener for end date input
+    endDateInput.addEventListener('input', function () {
+      // If the end date is before the start date, reset it to the start date
+      if (this.value < startDateInput.value) {
+
+
+        this.value = startDateInput.value;
+      }
+    });
+
+    // Auto-fill start date with the current month's 1st date
+    const currentMonthFirstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    startDateInput.value = formatDate(currentMonthFirstDay);
+
+    // Auto-fill end date with the current date
+    endDateInput.value = formatDate(currentDate);
+  </script>
+
+
+  <script>
+    $(document).ready(function () {
+      $('#sales-table').DataTable({
+        ordering: false,
+      });
+    });
+
+  </script>
+  <%- include("../layouts/adminLayout/admin-footer") %>
