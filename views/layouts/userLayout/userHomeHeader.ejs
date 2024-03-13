@@ -180,7 +180,7 @@
           if (data.searchResult.length > 0) {
             for (let i = 0; i < data.searchResult.length; i++) {
               console.log("in loop", data.searchResult[i].productName);
-              html += `<a href="/productDisplay/${data.searchResult[i]._id}"><li style="display:flex;justify-content:space-evenly;text-align: center; border-bottom: 2px solid #acb1b5; width:80%% ;padding:10px"> ${data.searchResult[i].productName} <img  class="img-thumbnail" width="50" src="/${data.searchResult[i].image[0]}" alt="no image avalable"></li></a>`;
+              html += `<a href="/userHome/productView/${data.searchResult[i]._id}"><li style="display:flex;justify-content:space-evenly;text-align: center; border-bottom: 2px solid #acb1b5; width:80%% ;padding:10px"> ${data.searchResult[i].productName} <img  class="img-thumbnail" width="50" src="/${data.searchResult[i].image[0]}" alt="no image avalable"></li></a>`;
               document.getElementById('suggestionList').innerHTML = html
             }
           }
