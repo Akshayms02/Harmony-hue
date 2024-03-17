@@ -11,7 +11,7 @@ const userHelper = require("../../helper/userHelper");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
 
-const loadUserHome = async (req, res) => {
+const loadUserHome = async (req, res, next) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   try {
     const userId = req.session.user;
@@ -47,11 +47,11 @@ const loadUserHome = async (req, res) => {
       categories,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const shopLoad = async (req, res) => {
+const shopLoad = async (req, res, next) => {
   try {
     if (req.query.search) {
       let payload = req.query.search.trim();
@@ -82,18 +82,11 @@ const shopLoad = async (req, res) => {
           userId,
           product._id
         );
-
-        const offerPrice =
-          product.productPrice -
-          (product.productPrice * product.productDiscount) / 100;
-        product.discountedPrice = currencyFormatter(Math.round(offerPrice));
-        product.cartStatus = cartStatus;
-        product.wishlistStatus = wishlistStatus;
-        product.productPrice = currencyFormatter(product.productPrice);
       }
+      const offerPrice = await offerHelper.findOffer(searchResult);
 
       res.render("user/shop", {
-        products: searchResult,
+        products: offerPrice,
         userData: req.session.user,
         cartCount,
         wishListCount,
@@ -118,19 +111,12 @@ const shopLoad = async (req, res) => {
           userId,
           product._id
         );
-
-        const offerPrice =
-          product.productPrice -
-          (product.productPrice * product.productDiscount) / 100;
-        product.discountedPrice = currencyFormatter(Math.round(offerPrice));
-        product.cartStatus = cartStatus;
-        product.wishlistStatus = wishlistStatus;
-        product.productPrice = currencyFormatter(product.productPrice);
       }
+      const offerPrice = await offerHelper.findOffer(products);
       const sorted = false;
 
       res.render("user/shop", {
-        products,
+        products: offerPrice,
         userData: req.session.user,
         cartCount,
         wishListCount,
@@ -139,11 +125,11 @@ const shopLoad = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const sortedProductsLoad = async (req, res) => {
+const sortedProductsLoad = async (req, res, next) => {
   try {
     if (req.query.category) {
       const products = JSON.parse(req.body.products);
@@ -182,11 +168,11 @@ const sortedProductsLoad = async (req, res) => {
     } else if (req.query.category && req.query.price) {
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const userProfileLoad = async (req, res) => {
+const userProfileLoad = async (req, res, next) => {
   try {
     const userId = req.session.user;
     const cartCount = await cartHelper.getCartCount(userId);
@@ -221,40 +207,52 @@ const userProfileLoad = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const addAddress = async (req, res) => {
-  const body = req.body;
-  const userId = req.session.user;
-  const result = await userHelper.addAddress(body, userId);
-  if (result) {
-    res.json({ status: true });
+const addAddress = async (req, res, next) => {
+  try {
+    const body = req.body;
+    const userId = req.session.user;
+    const result = await userHelper.addAddress(body, userId);
+    if (result) {
+      res.json({ status: true });
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
-const deleteAddress = async (req, res) => {
-  const addressId = req.params.id;
+const deleteAddress = async (req, res, next) => {
+  try {
+    const addressId = req.params.id;
 
-  const userId = req.session.user;
+    const userId = req.session.user;
 
-  const result = await userHelper.deleteAddress(addressId, userId);
-  if (result) {
-    res.json({ status: true });
+    const result = await userHelper.deleteAddress(addressId, userId);
+    if (result) {
+      res.json({ status: true });
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
-const updateUserDetails = async (req, res) => {
-  const userId = req.session.user;
-  const userDetails = req.body;
+const updateUserDetails = async (req, res, next) => {
+  try {
+    const userId = req.session.user;
+    const userDetails = req.body;
 
-  const result = await userHelper.updateUserDetails(userId, userDetails);
+    const result = await userHelper.updateUserDetails(userId, userDetails);
 
-  if (result.status) {
-    res.json({ status: true });
-  } else {
-    res.json({ message: result.message });
+    if (result.status) {
+      res.json({ status: true });
+    } else {
+      res.json({ message: result.message });
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -274,18 +272,88 @@ const forgotPasswordChange = async (req, res) => {
   res.redirect("/");
 };
 
-const changePassword = async (req, res) => {
-  const { currentPassword, npassword, cpassword } = req.body;
-  const userId = req.session.user;
-  const user = await userModel.findOne({ _id: userId });
-  console.log(currentPassword);
-  if (await bcrypt.compare(currentPassword, user.password)) {
-    const newPassword = await bcrypt.hash(npassword, 10);
-    user.password = newPassword;
-    await user.save();
-    res.json({ status: true });
-  } else {
-    res.json({ status: false });
+const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, npassword, cpassword } = req.body;
+    const userId = req.session.user;
+    const user = await userModel.findOne({ _id: userId });
+    console.log(currentPassword);
+    if (await bcrypt.compare(currentPassword, user.password)) {
+      const newPassword = await bcrypt.hash(npassword, 10);
+      user.password = newPassword;
+      await user.save();
+      res.json({ status: true });
+    } else {
+      res.json({ status: false });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const priceSort = async (req, res, next) => {
+  try {
+    const filter = req.params.value;
+    const products = JSON.parse(req.body.products);
+    console.log(products);
+    const extractPrice = (price) => parseInt(price.replace(/[^\d]/g, ""));
+    if (filter.toString() === "Ascending") {
+      products.sort(
+        (a, b) => extractPrice(a.productPrice) - extractPrice(b.productPrice)
+      );
+    } else {
+      products.sort(
+        (a, b) => extractPrice(b.productPrice) - extractPrice(a.productPrice)
+      );
+    }
+    const categories = await categoryModel.find();
+    for (const item of products) {
+      if (typeof item.productCategory === "string") {
+        const category = categories.find(
+          (element) => item.productCategory == element._id
+        );
+        console.log(category);
+        item.productCategory = category;
+      } else {
+        continue;
+      }
+    }
+    res.json({ products: products });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const alphaSorter = async (req, res, next) => {
+  try {
+    const products = JSON.parse(req.body.products);
+    products.sort((a, b) => {
+      const nameA = a.productName.toUpperCase();
+      const nameB = b.productName.toUpperCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+    const categories = await categoryModel.find();
+    for (const item of products) {
+      if (typeof item.productCategory === "string") {
+        const category = categories.find(
+          (element) => item.productCategory == element._id
+        );
+        console.log(category);
+        item.productCategory = category;
+      } else {
+        continue;
+      }
+    }
+
+    res.json({ products: products });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -308,4 +376,6 @@ module.exports = {
   forgotPasswordLoad,
   forgotPasswordChange,
   sortedProductsLoad,
+  priceSort,
+  alphaSorter,
 };

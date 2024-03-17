@@ -126,9 +126,10 @@ const orderDetails = async (req, res) => {
     const productDetails = await orderHelper.getOrderDetailsOfEachProduct(
       orderId
     );
+    const offerPrice = await offerHelper.findOfferInOrderDetails(productDetails);
 
     if (orderDetails && productDetails) {
-      res.render("user/orderDetails", { orderDetails, productDetails });
+      res.render("user/orderDetails", { orderDetails, productDetails:offerPrice});
     }
   } catch (error) {
     console.log(error);

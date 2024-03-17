@@ -1,6 +1,3 @@
-const {
-  ActivityInstance,
-} = require("twilio/lib/rest/taskrouter/v1/workspace/activity");
 const offerModel = require("../models/offerModel");
 
 const getAllOffersOfProducts = () => {
@@ -269,8 +266,8 @@ const findOfferInCart = (cartItems) => {
             cartItems[i].product.productPrice -
             (cartItems[i].product.productPrice *
               cartItems[i].product.productDiscount) /
-            100;
-          cartItems[i].product.offerPrice=Math.round(offerPrice)
+              100;
+          cartItems[i].product.offerPrice = Math.round(offerPrice);
           cartItems[i].product.productOffer =
             cartItems[i].product.productDiscount;
           // cartItems[i].product.offerPrice = currencyFormatter(
@@ -363,6 +360,71 @@ const getActiveOffer = (currentDate) => {
   });
 };
 
+const findOfferInOrderDetails = async (products) => {
+  try {
+    return new Promise(async (resolve, reject) => {
+      const currentDate = new Date();
+      const offer = await getActiveOffer(currentDate);
+      console.log(offer);
+      for (let i = 0; i < products.length; i++) {
+        const productOffer = offer.find(
+          (item) =>
+            item.productOffer?.product?.toString() ==
+            products[i].products.product
+        );
+        console.log("fyghjgg");
+        console.log(productOffer);
+        const categoryOffer = offer.find(
+          (item) =>
+            item.categoryOffer?.category?.toString() ==
+            products[i].orderedProduct.productCategory
+        );
+
+        if (productOffer != undefined && categoryOffer != undefined) {
+          if (
+            productOffer.productOffer.discount >
+            categoryOffer.categoryOffer.discount
+          ) {
+            const offerPrice =
+              products[i].orderedProduct.productPrice -
+              (products[i].orderedProduct.productPrice * productOffer.productOffer.discount) /
+                100;
+            products[i].offerPrice = Math.round(offerPrice);
+          } else {
+            const offerPrice =
+              products[i].orderedProduct.productPrice -
+              (products[i].orderedProduct.productPrice *
+                categoryOffer.categoryOffer.discount) /
+                100;
+            products[i].offerPrice = Math.round(offerPrice);
+          }
+        } else if (productOffer != undefined) {
+          const offerPrice =
+            products[i].orderedProduct.productPrice -
+            (products[i].orderedProduct.productPrice * productOffer.productOffer.discount) /
+              100;
+          products[i].offerPrice = Math.round(offerPrice);
+        } else if (categoryOffer != undefined) {
+          const offerPrice =
+            products[i].orderedProduct.productPrice -
+            (products[i].orderedProduct.productPrice * categoryOffer.categoryOffer.discount) /
+              100;
+          products[i].offerPrice = Math.round(offerPrice);
+        } else {
+          const offerPrice =
+            products[i].orderedProduct.productPrice -
+            (products[i].orderedProduct.productPrice * products[i].productDiscount) / 100;
+          products[i].offerPrice = Math.round(offerPrice);
+        }
+        products[i].orderedProduct.productPrice = products[i].orderedProduct.productPrice;
+      }
+      resolve(products);
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 function formatDate(dateString) {
   // Create a Date object from the string
   const date = new Date(dateString);
@@ -395,4 +457,5 @@ module.exports = {
   findOffer,
   offerCheckForProduct,
   findOfferInCart,
+  findOfferInOrderDetails,
 };

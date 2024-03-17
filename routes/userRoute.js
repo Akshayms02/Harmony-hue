@@ -101,5 +101,9 @@ router.post('/paymentSuccess', orderController.paymentSuccess);
 
 router.post("/sortedProducts", userController.sortedProductsLoad);
 
+router.post("/priceSort/:value", userController.priceSort);
+
+router.post("/alphaSort", userController.alphaSorter);
+
 
 module.exports = router;

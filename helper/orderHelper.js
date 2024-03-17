@@ -127,6 +127,7 @@ const getOrderDetailsOfEachProduct = (orderId) => {
       if (check == true && count >= 1) {
         orderDetails.deliveryStatus = true;
       }
+      console.log(orderDetails)
 
       resolve(orderDetails);
     } catch (error) {
