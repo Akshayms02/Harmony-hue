@@ -310,30 +310,30 @@ const offerCheckForProduct = (product) => {
           const offerPrice =
             product.productPrice -
             (product.productPrice * productOffer.productOffer.discount) / 100;
-          product.offerPrice = currencyFormatter(Math.round(offerPrice));
+          product.offerPrice = Math.round(offerPrice);
         } else {
           const offerPrice =
             product.productPrice -
             (product.productPrice * categoryOffer.categoryOffer.discount) / 100;
-          product.offerPrice = currencyFormatter(Math.round(offerPrice));
+          product.offerPrice = Math.round(offerPrice);
         }
       } else if (productOffer != undefined) {
         const offerPrice =
           product.productPrice -
           (product.productPrice * productOffer.productOffer.discount) / 100;
-        product.offerPrice = currencyFormatter(Math.round(offerPrice));
+        product.offerPrice = Math.round(offerPrice);
       } else if (categoryOffer != undefined) {
         const offerPrice =
           product.productPrice -
           (product.productPrice * categoryOffer.categoryOffer.discount) / 100;
-        product.offerPrice = currencyFormatter(Math.round(offerPrice));
+        product.offerPrice = Math.round(offerPrice);
       } else {
         const offerPrice =
           product.productPrice -
           (product.productPrice * product.productDiscount) / 100;
-        product.offerPrice = currencyFormatter(Math.round(offerPrice));
+        product.offerPrice = Math.round(offerPrice);
       }
-      product.productPrice = currencyFormatter(product.productPrice);
+      product.productPrice = product.productPrice;
 
       resolve(product);
     } catch (error) {
