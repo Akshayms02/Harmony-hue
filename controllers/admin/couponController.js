@@ -8,10 +8,19 @@ const couponListLoad = async (req, res) => {
       allCoupons[i].discount = currencyFormatter(allCoupons[i].discount);
       allCoupons[i].expiryDate = dateFormatter(allCoupons[i].expiryDate);
     }
+    const message = req.flash("message");
 
-    res.render("admin/couponlist", {
-      coupons: allCoupons,
-    });
+    if (message) {
+      res.render("admin/couponlist", {
+        coupons: allCoupons,message:message
+      });
+    } else {
+      res.render("admin/couponlist", {
+        coupons: allCoupons,
+      });
+    }
+
+   
   } catch (error) {
     console.log(error)
   }
@@ -19,8 +28,17 @@ const couponListLoad = async (req, res) => {
 
 const addCoupon = async (req, res) => {
   try {
-    const coupon = await couponHelper.addCoupon(req.body);
-    res.redirect("/admin/coupons");
+    if (req.body.couponAmount > 1000) {
+      req.flash("message", "Max Coupon Amount Exceeded");
+      res.redirect("/admin/coupons");
+    } else if (req.body.couponAmount < 1) {
+      req.flash("message", "Minimum Coupon Amount Not Met");
+      res.redirect('/admin/coupons');
+    } else {
+      const coupon = await couponHelper.addCoupon(req.body);
+      res.redirect("/admin/coupons");
+    }
+  
   } catch (error) {
   console.log(error);
   }

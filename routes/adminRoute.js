@@ -129,4 +129,6 @@ router.get("/salesReport", orderController.loadSalesReport);
 
 router.post("/salesReport", orderController.loadSalesReportDateSort);
 
+router.patch("/deleteImage/:id/:image", productController.deleteImage);
+
 module.exports = router;

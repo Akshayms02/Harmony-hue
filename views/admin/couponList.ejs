@@ -12,59 +12,63 @@
 
     </div>
     <div class="card mb-4">
-      <div class="card-body">
-        <div class="table-responsive">
-          <% if (!coupons.length) { %>
+      <% if (locals.message) { %>
+        <input hidden value="<%= message %>" id="errorMessage">
+        <% } %>
 
-            <h1>No Coupons Are Added Yet</h1>
+          <div class="card-body">
+            <div class="table-responsive">
+              <% if (!coupons.length) { %>
 
-            <% }else{ %>
+                <h1>No Coupons Are Added Yet</h1>
 
-              <table class="table table-hover" id="couponTable">
-                <thead>
-                  <tr class="text-left">
-                    <th>No</th>
-                    <th>Coupon Name</th>
-                    <th>Coupon Code</th>
-                    <th>Discount Amount</th>
-                    <th>Expiry Date</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for( let i=0; i < coupons.length; i++ ) { %>
+                <% }else{ %>
+
+                  <table class="table table-hover" id="couponTable">
+                    <thead>
+                      <tr class="text-left">
+                        <th>No</th>
+                        <th>Coupon Name</th>
+                        <th>Coupon Code</th>
+                        <th>Discount Amount</th>
+                        <th>Expiry Date</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for( let i=0; i < coupons.length; i++ ) { %>
 
 
-                    <tr class="text-left">
-                      <td width="15%">
-                        <%= i+1 %>
-                      </td>
-                      <td width="20%">
-                        <%= coupons[i].couponName %>
-                      </td>
-                      <td width="20%">
-                        <%= coupons[i].code %>
-                      </td>
-                      <td width="10%">
-                        <%= coupons[i].discount %>
-                      </td>
-                      <td width="15%">
-                        <%= coupons[i].expiryDate %>
-                      </td>
-                      <td width="10%"><a onclick="editCoupon('<%= coupons[i]._id %>')"
-                          class="btn btn-sm btn-success rounded font-sm mt-15">Edit</a></td>
-                      <td width="10%"><a onclick="deleteCoupon('<%= coupons[i]._id %>')"
-                          class="btn btn-sm btn-danger rounded font-sm mt-15">Delete</a> </td>
-                    </tr>
+                        <tr class="text-left">
+                          <td width="15%">
+                            <%= i+1 %>
+                          </td>
+                          <td width="20%">
+                            <%= coupons[i].couponName %>
+                          </td>
+                          <td width="20%">
+                            <%= coupons[i].code %>
+                          </td>
+                          <td width="10%">
+                            <%= coupons[i].discount %>
+                          </td>
+                          <td width="15%">
+                            <%= coupons[i].expiryDate %>
+                          </td>
+                          <td width="10%"><a onclick="editCoupon('<%= coupons[i]._id %>')"
+                              class="btn btn-sm btn-success rounded font-sm mt-15">Edit</a></td>
+                          <td width="10%"><a onclick="deleteCoupon('<%= coupons[i]._id %>')"
+                              class="btn btn-sm btn-danger rounded font-sm mt-15">Delete</a> </td>
+                        </tr>
 
-                    <% } %>
-                </tbody>
-              </table> <!-- table-responsive.// -->
-              <% } %>
+                        <% } %>
+                    </tbody>
+                  </table> <!-- table-responsive.// -->
+                  <% } %>
 
-        </div>
-      </div> <!-- card-body end// -->
+            </div>
+          </div> <!-- card-body end// -->
     </div> <!-- card end// -->
 
   </section> <!-- content-main end// -->
@@ -203,7 +207,7 @@
         if (response.isConfirmed) {
           $.ajax({
             url: "/admin/deleteCoupon/" + couponId,
-           method: 'DELETE',
+            method: 'DELETE',
           }).done(response => {
             Swal.fire("Successfull", `${response.message}`, "success").then(() => {
               location.reload();
@@ -215,8 +219,21 @@
           })
         }
       })
-      
-  }
+
+    }
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      if (document.getElementById("errorMessage").value) {
+        Toastify({
+          text: document.getElementById("errorMessage").value,
+          position:"center",
+          duration: 3000, // Set the duration for the toast notification
+          close: true // Allow the user to close the toast notification
+        }).showToast(); // Display the toast notification
+      }
+    });
   </script>
 
   <%- include("../layouts/adminLayout/admin-footer") %>

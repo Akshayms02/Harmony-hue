@@ -13,34 +13,33 @@
                         <form action="/admin/editProduct/<%= product._id %>?_method=PUT" method="post"
                             enctype="multipart/form-data" id="editForm">
                             <div class="mb-4">
-                                <input type="hidden" value="PUT" name="_method" >
+                                <input type="hidden" value="PUT" name="_method">
                                 <label for="product_name" class="form-label">Product Name</label>
                                 <input type="text" name="productName" value="<%= product.productName %>"
                                     placeholder="Type here" class="form-control" id="productName">
-                                    <span id="productNameError" class="text-danger">
-                                    </span>
+                                <span id="productNameError" class="text-danger">
+                                </span>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Product description</label>
                                 <textarea placeholder="Type here" id="productDescription" name="productDescription"
-                                    class="form-control" rows="4" ><%= product.productDescription %></textarea>
+                                    class="form-control" rows="4"><%= product.productDescription %></textarea>
                             </div>
                             <div class="row">
                                 <div class="mb-4 col-lg-6">
                                     <label class="form-label" for="product_price">Price</label>
                                     <input type="text" value="<%= product.productPrice %>" placeholder="price"
                                         name="productPrice" class="form-control" id="productPrice">
-                                        <span id="productPriceError" class="text-danger">
-                                        </span>
+                                    <span id="productPriceError" class="text-danger">
+                                    </span>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="mb-4">
                                         <label for="product_discount" class="form-label">Discount</label>
-                                        <input type="text" name="productDiscount"
-                                            value="<%= product.productDiscount %>" placeholder="%" class="form-control"
-                                            id="productDiscount">
-                                            <span id="productDiscountError" class="text-danger">
-                                            </span>
+                                        <input type="text" name="productDiscount" value="<%= product.productDiscount %>"
+                                            placeholder="%" class="form-control" id="productDiscount">
+                                        <span id="productDiscountError" class="text-danger">
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +70,7 @@
                                         <span id="productQuantityError" class="text-danger mt-1"></span>
                                     </div>
                                 </div>
-                                
+
                             </div>
 
                     </div>
@@ -84,17 +83,16 @@
                         <div class="input-upload">
                             <label class="form-label">Image</label>
                             <% if(typeof product.image==='string' ) { %>
-                                <img src="/<%= product.image %>"
-                                    style="width: 100px; height: 72px;" alt="">
+                                <img src="/<%= product.image %>" style="width: 100px; height: 72px;" alt="">
                                 <% } else if(Array.isArray(product.image) && product.image.length> 0) { %>
-                                    <img src="/<%= product.image[0] %>"
-                                        style="width: 100px; height: 72px;" alt="">
+                                    <img src="/<%= product.image[0] %>" style="width: 100px; height: 72px;" alt="">
                                     <% } %>
                                         <input class="form-control" type="file" name="images" multiple>
                                         <input type="hidden" value="<%= product.image %> " name="oldImage">
                                         <% if(Array.isArray(product.image)) { %>
                                             <p>
-                                                <%= product.image.length %> out of <%= product.image.length %> images available
+                                                <%= product.image.length %> out of <%= product.image.length %> images
+                                                        available
                                             </p>
                                             <% } %>
                         </div>
@@ -107,8 +105,9 @@
                                 <% if(Array.isArray(product.image) && product.image.length> 0) { %>
                                     <% for(let i=0; i<product.image.length; i++) { %>
                                         <div class="col-6">
-                                            <img src="/<%= product.image[i] %>"
-                                                style="width: 100px; height: 72px;" alt="">
+                                            <a onclick="deleteImage('<%=product._id%>','<%=i%>')"><span>&#10006;</span></a>
+                                            <img src="/<%= product.image[i] %>" style="width: 100px; height: 72px;"
+                                                alt="">
                                         </div>
                                         <% } %>
                                             <% } %>
@@ -144,13 +143,42 @@
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up" style="background-color: black;">Edit
+                    <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up"
+                        style="background-color: black;">Edit
                         Product</button>
                 </div>
             </div>
             </form>
         </div>
     </section>
+    <script>
+
+function deleteImage(productId, image) {
+    console.log("clicked", productId);
+    Swal.fire({
+        title: "Are you sure you want to do this?",
+        showCancelButton: true,
+        confirmButtonText: "YES",
+        cancelButtonText: "NO",
+        icon: "warning"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/admin/deleteImage/${productId}/${image}`,
+                type: 'PATCH'
+            }).done((res) => {
+                Swal.fire("Successful", res.message, "success").then(() => {
+                    location.reload();
+                });
+            }).fail((res) => {
+                Swal.fire("Error", res.message, "error").then(() => {
+                    location.reload();
+                });
+            });
+        }
+    });
+}
+    </script>
     <script>
 
         function validateForm(e) {

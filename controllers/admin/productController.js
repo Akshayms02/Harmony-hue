@@ -1,6 +1,7 @@
 const productHelper = require("../../helper/productHelper");
 const categoryHelper = require("../../helper/categoryHelper");
 const productModel = require("../../models/productModel");
+const fs = require("fs");
 
 const productListLoad = async (req, res) => {
   const products = await productHelper.getAllProducts();
@@ -128,6 +129,33 @@ const editProductPost = async (req, res) => {
     console.log(err);
   }
 };
+const deleteImage = async (req, res,next) => {
+  try {
+    console.log("hello")
+    const productId = req.params.id;
+    const image = parseInt(req.params.image);
+
+    console.log(image)
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      { _id: productId },
+      { $unset: { [`image.${image}`]: 1 } }, 
+    );
+    const result = await productModel.findByIdAndUpdate(
+      { _id: productId },
+      { $pull: { image: null } },
+      { new: true } 
+    );
+    res.json({ status: true, message: "Image Deleted" });
+    console.log(updatedProduct)
+    fs.unlink("public/uploads/" + updatedProduct.image[image], (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  } catch (error) {
+    next(error);
+  }}
 
 module.exports = {
   productListLoad,
@@ -135,5 +163,5 @@ module.exports = {
   addProductPost,
   deleteProduct,
   editProductLoad,
-  editProductPost,
+  editProductPost,deleteImage
 };
