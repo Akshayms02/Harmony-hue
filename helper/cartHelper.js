@@ -192,26 +192,28 @@ const clearCoupon = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const cart = await cartModel.findOne({ user: userId });
-      if (cart.coupon != null) {
-        const couponCode = cart.coupon;
-        const removeUser = await couponModel.updateOne(
-          { code: couponCode },
-          {
-            $pull: {
-              usedBy: userId,
-            },
-          }
-        );
-        const result = await cartModel.updateOne(
-          { user: userId },
-          {
-            $set: { coupon: null },
-          }
-        );
+      if (cart) {
+        if (cart.coupon != null) {
+          const couponCode = cart.coupon;
+          const removeUser = await couponModel.updateOne(
+            { code: couponCode },
+            {
+              $pull: {
+                usedBy: userId,
+              },
+            }
+          );
+          const result = await cartModel.updateOne(
+            { user: userId },
+            {
+              $set: { coupon: null },
+            }
+          );
 
-        resolve({ status: true });
-      } else {
-        resolve({ status: false });
+          resolve({ status: true });
+        } else {
+          resolve({ status: false });
+        }
       }
     } catch (error) {
       console.log(error);

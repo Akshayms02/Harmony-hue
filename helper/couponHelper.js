@@ -81,7 +81,7 @@ const deleteSelectedCoupon = (couponId) => {
   });
 };
 
-const applyCoupon = (userId, couponCode) => {
+const  applyCoupon = (userId, couponCode) => {
   return new Promise(async (resolve, reject) => {
     let coupon = await couponModel.findOne({ code: couponCode })
     if (coupon && coupon.isActive === "Active") {

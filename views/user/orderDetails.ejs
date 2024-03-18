@@ -205,11 +205,15 @@
                         <tr>
                           <td class="cart_total_label">Coupon</td>
                           <% if (productDetails[0].couponAmount>0) { %>
-                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> ₹<%=
-                                productDetails[0].couponAmount %>
+                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>
+                              <span id="couponAmount">
+                                <%=productDetails[0].couponAmount %>
+                              </span>
                             </td>
                             <% } else { %>
-                              <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> No Coupon</td>
+                              <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>
+                                <span id="noCoupon">No Coupon</span>
+                              </td>
                               <% } %>
                         </tr>
                         <tr>
@@ -311,7 +315,7 @@
         console.log(productDetails);
 
         e.preventDefault();
-;
+        ;
         Swal.fire({
           title: 'Do you want to download Invoice?',
           showCancelButton: true,
@@ -381,6 +385,24 @@
         });
       });
     });
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      const couponAmount = parseInt(document.getElementById("couponAmount").textContent);
+      console.log(couponAmount)
+      // const noCoupon=document.getElementById("noCoupon").value;
+      if (typeof couponAmount == "number") {
+        console.log("Hey")
+        const finalAmount = document.getElementById("totalAmountFinal").textContent
+        var formattedAmount = finalAmount.replace('₹', '').trim();
+        const finalValue = parseInt(formattedAmount) + parseInt(couponAmount)
+        document.getElementById("totalAmount").textContent = '₹' + finalValue
+      } else {
+        const finalAmount = document.getElementById("totalFinalAmount").textContent;
+        document.getElementById("totalAmount").textContent = finalAmount;
+      }
+    })
   </script>
 
 
