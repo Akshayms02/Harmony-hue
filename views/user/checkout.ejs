@@ -288,8 +288,13 @@
                           </td>
                         </tr>
                         <tr>
-                          <th>Shipping</th>
-                          <td colspan="2" class="text-dark"><em>Free Shipping</em></td>
+                          <th>Coupon</th>
+                          <td colspan="2" class="text-dark"><% if (cartItems[0].couponAmount>0) { %>
+                           <span id="couponAmount">₹ <%=cartItems[0].couponAmount  %></span>
+
+                           <% } else { %>
+                            <span id="noCoupon">No Coupons Applied</span>
+                          <% } %></td>
                         </tr>
                         <tr>
                           <th>Total</th>

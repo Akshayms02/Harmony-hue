@@ -3,16 +3,14 @@ const orderHelper = require("../../helper/orderHelper");
 const couponHelper = require("../../helper/couponHelper");
 const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
+const couponModel = require("../../models/couponModel");
+const cartModel = require("../../models/cartModel");
 const Razorpay = require("razorpay");
-
-
 
 var razorpay = new Razorpay({
   key_id: process.env.KEY_ID,
   key_secret: process.env.KEY_SECRET,
 });
-
-
 
 const createOrder = async (req, res) => {
   try {
@@ -56,35 +54,55 @@ const paymentSuccess = (req, res) => {
 
 const checkoutLoad = async (req, res) => {
   const userId = req.session.user;
-  const cartItems = await cartHelper.getAllCartItems(userId);
+  let cartItems = await cartHelper.getAllCartItems(userId);
+  let cart = await cartModel.findOne({ user: userId });
   const offerPrice = await offerHelper.findOfferInCart(cartItems);
   let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartItems);
   const userData = await userModel.findOne({ _id: userId });
   const coupons = await couponHelper.findAllCoupons();
-  console.log(userData);
+  // console.log(userData);
+  console.log(cartItems)
+  if (cart.coupon != null) {
+    const appliedCoupon = await couponModel.findOne({ code: cart.coupon });
+    cartItems[0].couponAmount = appliedCoupon.discount;
 
-  console.log(cartItems);
-  let totalAmountOfEachProduct = [];
-  for (i = 0; i < cartItems.length; i++) {
-    let total =
-      cartItems[i].quantity * parseInt(cartItems[i].product.offerPrice);
-    total = currencyFormatter(total);
-    totalAmountOfEachProduct.push(total);
-  }
-  totalandSubTotal = currencyFormatter(totalandSubTotal);
-  // for (i = 0; i < cartItems.length; i++) {
-  //   cartItems[i].product.productPrice = currencyFormatter(
-  //     cartItems[i].product.productPrice
-  //   );
-  // }
-  if (cartItems) {
-    res.render("user/checkout", {
-      cartItems,
-      totalAmountOfEachProduct,
-      totalandSubTotal,
-      userData,
-      coupons,
-    });
+    let totalAmountOfEachProduct = [];
+    for (i = 0; i < cartItems.length; i++) {
+      let total =
+        cartItems[i].quantity * parseInt(cartItems[i].product.offerPrice);
+      total = currencyFormatter(total);
+      totalAmountOfEachProduct.push(total);
+    }
+    totalandSubTotal = currencyFormatter(totalandSubTotal);
+    console.log(cartItems);
+    if (cartItems) {
+      res.render("user/checkout", {
+        cartItems,
+        totalAmountOfEachProduct,
+        totalandSubTotal,
+        userData,
+        coupons,
+      });
+    }
+  } else {
+    let totalAmountOfEachProduct = [];
+    for (i = 0; i < cartItems.length; i++) {
+      let total =
+        cartItems[i].quantity * parseInt(cartItems[i].product.offerPrice);
+      total = currencyFormatter(total);
+      totalAmountOfEachProduct.push(total);
+    }
+    totalandSubTotal = currencyFormatter(totalandSubTotal);
+
+    if (cartItems) {
+      res.render("user/checkout", {
+        cartItems,
+        totalAmountOfEachProduct,
+        totalandSubTotal,
+        userData,
+        coupons,
+      });
+    }
   }
 };
 
@@ -126,10 +144,15 @@ const orderDetails = async (req, res) => {
     const productDetails = await orderHelper.getOrderDetailsOfEachProduct(
       orderId
     );
-    const offerPrice = await offerHelper.findOfferInOrderDetails(productDetails);
+    const offerPrice = await offerHelper.findOfferInOrderDetails(
+      productDetails
+    );
 
     if (orderDetails && productDetails) {
-      res.render("user/orderDetails", { orderDetails, productDetails:offerPrice});
+      res.render("user/orderDetails", {
+        orderDetails,
+        productDetails: offerPrice,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -164,7 +187,7 @@ const returnSingleOrder = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
