@@ -10,19 +10,21 @@ const userCartLoad = async (req, res) => {
     const userData = req.session.user;
 
     const cartItems = await cartHelper.getAllCartItems(userData);
-
+    console.log("0")
     const offerPrice = await offerHelper.findOfferInCart(cartItems);
-
+    console.log("1")
     console.log(offerPrice);
 
     const cartCount = await cartHelper.getCartCount(userData);
 
     const wishListCount = await wishlistHelper.getWishListCount(userData);
+    console.log("2")
 
     const ifCouponAppliedInCart = await cartHelper.clearCoupon(userData);
+    console.log("3")
 
     let totalandSubTotal = await cartHelper.totalSubtotal(userData, cartItems);
-
+console.log("4")
     let totalAmountOfEachProduct = [];
     for (i = 0; i < cartItems.length; i++) {
       let total =

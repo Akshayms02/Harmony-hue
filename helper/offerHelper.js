@@ -387,7 +387,8 @@ const findOfferInOrderDetails = async (products) => {
           ) {
             const offerPrice =
               products[i].orderedProduct.productPrice -
-              (products[i].orderedProduct.productPrice * productOffer.productOffer.discount) /
+              (products[i].orderedProduct.productPrice *
+                productOffer.productOffer.discount) /
                 100;
             products[i].offerPrice = Math.round(offerPrice);
           } else {
@@ -401,22 +402,25 @@ const findOfferInOrderDetails = async (products) => {
         } else if (productOffer != undefined) {
           const offerPrice =
             products[i].orderedProduct.productPrice -
-            (products[i].orderedProduct.productPrice * productOffer.productOffer.discount) /
+            (products[i].orderedProduct.productPrice *
+              productOffer.productOffer.discount) /
               100;
           products[i].offerPrice = Math.round(offerPrice);
         } else if (categoryOffer != undefined) {
           const offerPrice =
             products[i].orderedProduct.productPrice -
-            (products[i].orderedProduct.productPrice * categoryOffer.categoryOffer.discount) /
+            (products[i].orderedProduct.productPrice *
+              categoryOffer.categoryOffer.discount) /
               100;
           products[i].offerPrice = Math.round(offerPrice);
         } else {
           const offerPrice =
-            products[i].orderedProduct.productPrice -
-            (products[i].orderedProduct.productPrice * products[i].productDiscount) / 100;
+            parseInt(products[i].orderedProduct.productPrice) -
+            (parseInt(products[i].orderedProduct.productPrice) *
+              parseInt(products[i].orderedProduct.productDiscount)) /
+              100;
           products[i].offerPrice = Math.round(offerPrice);
         }
-        products[i].orderedProduct.productPrice = products[i].orderedProduct.productPrice;
       }
       resolve(products);
     });

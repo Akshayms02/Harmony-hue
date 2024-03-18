@@ -73,7 +73,7 @@ const checkoutLoad = async (req, res) => {
       total = currencyFormatter(total);
       totalAmountOfEachProduct.push(total);
     }
-    totalandSubTotal = currencyFormatter(totalandSubTotal);
+    totalandSubTotal = totalandSubTotal;
     console.log(cartItems);
     if (cartItems) {
       res.render("user/checkout", {

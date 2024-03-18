@@ -284,23 +284,28 @@
                         <tr>
                           <th>SubTotal</th>
                           <td class="product-subtotal" colspan="2" class="text-dark">
-                            <%=totalandSubTotal%>
+                            <% if (cartItems[0].couponAmount>0) { %>
+                              ₹<span > <%=cartItems[0].couponAmount + totalandSubTotal%></span>
+                              <% } else { %>
+                                <span><%=totalandSubTotal%></span>
+                              <% } %>
+                            
                           </td>
                         </tr>
                         <tr>
-                          <th>Coupon</th>
+                          <th>Coupon Discount</th>
                           <td colspan="2" class="text-dark"><% if (cartItems[0].couponAmount>0) { %>
-                           <span id="couponAmount">₹ <%=cartItems[0].couponAmount  %></span>
+                           <span >₹ <%=cartItems[0].couponAmount  %></span>
 
                            <% } else { %>
-                            <span id="noCoupon">No Coupons Applied</span>
+                            <span>No Coupons Applied</span>
                           <% } %></td>
                         </tr>
                         <tr>
                           <th>Total</th>
                           <td colspan="2" class="product-subtotal"><span class="font-xl text-dark fw-900"
                               id="totalAmount">
-                              <%=totalandSubTotal%>
+                              ₹ <%=totalandSubTotal%>
                             </span></td>
                         </tr>
                   </tbody>

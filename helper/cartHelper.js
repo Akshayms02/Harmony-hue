@@ -214,6 +214,8 @@ const clearCoupon = (userId) => {
         } else {
           resolve({ status: false });
         }
+      } else {
+        resolve({status:false})
       }
     } catch (error) {
       console.log(error);
