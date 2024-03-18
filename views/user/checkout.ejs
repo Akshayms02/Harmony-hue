@@ -499,13 +499,19 @@
   </script>
   <script>
     $(document).ready(function () {
+      const price = convertRupeeToNumber(document.getElementById("totalAmount").textContent)
+      function convertRupeeToNumber(rupeeString) {
+        const numberString = rupeeString.replace(/₹|,/g, "");
+        return parseInt(numberString);
+      }
+      console.log(price);
       $("#couponForm").submit(function (event) {
         console.log("hey")
         event.preventDefault();
         let formData = $(this).serialize();
         console.log(formData)
         $.ajax({
-          url: "/applyCoupon",
+          url: `/applyCoupon?price=${price}`,
           method: "POST",
           data: formData,
           success: (response) => {
@@ -520,7 +526,10 @@
                   background: "green",
                 },
               }).showToast();
-              location.reload();
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+
 
             } else {
               Toastify({
@@ -533,6 +542,9 @@
                   background: "red",
                 },
               }).showToast();
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
             }
 
           },
