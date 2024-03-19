@@ -24,12 +24,12 @@ const loadDashboard = async (req, res, next) => {
     const products = await productModel.find();
     const categories = await categoryModel.find();
 
-    // Aggregate to find the top selling products
+    // Aggregate for finding the top selling products
     const topSellingProducts = await orderModel.aggregate([
       { $unwind: "$products" }, // Split orders into individual products
       {
         $group: {
-          _id: "$products.productId",
+          _id: "$products.product",
           totalQuantity: { $sum: "$products.quantity" },
         },
       }, // Group by productId and sum quantities
@@ -43,7 +43,7 @@ const loadDashboard = async (req, res, next) => {
     // Fetch details of top selling products
     const productsData = await productModel.find(
       { _id: { $in: productIds } },
-      { name: 1, image: 1 }
+      { productName: 1, image: 1 }
     );
 
     // Aggregate to find the top selling categories
@@ -52,7 +52,7 @@ const loadDashboard = async (req, res, next) => {
       {
         $lookup: {
           from: "products",
-          localField: "products.productId",
+          localField: "products.product",
           foreignField: "_id",
           as: "product",
         },
@@ -61,7 +61,7 @@ const loadDashboard = async (req, res, next) => {
       {
         $lookup: {
           from: "categories",
-          localField: "product.category",
+          localField: "product.productCategory",
           foreignField: "_id",
           as: "category",
         },
