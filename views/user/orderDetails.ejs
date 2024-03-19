@@ -1,5 +1,5 @@
 <%- include("../layouts/userLayout/userHomeHeader") %>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <main class="main">
     <div class="page-header breadcrumb-wrap">
       <div class="container">
@@ -92,6 +92,10 @@
                                 <span class="badge text-dark bg-success">
                                   <%= productDetails[i].products.status %>
                                 </span>
+                              <% } else if (productDetails[i].products.status=="payment pending" ) { %>
+                                <span class="badge text-dark bg-danger">
+                                  <%= productDetails[i].products.status %>
+                                </span>
                                 <% } else if (productDetails[i].products.status=="shipped" ) { %>
                                   <span class="badge text-dark bg-primary">
                                     <%= productDetails[i].products.status %>
@@ -128,6 +132,8 @@
                               <a href="#" class="text-muted">Return Pending</a>
                               <% } else if (productDetails[i].products.status=="returned" ) { %>
                                 <a href="#" class="text-muted">Returned</a>
+                              <% } else if (productDetails[i].products.status=="payment pending" ) { %>
+                                <a onclick="retryPayment('<%=productDetails[0].orderId%>')" class="text-muted">Retry</a>
                                 <% } else { %>
                                   <a onclick="cancelOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products._id%>')"
                                     class="text-danger">Cancel</a>
@@ -403,6 +409,82 @@
         document.getElementById("totalAmount").textContent = finalAmount;
       }
     })
+  </script>
+
+  <script>
+    const retryPayment=(orderId)=>{
+      fetch('/createRazorpayOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                amount: 10000, // Total amount to be paid in paise (e.g., ₹100 = 10000 paise)
+                currency: 'INR', // Currency code
+                description: 'Test Transaction', // Description of the order
+                orderId: orderId
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Open Razorpay payment modal
+                console.log('Received data from server:', data);
+                const orderId = data.order_id;
+                const totalAmount = data.totalAmount
+                const amount=totalAmount*100
+              
+                var options = {
+                    "key": "rzp_test_8NIpILQrGaZLRj",
+                    "amount": amount, // Example amount, replace with actual amount
+                    "currency": "INR",
+                    "name": "Harmony Hue",
+                    "description": 'Test Transaction',
+                    "image": "http://localhost:3000/public/images/common/harmony-logo.svg",
+                    "order_id": orderId, // Use the order_id received from the server
+                    "handler": function (response) {
+                        // Handle successful payment
+                        console.log('Payment successful:', response);
+                        // Send the payment details to your server for verification
+                        fetch('/paymentSuccess', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                orderId: orderId, // Use order_id instead of data.id
+                                paymentId: response.razorpay_payment_id,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Verification response:', data);
+                                // Redirect to a success page or display a success message
+                                window.location.href = '/orderSuccessPage';
+
+                            })
+                            .catch(error => {
+                                console.error('Error verifying payment:', error);
+                                // Handle payment verification error
+                            });
+                    },
+                    "prefill": {
+                        "name": "User Name",
+                        "email": "user@example.com",
+                        "contact": "9999999999"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+
+                var rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(error => {
+                console.error('Error creating Razorpay order:', error);
+                // Handle order creation error
+            });
+    }
   </script>
 
 

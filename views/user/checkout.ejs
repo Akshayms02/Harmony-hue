@@ -285,27 +285,33 @@
                           <th>SubTotal</th>
                           <td class="product-subtotal" colspan="2" class="text-dark">
                             <% if (cartItems[0].couponAmount>0) { %>
-                              ₹<span > <%=cartItems[0].couponAmount + totalandSubTotal%></span>
+                              ₹<span>
+                                <%=cartItems[0].couponAmount + totalandSubTotal%>
+                              </span>
                               <% } else { %>
-                                <span><%=totalandSubTotal%></span>
-                              <% } %>
-                            
+                                <span>
+                                  <%=totalandSubTotal%>
+                                </span>
+                                <% } %>
+
                           </td>
                         </tr>
                         <tr>
                           <th>Coupon Discount</th>
-                          <td colspan="2" class="text-dark"><% if (cartItems[0].couponAmount>0) { %>
-                           <span >₹ <%=cartItems[0].couponAmount  %></span>
+                          <td colspan="2" class="text-dark">
+                            <% if (cartItems[0].couponAmount>0) { %>
+                              <span>₹ <%=cartItems[0].couponAmount %></span>
 
-                           <% } else { %>
-                            <span>No Coupons Applied</span>
-                          <% } %></td>
+                              <% } else { %>
+                                <span>No Coupons Applied</span>
+                                <% } %>
+                          </td>
                         </tr>
                         <tr>
                           <th>Total</th>
                           <td colspan="2" class="product-subtotal"><span class="font-xl text-dark fw-900"
                               id="totalAmount">
-                              ₹ <%=totalandSubTotal%>
+                               <%=totalandSubTotal%>
                             </span></td>
                         </tr>
                   </tbody>
@@ -445,6 +451,58 @@
               };
               var rzp = new Razorpay(options)
               rzp.open();
+              rzp.on("payment.failed", function (response) {
+                console.log('Payment failed:', response.error.description);
+                handleFailure(response.error.description, address, payment);
+              });
+
+              function handleFailure(description, address, paymentMethod) {
+                console.log('Payment failed:', description);
+
+                // Redirect to appropriate page or handle as required
+                createOrderWithStatusPending(address, paymentMethod);
+                window.location.href="/orderFailedPage"
+
+              }
+
+              function createOrderWithStatusPending(address, paymentMethod) {
+                fetch('/placeOrder', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(
+                    {
+                      addressId: address,
+                      paymentOption: paymentMethod,
+                      status:"payment pending"
+                    }
+                  ),
+                })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Failed to create order.');
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log(data);
+                    if (data.success) {
+
+                      // Redirect to the appropriate page with the newly created order ID
+                      window.location.href = '/orderFailedPage';
+                    } else {
+                      console.error('Error: Order creation failed');
+                      // Handle the error case where order creation fails
+                      // You may redirect to an error page or display a message to the user
+                    }
+                  })
+                  .catch((error) => {
+                    console.error('Error:', error);
+                    // Handle any errors that occur during the fetch operation
+                    // You may redirect to an error page or display a message to the user
+                  });
+              }
 
               function verify(response, orderId) {
                 console.log(response, orderId);

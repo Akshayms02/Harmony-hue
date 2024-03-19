@@ -1,0 +1,19 @@
+<%- include("../layouts/userLayout/userHomeHeader") %>
+<div class="vh-100 d-flex justify-content-center align-items-center">
+  <div class="card col-8 col-md-4 bg-white shadow-md p-5">
+      <div class="mb-4 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="text-danger" width="75" height="75"
+              fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+              <path
+                  d="M8 1a7 7 0 0 0 0 14A7 7 0 0 0 8 1zm.354 9.354a.5.5 0 0 1-.708 0L8 8.707 6.354 10.354a.5.5 0 0 1-.708-.708L7.293 8l-1.353-1.354a.5.5 0 0 1 .708-.708L8 7.293l1.646-1.647a.5.5 0 0 1 .708.708L8.707 8l1.647 1.646a.5.5 0 0 1 0 .708z" />
+          </svg>
+      </div>
+      <div class="text-center">
+          <h1 class="mb-4">Order Placement Failed</h1>
+          <p>We're sorry, but there was an issue processing your order.</p>
+          <a href="/userHome" class="btn btn-outline-success me-2">Continue Shopping</a>
+          <a href="/profile#orders" class="btn btn-outline-success">View Orders</a>
+      </div>
+  </div>
+</div>
+<%- include("../layouts/userLayout/userHomeFooter") %>

@@ -85,11 +85,15 @@ router.get(
   orderController.orderSuccessPageLoad
 );
 
+router.get("/orderFailedPage", userAuth.isLogout, orderController.orderFailedPageLoad);
+
 router.patch("/cancelOrder/:id", orderController.cancelOrder);
 
 router.patch("/cancelSingleOrder", orderController.cancelSingleOrder);
 
 router.patch("/returnSingleOrder", orderController.returnSingleOrder);
+
+
 
 router.post("/applyCoupon", couponController.applyCoupon);
 
@@ -104,6 +108,10 @@ router.post("/sortedProducts", userController.sortedProductsLoad);
 router.post("/priceSort/:value", userController.priceSort);
 
 router.post("/alphaSort", userController.alphaSorter);
+
+router.post("/createRazorpayOrder", orderController.retryPayment);
+
+
 
 
 module.exports = router;

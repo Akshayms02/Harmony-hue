@@ -5,6 +5,7 @@ const offerHelper = require("../../helper/offerHelper");
 const userModel = require("../../models/userModel");
 const couponModel = require("../../models/couponModel");
 const cartModel = require("../../models/cartModel");
+const orderModel = require("../../models/orderModel");
 const Razorpay = require("razorpay");
 
 var razorpay = new Razorpay({
@@ -61,7 +62,7 @@ const checkoutLoad = async (req, res) => {
   const userData = await userModel.findOne({ _id: userId });
   const coupons = await couponHelper.findAllCoupons();
   // console.log(userData);
-  console.log(cartItems)
+  console.log(cartItems);
   if (cart.coupon != null) {
     const appliedCoupon = await couponModel.findOne({ code: cart.coupon });
     cartItems[0].couponAmount = appliedCoupon.discount;
@@ -108,6 +109,8 @@ const checkoutLoad = async (req, res) => {
 
 const placeOrder = async (req, res) => {
   const body = req.body;
+  const status = req.body.status;
+  console.log(status);
   const userId = req.session.user;
 
   const result = await orderHelper.placeOrder(body, userId);
@@ -121,6 +124,9 @@ const placeOrder = async (req, res) => {
 
 const orderSuccessPageLoad = (req, res) => {
   res.render("user/orderSuccessPage");
+};
+const orderFailedPageLoad = (req, res) => {
+  res.render("user/orderFailurePage");
 };
 
 const cancelOrder = async (req, res) => {
@@ -188,6 +194,28 @@ const returnSingleOrder = async (req, res) => {
     console.log(error);
   }
 };
+const retryPayment = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+
+    const orderDetails = await orderModel.findOne({ orderId: orderId });
+    console.log(orderDetails);
+
+    orderDetails.products.forEach((item) => {
+      item.status = "pending";
+    });
+    // Save the updated orderDetails
+    await orderDetails.save();
+    // Calculate total amount
+    const totalAmount = orderDetails.totalAmount;
+
+    // Send response to the client with order ID and total amount
+    res.status(200).json({ orderId: orderDetails._id, totalAmount });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
@@ -207,4 +235,6 @@ module.exports = {
   createOrder,
   paymentSuccess,
   returnSingleOrder,
+  retryPayment,
+  orderFailedPageLoad,
 };

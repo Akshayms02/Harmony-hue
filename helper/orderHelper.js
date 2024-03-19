@@ -20,12 +20,17 @@ const placeOrder = (body, userId) => {
       const user = await userModel.findOne({ _id: userId });
       console.log(cart);
       let products = [];
+      let status = "pending"
+      if (body.status) {
+        status="payment pending"
+      }
       for (const product of cart.products) {
         products.push({
           product: product.productItemId,
           quantity: product.quantity,
           size: product.size,
           productPrice: product.price,
+          status:status,
         });
 
         let changeStock = await productModel.updateOne(

@@ -40,6 +40,7 @@ const loadDashboard = async (req, res, next) => {
     // Extract product IDs of top selling products
     const productIds = topSellingProducts.map((product) => product._id);
 
+    
     // Fetch details of top selling products
     const productsData = await productModel.find(
       { _id: { $in: productIds } },
