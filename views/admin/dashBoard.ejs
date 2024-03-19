@@ -133,11 +133,11 @@
             sortedProducts.forEach(product => { %>
             <tr>
               <td class="text-center"><img src="/<%= product.image[0] %>" alt="<%= product.productName %>"
-                  style="max-width: 100px; max-height: 100px;"></td>
-              <td class="text-center">
+                  style="max-width: 70px; max-height: 70px;"></td>
+              <td class="text-center" style="vertical-align: middle; ">
                 <%= product.productName %>
               </td>
-              <td class="text-center">
+              <td class="text-center"  style="vertical-align: middle; ">
                 <%= topSellingProducts.find(topProduct=> topProduct._id.toString() ===
                   product._id.toString())?.totalQuantity || 0 %>
               </td>
