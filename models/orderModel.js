@@ -32,6 +32,7 @@ const orderSchema = new mongoose.Schema({
           "cancelled",
           "return pending",
           "returned",
+          "payment pending",
         ],
         default: "pending",
       },
@@ -68,6 +69,7 @@ const orderSchema = new mongoose.Schema({
       "cancelled",
       "return pending",
       "returned",
+      "payment pending",
     ],
     default: "pending",
   },
@@ -80,8 +82,8 @@ const orderSchema = new mongoose.Schema({
   },
   couponAmount: {
     type: Number,
-    default:0,
-  }
+    default: 0,
+  },
 });
 
 const Order = mongoose.model("Order", orderSchema);

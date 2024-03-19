@@ -131,4 +131,8 @@ router.post("/salesReport", orderController.loadSalesReportDateSort);
 
 router.patch("/deleteImage/:id/:image", productController.deleteImage);
 
+router.get("/dashboard", adminAuth.isLogout, adminController.loadDashboard);
+
+router.post("/showChart",adminAuth.isLogout,adminController.showChart)
+
 module.exports = router;
