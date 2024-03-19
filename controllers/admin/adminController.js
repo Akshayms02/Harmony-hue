@@ -114,12 +114,12 @@ const showChart = async (req, res) => {
           $sort: { _id: 1 }, // Sort by month
         },
       ]);
-      console.log(monthlySalesData)
+      console.log(monthlySalesData);
 
       // Aggregate daily sales data
       const dailySalesData = await orderModel.aggregate([
         {
-          $match: {"products.status": "delivered" }, // Consider only delivered orders
+          $match: { "products.status": "delivered" }, // Consider only delivered orders
         },
         {
           $group: {
@@ -134,19 +134,23 @@ const showChart = async (req, res) => {
 
       const orderStatuses = await orderModel.aggregate([
         {
+          $unwind: "$products", // Unwind the products array
+        },
+        {
           $group: {
             _id: "$products.status", // Group by order status
             count: { $sum: 1 }, // Count occurrences of each status
           },
         },
       ]);
-      console.log(orderStatuses)
+      console.log(orderStatuses);
 
       // Map order statuses to object format
       const eachOrderStatusCount = {};
       orderStatuses.forEach((status) => {
         eachOrderStatusCount[status._id] = status.count;
       });
+      console.log(eachOrderStatusCount);
 
       res
         .status(200)
