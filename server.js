@@ -4,7 +4,7 @@ const session = require("express-session");
 const path = require("path");
 const nocache = require("nocache");
 const { userRoute, adminRoute } = require("./routes/");
-const connectDB = require("./database/dataBase");
+require("./database/dataBase");
 const flash = require("express-flash");
 const methodOverride = require("method-override");
 const app = express();
