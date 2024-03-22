@@ -6,8 +6,10 @@ const addCategory = (body) => {
       let name = body.categoryName;
       let description = body.categoryDescription;
 
+      let lowerCaseName = name.toLowerCase();
+
       let existingCategory = await categoryModel.findOne({
-        categoryName: name,
+        categoryName: { $regex: new RegExp("^" + lowerCaseName + "$", "i") },
       });
 
       if (existingCategory) {
@@ -55,17 +57,14 @@ const getAllActiveCategory = () => {
         resolve({ message: "No Active Categories" });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-   
   });
-}
-
-
+};
 
 module.exports = {
   getAllcategory,
   softDeleteCategory,
-  addCategory,getAllActiveCategory
-  
+  addCategory,
+  getAllActiveCategory,
 };
