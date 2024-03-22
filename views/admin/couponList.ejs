@@ -228,12 +228,20 @@
       if (document.getElementById("errorMessage").value) {
         Toastify({
           text: document.getElementById("errorMessage").value,
-          position:"center",
+          position: "center",
           duration: 3000, // Set the duration for the toast notification
           close: true // Allow the user to close the toast notification
         }).showToast(); // Display the toast notification
       }
     });
+  </script>
+
+  <script>
+    // Get the current date in the format required by the input field
+    const today = new Date().toISOString().split('T')[0];
+
+    // Set the minimum date for the input field to today
+    document.getElementById('couponExpiry').min = today;
   </script>
 
   <%- include("../layouts/adminLayout/admin-footer") %>
