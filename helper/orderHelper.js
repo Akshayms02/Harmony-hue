@@ -172,12 +172,16 @@ const cancelOrder = (orderId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const order = await orderModel.findOne({ _id: orderId });
+  
       if (order) {
         order.status = "cancelled";
         for (const singleProduct of order.products) {
           singleProduct.status = "cancelled";
         }
         order.save();
+        if (order.paymentMethod === "Razorpay") {
+          const walletUpdation = await walletHelper.walletAmountAdding(order.user,price);
+        }
         resolve(order);
       } else {
         reject(Error("Order not found"));
@@ -221,7 +225,7 @@ const changeOrderStatus = (orderId, changeStatus) => {
   });
 };
 
-const cancelSingleOrder = (orderId, singleOrderId) => {
+const cancelSingleOrder = (orderId, singleOrderId,price) => {
   return new Promise(async (resolve, reject) => {
     try {
       const cancelled = await orderModel.findOneAndUpdate(
@@ -260,6 +264,10 @@ const cancelSingleOrder = (orderId, singleOrderId) => {
           },
         }
       );
+      const response = await orderModel.findOne({ _id: orderId });
+      if (response.paymentMethod == "Razorpay") {
+        const walletUpdation = await walletHelper.walletAmountAdding(response.user,price);
+      }
 
       resolve(cancelled);
     } catch (error) {

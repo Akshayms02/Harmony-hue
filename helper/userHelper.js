@@ -146,6 +146,37 @@ const getWalletDetails = async (userId) => {
   });
 };
 
+const editAddress = async (body, addressId, userId) => {
+  try {
+    return new Promise(async(resolve, reject) => {
+      const result = await userModel.findOne(
+        { _id: userId, "address._id": addressId }
+      );
+      
+      if (result) {
+        const updateFields = {
+          $set: {
+            "address.$.name": body.name,
+            "address.$.city": body.city,
+            "address.$.state": body.state,
+            "address.$.country": body.country,
+            "address.$.pincode": body.postalCode
+          }
+        };
+      
+        const edited = await userModel.updateOne(
+          { _id: userId, "address._id": addressId },
+          updateFields
+        );
+      
+        if (edited) {
+         resolve({ status: true }) ;
+        }
+      }
+    }) 
+  } catch (error) {}
+};
+
 module.exports = {
   loginHelper,
   signupHelper,
@@ -154,4 +185,5 @@ module.exports = {
   deleteAddress,
   updateUserDetails,
   getWalletDetails,
+  editAddress,
 };

@@ -65,6 +65,11 @@ router.put("/removeFromWishlist", wishlistController.removeFromWishlist);
 
 router.put("/addAddress", userController.addAddress);
 
+router.get("/editAddress/:id", userController.editAddressLoad);
+
+router.post("/editAddress", userController.editAddress);
+
+
 router.put("/deleteAddress/:id", userController.deleteAddress);
 
 router.get("/profile", userAuth.isLogout, userController.userProfileLoad);

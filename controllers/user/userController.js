@@ -196,14 +196,15 @@ const userProfileLoad = async (req, res, next) => {
       order.quantity = quantity;
       quantity = 0;
     }
-    console.log(orderDetails);
+
+    const message=req.flash("message")
     if (user) {
       res.render("user/userProfile", {
         userData: user,
         orderDetails,
         cartCount,
         wishListCount,
-        walletData,
+        walletData,message,
       });
     }
   } catch (error) {
@@ -357,6 +358,46 @@ const alphaSorter = async (req, res, next) => {
   }
 };
 
+const editAddressLoad = async (req, res, next) => {
+  try {
+    console.log("entered");
+    const addressId = req.params.id;
+    const userId = req.session.user;
+
+    const result = await userModel.findOne(
+      { _id: userId, "address._id": addressId },
+      {
+        "address.$": 1,
+      }
+    );
+    console.log(result);
+    if (result) {
+      res.json({ addressData: result, status: true });
+    } else {
+      res.json({ status: false });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const editAddress = async(req, res, next) => {
+  try {
+    console.log("entered6yhtyhur")
+    const userId = req.session.user;
+    const addressId=req.body.addressId
+    const result = await userHelper.editAddress(req.body, addressId, userId);
+    console.log(result)
+    if (result.status) {
+      req.flash("message", "Address Edited");
+      res.redirect("/profile");
+    }
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 const currencyFormatter = (amount) => {
   return Number(amount).toLocaleString("en-in", {
     style: "currency",
@@ -378,4 +419,6 @@ module.exports = {
   sortedProductsLoad,
   priceSort,
   alphaSorter,
+  editAddressLoad,
+  editAddress,
 };

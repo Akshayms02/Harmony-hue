@@ -319,6 +319,9 @@
                                                                 </address>
 
                                                                 <span href="#"
+                                                                    onclick="editAddressLoad('<%=userData.address[i]._id%>')"
+                                                                    class="badge bg-primary">Edit</span>
+                                                                <span href="#"
                                                                     onclick="deleteAddress('<%=userData.address[i]._id%>')"
                                                                     class="badge bg-danger">Delete</span>
                                                             </div>
@@ -344,6 +347,9 @@
                                                                                                 %>
                                                                     </address>
 
+                                                                    <span href="#"
+                                                                        onclick="editAddressLoad('<%=userData.address[i]._id%>')"
+                                                                        class="badge bg-primary">Edit</span>
                                                                     <span href="#"
                                                                         onclick="deleteAddress('<%=userData.address[i]._id%>')"
                                                                         class="badge bg-danger">Delete</span>
@@ -518,10 +524,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade  show " id="wallet" role="tabpanel" aria-labelledby="wallet-detail-tab">
+                                    <div class="tab-pane fade  show " id="wallet" role="tabpanel"
+                                        aria-labelledby="wallet-detail-tab">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h4 class="mb-0">Your Wallet <br> (Avialable Balance: <span class="text-primary">₹ <%=walletData.wallet.balance %></span>  )</h4>
+                                                <h4 class="mb-0">Your Wallet <br> (Avialable Balance: <span
+                                                        class="text-primary">₹ <%=walletData.wallet.balance %></span> )
+                                                </h4>
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive container">
@@ -530,42 +539,45 @@
                                                             <tr>
                                                                 <th>Transaction Id</th>
                                                                 <th>Date</th>
-                        
+
                                                                 <th>Amount</th>
-                        
+
                                                                 <th>Transaction Type</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <% for( let i=0; i <walletData.wallet.details.length; i++ ) { %>
+                                                            <% for( let i=0; i <walletData.wallet.details.length; i++ )
+                                                                { %>
                                                                 <tr>
                                                                     <td>
-                                                                        <%= walletData.wallet.details[i].transactionId %>
+                                                                        <%= walletData.wallet.details[i].transactionId
+                                                                            %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= walletData.wallet.details[i].formattedDate %>
+                                                                        <%= walletData.wallet.details[i].formattedDate
+                                                                            %>
                                                                     </td>
-                        
+
                                                                     <td>₹ <%= walletData.wallet.details[i].amount %>
                                                                     </td>
-                        
+
                                                                     <td width="10%">
                                                                         <%= walletData.wallet.details[i].type %>
-                        
-                        
+
+
                                                                     </td>
-                        
+
                                                                 </tr>
                                                                 <% } %>
-                        
-                        
-                        
+
+
+
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
-                                     
+
                                     </div>
                                 </div>
                             </div>
@@ -612,7 +624,55 @@
                     </div>
                 </div>
             </div>
-           
+
+
+            <div class="modal fade" id="editAddress" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Address</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/editAddress" method="post">
+                                <% if (locals.message) { %>
+                                    <input hidden id="edited" value="<%= message %>">
+                                    <% } %>
+                                        <input hidden id="addressId" name="addressId">
+                                        <div class="mb-3">
+                                            <label for="name" class="col-form-label">Name</label>
+                                            <input type="text" class="form-control" name="name" id="names">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="city" class="col-form-label">City</label>
+                                            <input type="text" class="form-control" name="city" id="citys">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="state" class="col-form-label">State</label>
+                                            <input type="text" class="form-control" name="state" id="states">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="country" class="col-form-label">Country</label>
+                                            <input type="text" class="form-control" name="country" id="countrys">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="postalCode" class="col-form-label">Pincode</label>
+                                            <input type="text" class="form-control" name="postalCode" id="postalCodes">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary"
+                                                style="background-color: black;">Update Address</button>
+                                        </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </section>
     </main>
     <script>
@@ -721,6 +781,32 @@
             })
         }
 
+    </script>
+    <script>
+        const editAddressLoad = (addressId) => {
+            // Perform the AJAX request directly without the confirmation dialog
+            console.log("clicked")
+            $.ajax({
+                url: `/editAddress/${addressId}`,
+                type: 'GET'
+            }).done(response => {
+                // On success, show a success message and reload the page
+                console.log(response.addressData.address[0].name)
+                document.getElementById("names").value = response.addressData.address[0].name
+                document.getElementById("citys").value = response.addressData.address[0].city
+                document.getElementById("states").value = response.addressData.address[0].state
+                document.getElementById("countrys").value = response.addressData.address[0].country
+                document.getElementById("postalCodes").value = response.addressData.address[0].pincode;
+                document.getElementById("addressId").value = addressId
+
+                $("#editAddress").modal("show")
+
+            }).fail((error) => {
+                // On failure, show an error message and reload the page
+                console.error(error.responseJSON.message);
+                location.reload();
+            });
+        }
     </script>
 
     <script>
@@ -858,6 +944,7 @@
             return isValid;
         }
     </script>
+
     <script>
         function validateForm2() {
 
@@ -959,6 +1046,24 @@
             return isValid;
         }
 
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const edited = $("#edited").val();
+            if (edited) {
+                Toastify({
+                    text: `${edited}`,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "center",
+                    stopOnFocus: true,
+                    style: {
+                        background: "green",
+                    },
+                }).showToast();
+            }
+        })
     </script>
 
 
