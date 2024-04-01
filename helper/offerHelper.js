@@ -140,13 +140,12 @@ const findOffer = (products) => {
     try {
       const currentDate = new Date();
       const offer = await getActiveOffer(currentDate);
-      console.log(offer);
+
       for (let i = 0; i < products.length; i++) {
         const productOffer = offer.find(
           (item) => item.productOffer?.product?.toString() == products[i]._id
         );
-        console.log("fyghjgg");
-        console.log(productOffer);
+
         const categoryOffer = offer.find(
           (item) =>
             item.categoryOffer?.category?.toString() ==

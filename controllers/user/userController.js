@@ -85,6 +85,14 @@ const shopLoad = async (req, res, next) => {
       }
       const offerPrice = await offerHelper.findOffer(searchResult);
 
+      let itemsPerPage = 6;
+      let currentPage = parseInt(req.query.page) || 1;
+      let startIndex = (currentPage - 1) * itemsPerPage;
+      let endIndex = startIndex + itemsPerPage;
+      let totalPages = Math.ceil(offerPrice.length / 6);
+      console.log(totalPages);
+      const currentProduct = offerPrice.slice(startIndex, endIndex);
+
       res.render("user/shop", {
         products: offerPrice,
         userData: req.session.user,
@@ -92,9 +100,14 @@ const shopLoad = async (req, res, next) => {
         wishListCount,
         categories,
         sorted,
+        totalPages,
+        payload,
       });
     } else {
       let userId = req.session.user;
+
+      const extractPrice = (price) => parseInt(price.replace(/[^\d]/g, ""));
+
       const categories = await categoryHelper.getAllcategory();
 
       let cartCount = await cartHelper.getCartCount(userId);
@@ -102,28 +115,132 @@ const shopLoad = async (req, res, next) => {
       let wishListCount = await wishlistHelper.getWishListCount(userId);
 
       let products = await productHelper.getAllActiveProducts();
-      for (const product of products) {
-        const cartStatus = await cartHelper.isAProductInCart(
-          userId,
-          product._id
-        );
-        const wishlistStatus = await wishlistHelper.isInWishlist(
-          userId,
-          product._id
-        );
-      }
+
       const offerPrice = await offerHelper.findOffer(products);
-      const sorted = false;
+      let sorted = false;
+      let normalSorted;
+
+      if (req.query.filter) {
+        if (req.query.filter == "Ascending") {
+          console.log("inside ascending");
+          offerPrice.sort(
+            (a, b) => extractPrice(a.productPrice) - extractPrice(b.productPrice)
+          );
+          normalSorted="Ascending"
+       
+        } else if (req.query.filter == "Descending") {
+          offerPrice.sort(
+            (a, b) => extractPrice(b.productPrice) - extractPrice(a.productPrice)
+          );
+          normalSorted="Descending"
+      
+        } else if (req.query.filter == "Alpha") {
+          offerPrice.sort((a, b) => {
+            const nameA = a.productName.toUpperCase();
+            const nameB = b.productName.toUpperCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            if (nameA > nameB) {
+              return 1;
+            }
+            return 0;
+          });
+          normalSorted="Alpha"
+        }
+      }
+
+      let itemsPerPage = 6;
+      let currentPage = parseInt(req.query.page) || 1;
+      let startIndex = (currentPage - 1) * itemsPerPage;
+      let endIndex = startIndex + itemsPerPage;
+      let totalPages = Math.ceil(offerPrice.length / 6);
+      console.log(totalPages);
+      const currentProduct = offerPrice.slice(startIndex, endIndex);
 
       res.render("user/shop", {
-        products: offerPrice,
+        products: currentProduct,
         userData: req.session.user,
         cartCount,
         wishListCount,
         categories,
-        sorted,
+        normalSorted,
+        totalPages: totalPages,sorted
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const shopFilterLoad = async (req, res, next) => {
+  try {
+    console.log("reached here");
+    let filteredProducts;
+    const extractPrice = (price) => parseInt(price.replace(/[^\d]/g, ""));
+    const { search, category, sort, page, limit } = req.query;
+    if (category) {
+      let userId = req.session.user;
+      var categories = await categoryHelper.getAllcategory();
+
+      var cartCount = await cartHelper.getCartCount(userId);
+
+      var wishListCount = await wishlistHelper.getWishListCount(userId);
+
+      var products = await productHelper.getAllActiveProducts();
+      console.log(products);
+
+      let categorySortedProducts = await products.filter((product) => {
+        return product.productCategory.toString().trim() == category.trim();
+      });
+
+      filteredProducts = await offerHelper.findOffer(categorySortedProducts);
+      var sorted = false;
+    }
+    console.log(filteredProducts);
+    if (sort) {
+      if (sort == "Ascending") {
+        console.log("inside ascending");
+        filteredProducts.sort(
+          (a, b) => extractPrice(a.productPrice) - extractPrice(b.productPrice)
+        );
+        sorted = "Ascending";
+      } else if (sort == "Descending") {
+        filteredProducts.sort(
+          (a, b) => extractPrice(b.productPrice) - extractPrice(a.productPrice)
+        );
+        sorted = "Descending";
+      } else if (sort == "Alpha") {
+        filteredProducts.sort((a, b) => {
+          const nameA = a.productName.toUpperCase();
+          const nameB = b.productName.toUpperCase();
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          return 0;
+        });
+        sorted = "Alpha";
+      }
+    }
+    console.log(filteredProducts);
+    let itemsPerPage = 6;
+    let currentPage = parseInt(req.query.page) || 1;
+    let startIndex = (currentPage - 1) * itemsPerPage;
+    let endIndex = startIndex + itemsPerPage;
+    let totalPages = Math.ceil(filteredProducts.length / 6);
+    const currentProduct = filteredProducts.slice(startIndex, endIndex);
+    res.json({
+      products: currentProduct,
+      totalPages,
+      userData: req.session.user,
+      cartCount,
+      wishListCount,
+      categories,
+      sorted,
+    });
   } catch (error) {
     next(error);
   }
@@ -197,14 +314,15 @@ const userProfileLoad = async (req, res, next) => {
       quantity = 0;
     }
 
-    const message=req.flash("message")
+    const message = req.flash("message");
     if (user) {
       res.render("user/userProfile", {
         userData: user,
         orderDetails,
         cartCount,
         wishListCount,
-        walletData,message,
+        walletData,
+        message,
       });
     }
   } catch (error) {
@@ -381,18 +499,17 @@ const editAddressLoad = async (req, res, next) => {
   }
 };
 
-const editAddress = async(req, res, next) => {
+const editAddress = async (req, res, next) => {
   try {
-    console.log("entered6yhtyhur")
+    console.log("entered6yhtyhur");
     const userId = req.session.user;
-    const addressId=req.body.addressId
+    const addressId = req.body.addressId;
     const result = await userHelper.editAddress(req.body, addressId, userId);
-    console.log(result)
+    console.log(result);
     if (result.status) {
       req.flash("message", "Address Edited");
       res.redirect("/profile");
     }
-
   } catch (error) {
     next(error);
   }
@@ -421,4 +538,5 @@ module.exports = {
   alphaSorter,
   editAddressLoad,
   editAddress,
+  shopFilterLoad,
 };

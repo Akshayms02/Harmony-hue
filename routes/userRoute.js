@@ -43,6 +43,8 @@ router.get("/userHome", userAuth.isLogout, userController.loadUserHome);
 
 router.get("/shop", userAuth.isLogout, userController.shopLoad);
 
+router.get("/shopFilter", userAuth.isLogout, userController.shopFilterLoad);
+
 router.get(
   "/userHome/productView/:id",
   userAuth.isLogout,
@@ -110,9 +112,6 @@ router.post('/paymentSuccess', orderController.paymentSuccess);
 
 router.post("/sortedProducts", userController.sortedProductsLoad);
 
-router.post("/priceSort/:value", userController.priceSort);
-
-router.post("/alphaSort", userController.alphaSorter);
 
 router.post("/createRazorpayOrder", orderController.retryPayment);
 

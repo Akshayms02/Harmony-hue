@@ -1,5 +1,6 @@
 <%- include("../layouts/userLayout/userHomeHeader") %>
 
+
     <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
@@ -192,7 +193,7 @@
 
                             <div class="sort-by-product-area">
                                 <div class="sort-by-cover mr-10">
-                                    <div class="sort-by-product-wrap">
+                                    <!-- <div class="sort-by-product-wrap">
                                         <div class="sort-by">
                                             <span><i class="fi-rs-apps"></i>Show:</span>
                                         </div>
@@ -208,25 +209,54 @@
                                             <li><a href="#">200</a></li>
                                             <li><a href="#">All</a></li>
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="sort-by-cover">
-                                    <div class="sort-by-product-wrap">
+                                    <!-- <div class="sort-by-product-wrap">
                                         <div class="sort-by">
                                             <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
                                             <span> Featured <i class="fi-rs-angle-small-down"></i></span>
                                         </div>
+                                    </div> -->
+                                    <div id="sorter">
+                                        <% if (normalSorted=="Ascending") { %>
+                                            <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>                     
+                                                </select>
+                                                <% } else if (normalSorted=="Descending") { %>
+                                                    <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                    <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                                    <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                                    <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>  
+                                                </select>
+                                                    <% } else if (normalSorted=="Alpha") { %>
+                                                        <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                        <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>
+                                                        <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                                        <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                                    </select>
+                                                        <% } else { %>
+                                                            <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                      <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                      <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>
+                                                              </select>
+                                        <% } %>
+                                      
                                     </div>
-                                    <div class="sort-by-dropdown">
+                                
+                                    <!-- <div class="sort-by-dropdown">
                                         <ul>
                                             <li><a onclick="priceSorter('Ascending')">Price: Low to High </a></li>
                                             <li><a onclick="priceSorter('Descending')">Price: High to Low</a></li>
                                             <li><a onclick="alphaSorter()">A-Z</a></li>
 
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -302,41 +332,46 @@
                                 <% } %>
 
                         </div>
-                        <!--pagination-->
-                        <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-start">
-                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                    <li class="page-item"><a class="page-link" href="#"><i
-                                                class="fi-rs-angle-double-small-right"></i></a></li>
-                                </ul>
-                            </nav>
+                        <div id="pageDiv">
+
                         </div>
+                        <!--pagination-->
+                        <div id="paginationLinks" class="d-flex">
+                            <!-- Pagination links will be dynamically added here -->
+                           <% if (sorted) { %>
+                            <% for( let i = 1; i <= totalPages; i++ ) { %>
+                                <a href="/shop?search=<%=payload%>&page=<%= i %>" class="page-link"><%= i %></a>
+                             <% } %>
+                            <% } else { %>
+                                <% for( let i = 1; i <= totalPages; i++ ) { %>
+                                    <a href="/shop?page=<%= i %>" class="page-link"><%= i %></a>
+                                 <% } %>
+                           <% } %>
+                             
+                            
+                           
+                        </div>
+                        <!-- Pagination Info
+                        <div id="paginationInfo">
+                            Page  of 
+                        </div> -->
+
                     </div>
                     <div class="col-lg-3 primary-sidebar sticky-sidebar">
                         <div class="widget-category mb-30">
-                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-                            <ul class="categories">
+                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category Filter</h5>
+                            <select name="" id="categoryFilter" class="form-select" style=" border-radius: 18px;">
                                 <% for( let i=0; i < categories.length; i++ ) { %>
-                                    <% if (categories[i].status) { %>
-                                        <li><a onclick="categorySort('<%=categories[i]._id%>')">
-                                                <%= categories[i].categoryName %>
-                                            </a></li>
-                                        <% } %>
+                                    <option value="<%= categories[i]._id %>
+                                        " class="form-select-input" style="font-size: 16px;">
+                                        <%= categories[i].categoryName %>
+                                    </option>
+                                    <% } %>
 
-                                            <% } %>
-                            </ul>
+                            </select>
+
                         </div>
-                        <img src="/public/assets/imgs/banner/banner-11.jpg" alt="">
-                        <div class="banner-text">
-                            <span>Women Zone</span>
-                            <h4>Save 17% on <br>Office Dress</h4>
-                            <a href="shop-grid-right.html">Shop Now <i class="fi-rs-arrow-right"></i></a>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -344,7 +379,7 @@
         </section>
     </main>
 
-    <script>
+    <!-- <script>
         const categorySort = (categoryId) => {
             let products = document.getElementById("products").value;
             console.log(products);
@@ -362,11 +397,10 @@
             })
 
         }
-    </script>
+    </script> -->
 
     <script>
         const priceSorter = (value) => {
-
 
             if (!document.getElementById("sortedProducts")) {
                 const result = document.getElementById("products").value;
@@ -424,7 +458,280 @@
         }
     </script>
 
+    <!-- <script>
+        // Function to fetch and display products based on search, filter, sort, and pagination
+        const fetchProducts = async () => {
+            console.log("fetched")
+            // const searchQuery = document.getElementById('searchInput').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortOption = document.getElementById('sortOptions').value;
+            const currentPage = 1; // Initial page
+            const limitPerPage = 10; // Number of products per page
+
+            const url = `shopFilter?category=${categoryFilter}&sort=${sortOption}&page=${currentPage}&limit=${limitPerPage}`;
+
+
+
+            try {
+                console.log(url)
+                const response = await fetch(url);
+                const { products, pageInfo } = await response.json();
+
+                // Update the product list on the page based on the fetched products
+                const productGrid = document.querySelector('.product-grid-3');
+                productGrid.innerHTML = ''; // Clear previous products
+
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.classList.add('col-lg-4', 'col-md-4', 'col-sm-6');
+                    productDiv.innerHTML = `
+                        <div class="product-cart-wrap mb-30">
+                                        <div class="product-img-action-wrap">
+                                            <div class="product-img product-img-zoom">
+                                                <a href="/userHome/productView/${product._id}">
+                                                    <img class="default-img" src="/${product.image[0]}" alt="">
+                                                    <img class="hover-img" src="/${product.image[1]}" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="product-action-1">
+                                                <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
+                                                <a aria-label="Compare" class="action-btn hover-up" href="#"><i class="fi-rs-shuffle"></i></a>
+                                            </div>
+                                            <div class="product-badges product-badges-position product-badges-mrg">
+                                                <span class="hot">Hot</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-content-wrap">
+                                            
+                                                <div class="product-category">
+                                                    <a href="#">
+                                                        ${product.productCategory.categoryName}
+                                                    </a>
+                                                </div>
+                                                
+
+                                                        <h2>
+                                                            <a href="#">
+                                                                ${product.productName}
+                                                            </a>
+                                                        </h2>
+                                                        <div class="rating-result" title="90%">
+                                                            <span>
+                                                                <span>
+                                                                    80%
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-price">
+                                                            <span class="text-dark">
+                                                                ${product.offerPrice}
+
+                                                            </span>
+                                                            <span class="old-price">
+                                                                ${product.productPrice}
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-action-1 show">
+                                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                        </div>
+                                        </div>
+                                    </div>  <input type="text" id="sortedProducts" hidden>      
+                `;
+                    productGrid.appendChild(productDiv); // Append the new product to the grid
+                });
+
+                // Update pagination info
+                // document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${pageInfo.totalPages}`;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+
+        // Event listeners for search, filter, sort, and pagination interactions
+        // document.getElementById('searchInput').addEventListener('input', fetchProducts);
+        document.getElementById('categoryFilter').addEventListener('change', fetchProducts);
+        document.getElementById('sortOptions').addEventListener('change', fetchProducts);
+        // document.getElementById('prevPage').addEventListener('click', fetchProducts);
+        // document.getElementById('nextPage').addEventListener('click', fetchProducts);
+
+        // Initial fetch of products when the page loads
+        fetchProducts();
+    </script> -->
+
     <script>
+        // Function to fetch and display products based on search, filter, sort, and pagination
+        const fetchProducts = (event,page) => {
+            console.log("fetched");
+            // const searchQuery = document.getElementById('searchInput').value;
+            const categoryFilter = $('#categoryFilter').val();
+            const sortOption = $('#sortOptions').val();
+            const currentPage = page||1; // Initial page
+            const limitPerPage = 10; // Number of products per page
+            console.log(currentPage)
+
+            const url = `/shopFilter?category=${categoryFilter}&sort=${sortOption}&page=${currentPage}&limit=${limitPerPage}`;
+            console.log(url)
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (data) {
+                    console.log(data)
+                    const products = data.products;
+                    const pageInfo = data.pageInfo;
+
+                    // Update the product list on the page based on the fetched products
+                    const productGrid = $('.product-grid-3');
+                    productGrid.empty(); // Clear previous products
+
+                    products.forEach(product => {
+                        const productDiv = $('<div></div>').addClass('col-lg-4 col-md-4 col-sm-6');
+                        productDiv.html(`
+     
+     <div class="product-cart-wrap mb-30">
+                                       <div class="product-img-action-wrap">
+                                           <div class="product-img product-img-zoom">
+                                               <a href="/userHome/productView/${product._id}">
+                                                   <img class="default-img" src="/${product.image[0]}" alt="">
+                                                   <img class="hover-img" src="/${product.image[1]}" alt="">
+                                               </a>
+                                           </div>
+                                           <div class="product-action-1">
+                                               <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                               <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
+                                               <a aria-label="Compare" class="action-btn hover-up" href="#"><i class="fi-rs-shuffle"></i></a>
+                                           </div>
+                                           <div class="product-badges product-badges-position product-badges-mrg">
+                                               <span class="hot">Hot</span>
+                                           </div>
+                                       </div>
+                                       <div class="product-content-wrap">
+                                           
+                                               <div class="product-category">
+                                                   <a href="#">
+                                                       ${product.category[0].categoryName}
+                                                   </a>
+                                               </div>
+                                               
+                                                       <h2>
+                                                           <a href="#">
+                                                               ${product.productName}
+                                                           </a>
+                                                       </h2>
+                                                       <div class="rating-result" title="90%">
+                                                           <span>
+                                                               <span>
+                                                                   80%
+                                                               </span>
+                                                           </span>
+                                                       </div>
+                                                       <div class="product-price">
+                                                           <span class="text-dark">
+                                                               ${product.offerPrice}
+
+                                                           </span>
+                                                           <span class="old-price">
+                                                               ${product.productPrice}
+                                                           </span>
+                                                       </div>
+                                                       <div class="product-action-1 show">
+                                                           <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                       </div>
+                                       </div>                                 
+                                   `);
+                        productGrid.append(productDiv); // Append the new product to the grid
+                    });
+
+                    // const paginationInfo = `Page ${currentPage} of ${pageInfo.totalPages}`;
+                    // document.getElementById('paginationInfo').textContent = paginationInfo;
+
+                    updatePaginationLinks(currentPage, data.totalPages);
+                    updateFilterOptions(data.sorted);
+                   
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error fetching products:', errorThrown);
+                }
+            });
+        };
+
+        // Event listeners for search, filter, sort, and pagination interactions
+        // $('#searchInput').on('input', fetchProducts);
+        $('#categoryFilter').on('change', fetchProducts);
+        $('#sortOptions').on('change', fetchProducts);
+        // $('#prevPage').on('click', fetchProducts);
+        // $('#nextPage').on('click', fetchProducts);
+    
+        // Initial fetch of products when the page loads
+        // $(document).ready(function () {
+        //     fetchProducts()
+        // })
+
+    </script>
+
+    <script>
+        const updatePaginationLinks = (currentPage, totalPages) => {
+            // Clear previous pagination links
+            $('#paginationLinks').empty();
+
+            // Generate and append new pagination links based on the current page and total pages
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = $(`<a href="#" class="page-link">${i}</a>`);
+                pageLink.on('click', function () {
+                    fetchProducts(0,i); // Fetch products for the selected page
+                });
+                $('#paginationLinks').append(pageLink);
+            }
+        
+        };
+    </script>
+
+    <script>
+        const updateFilterOptions=(sorted)=>{
+            $("#sorter").empty();
+            let option;
+            if(sorted=="Ascending"){
+                option=$(`
+                <select name="" id="sortOptions" class="form-select" style=" border-radius: 18px;">
+                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>                     
+                </select>
+        `);
+            }else if(sorted=="Descending"){
+                option=$(`
+                <select name="" id="sortOptions" class="form-select" style=" border-radius: 18px;">
+                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>                    
+                </select>
+        `);
+            }else{
+                option=$(`
+                <select name="" id="sortOptions" class="form-select" style=" border-radius: 18px;">
+                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>  
+                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                    
+                </select>
+        `);
+            }         
+        $("#sorter").append(option);
+        $('#sortOptions').on('change', fetchProducts);
+
+   
+    }
+    </script>
+
+    <script>
+        document.getElementById("normalSorter").addEventListener("change",()=>{
+            const normalFilter = $('#normalSorter').val();
+            window.location.href=`/shop?filter=${normalFilter}`
+        })
+    </script>
+
+    <!-- <script>
         function updateProductGrid(products) {
             const productGrid = document.querySelector('.product-grid-3');
             productGrid.innerHTML = ''; // Clear the existing product grid
@@ -495,9 +802,9 @@
             console.log(sortedProduct)
         }
 
-    </script>
+    </script> -->
 
-    <script>
+    <!-- <script>
         function updateProductGrid(searchQuery, categoryFilter, sortOption, currentPage, limitPerPage) {
             const productGrid = document.querySelector('.product-grid-3');
             productGrid.innerHTML = ''; // Clear the existing product grid
@@ -571,7 +878,7 @@
                 })
                 .catch(error => console.error('Error fetching products:', error));
         }
-    </script>
+    </script> -->
 
 
 

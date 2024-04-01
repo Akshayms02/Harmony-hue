@@ -89,6 +89,11 @@ const getAllWishlistProducts = (userId) => {
 
 const removeProductFromWishlist = (userId, productId) => {
   return new Promise(async (resolve, reject) => {
+    const removeItemss = await w
+    wishlistModel.findOne({
+      user: new ObjectId(userId),
+    });
+    console.log("ajscjac", removeItemss);
     await wishlistModel
       .updateOne(
         {
