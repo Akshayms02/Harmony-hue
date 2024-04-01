@@ -165,7 +165,7 @@ const shopLoad = async (req, res, next) => {
         wishListCount,
         categories,
         normalSorted,
-        totalPages: totalPages,sorted
+        totalPages: totalPages,sorted,filter:req.query.filter
       });
     }
   } catch (error) {

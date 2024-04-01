@@ -342,6 +342,10 @@
                             <% for( let i = 1; i <= totalPages; i++ ) { %>
                                 <a href="/shop?search=<%=payload%>&page=<%= i %>" class="page-link"><%= i %></a>
                              <% } %>
+                             <% } else if (normalSorted) { %>
+                              <% for( let i = 1; i < totalPages; i++ ) { %>
+                                <a href="/shop?filter=<%=filter%>&page=<%= i %>" class="page-link"><%= i %></a>
+                              <% } %>
                             <% } else { %>
                                 <% for( let i = 1; i <= totalPages; i++ ) { %>
                                     <a href="/shop?page=<%= i %>" class="page-link"><%= i %></a>
