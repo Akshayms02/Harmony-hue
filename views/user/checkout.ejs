@@ -325,9 +325,9 @@
                 <div class="payment_option">
                   <div class="custome-radio">
                     <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3"
-                      checked="">
+                      checked="" value="Wallet" >
                     <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse"
-                      data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
+                      data-target="#bankTranfer" aria-controls="bankTranfer" type="radio">Wallet <span style="font-size: 14px;" class="badge text-dark">Avialable Balance: <span class="text-primary">(₹ <%=userData.wallet.balance%>)</span> </span></label>
                     <div class="form-group collapse in" id="bankTranfer">
                       <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the
                         majority have suffered alteration. </p>
@@ -387,17 +387,17 @@
           return parseInt(numberString);
         }
 
-        if (payment === "COD") {
+        if (payment === "COD"||"Wallet") {
           $.ajax({
             url: "/placeOrder",
             method: "POST",
             data: data,
             success: (response) => {
-              if (response) {
+              if (response.status) {
                 window.location.href = response.url
               } else {
                 Toastify({
-                  text: `Something went wrong`,
+                  text: `${response.message}`,
                   duration: 3000,
                   gravity: "top",
                   position: "center",

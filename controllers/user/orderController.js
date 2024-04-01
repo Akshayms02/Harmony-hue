@@ -113,13 +113,15 @@ const placeOrder = async (req, res) => {
   const status = req.body.status;
   console.log(status);
   const userId = req.session.user;
-
+  
   const result = await orderHelper.placeOrder(body, userId);
-  if (result) {
+  if (result.status) {
     const cart = await cartHelper.clearAllCartItems(userId);
     if (cart) {
-      res.json({ url: "/orderSuccessPage" });
+      res.json({ url: "/orderSuccessPage" ,status:true});
     }
+  } else {
+    res.json({message:result.message,status:false})
   }
 };
 

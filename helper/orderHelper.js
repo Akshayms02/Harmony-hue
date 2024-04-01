@@ -20,9 +20,9 @@ const placeOrder = (body, userId) => {
       const user = await userModel.findOne({ _id: userId });
       console.log(cart);
       let products = [];
-      let status = "pending"
+      let status = "pending";
       if (body.status) {
-        status="payment pending"
+        status = "payment pending";
       }
       for (const product of cart.products) {
         products.push({
@@ -30,8 +30,34 @@ const placeOrder = (body, userId) => {
           quantity: product.quantity,
           size: product.size,
           productPrice: product.price,
-          status:status,
+          status: status,
         });
+
+        if (body.paymentOption == "Wallet") {
+          if (cart.totalAmount > user.wallet.balance) {
+            resolve({ status: false, message: "Insufficient Balance" });
+            return;
+          } else {
+            const newDetail = {
+              type: "debit",
+              amount: cart.totalAmount,
+              date: new Date(),
+              transactionId: Math.floor(100000 + Math.random() * 900000),
+            };
+
+            // Updating user with new balance and new detail
+            const response = await userModel.findOneAndUpdate(
+              { _id: userId },
+              {
+                $set: {
+                  "wallet.balance": user.wallet.balance - cart.totalAmount,
+                },
+                $push: { "wallet.details": newDetail },
+              },
+              { new: true } // to return the updated document
+            );
+          }
+        }
 
         let changeStock = await productModel.updateOne(
           { _id: product.productItemId, "productQuantity.size": product.size },
@@ -69,7 +95,7 @@ const placeOrder = (body, userId) => {
           couponAmount: couponAmount,
         });
 
-        resolve(result);
+        resolve({ result: result, status: true });
       }
     } catch (error) {
       console.log(error);
@@ -132,7 +158,7 @@ const getOrderDetailsOfEachProduct = (orderId) => {
       if (check == true && count >= 1) {
         orderDetails.deliveryStatus = true;
       }
-      console.log(orderDetails)
+      console.log(orderDetails);
 
       resolve(orderDetails);
     } catch (error) {
@@ -172,7 +198,7 @@ const cancelOrder = (orderId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const order = await orderModel.findOne({ _id: orderId });
-  
+
       if (order) {
         order.status = "cancelled";
         for (const singleProduct of order.products) {
@@ -180,7 +206,10 @@ const cancelOrder = (orderId) => {
         }
         order.save();
         if (order.paymentMethod === "Razorpay") {
-          const walletUpdation = await walletHelper.walletAmountAdding(order.user,price);
+          const walletUpdation = await walletHelper.walletAmountAdding(
+            order.user,
+            price
+          );
         }
         resolve(order);
       } else {
@@ -225,7 +254,7 @@ const changeOrderStatus = (orderId, changeStatus) => {
   });
 };
 
-const cancelSingleOrder = (orderId, singleOrderId,price) => {
+const cancelSingleOrder = (orderId, singleOrderId, price) => {
   return new Promise(async (resolve, reject) => {
     try {
       const cancelled = await orderModel.findOneAndUpdate(
@@ -266,7 +295,10 @@ const cancelSingleOrder = (orderId, singleOrderId,price) => {
       );
       const response = await orderModel.findOne({ _id: orderId });
       if (response.paymentMethod == "Razorpay") {
-        const walletUpdation = await walletHelper.walletAmountAdding(response.user,price);
+        const walletUpdation = await walletHelper.walletAmountAdding(
+          response.user,
+          price
+        );
       }
 
       resolve(cancelled);
@@ -322,23 +354,23 @@ const returnSingleOrder = (orderId, singleOrderId) => {
   });
 };
 
-const changeOrderStatusOfEachProduct = (orderId, productId, status,price) => {
+const changeOrderStatusOfEachProduct = (orderId, productId, status, price) => {
   return new Promise(async (resolve, reject) => {
     try {
-    
       const result = await orderModel.findOneAndUpdate(
         { _id: new ObjectId(orderId), "products._id": new ObjectId(productId) },
         {
           $set: { "products.$.status": status },
         },
-        {new:true}
+        { new: true }
       );
 
       if (status === "returned") {
-        const walletUpdation = await walletHelper.walletAmountAdding(result.user,price);
+        const walletUpdation = await walletHelper.walletAmountAdding(
+          result.user,
+          price
+        );
       }
-
-
 
       console.log(result);
       resolve(result);
