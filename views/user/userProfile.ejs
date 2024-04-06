@@ -1066,6 +1066,26 @@
         })
     </script>
 
+<script>
+
+    window.onload = function () {
+        var hash = window.location.hash
+        if (hash) {
+            var hashValue = hash.substring(1);
+            if(hashValue=="addAddress"){
+                const addAddressLink=document.querySelector('a[href="#addAddress"]');
+                addAddressLink.click();
+            }
+            else if(hashValue=="orders"){
+                const orderLink=document.querySelector('a[href="#orders"]');
+                orderLink.click()
+            }
+        }
+        
+    
+    }
+</script>
+
 
 
 
