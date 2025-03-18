@@ -1,88 +1,117 @@
 <%- include("../layouts/userLayout/userHomeHeader") %>
 
-  <main class="main">
-    <div class="page-header breadcrumb-wrap">
-      <div class="container">
-        <div class="breadcrumb">
-          <a href="/userHome" rel="nofollow">Home</a>
-          <span></span> Shop
-          <span></span> Your Cart
-        </div>
+<main class="main">
+  <div class="page-header breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/userHome" rel="nofollow">Home</a>
+        <span></span> Shop <span></span> Your Cart
       </div>
     </div>
-    <section class="mt-50 mb-50">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <div class="table-responsive container">
-              <table class="table shopping-summery text-center clean" id="cartTable">
-                <thead>
-                  <tr class="main-heading">
-                    <th scope="col" class="text-center">Image</th>
-                    <th scope="col" class="text-center">Name</th>
-                    <th scope="col" class="text-center">Price</th>
-                    <th scope="col" class="text-center">Size</th>
-                    <th scope="col" class="text-center">Quantity</th>
-                    <th scope="col" class="text-center">Subtotal</th>
-                    <th scope="col" class="text-center">Remove</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for( let i=0; i < cartItems.length; i++ ) { %>
-                    <tr>
-                      <td class="image product-thumbnail"><img src="<%= cartItems[i].product.image[0] %>" alt="#">
-                      </td>
-                      <td class="product-des product-name">
-                        <h5 class="product-name"><a href="shop-product-right.html" style="color: black;">
-                            <%= cartItems[i].product.productName %>
-                          </a></h5>
-                        <p class="font-xs">
-                          <%= cartItems[i].product.productDescription %>
-                        </p>
-                      </td>
-                      <td class="price" data-title="Price" id="price-span<%= cartItems[i].product._id %>"><span>
-                        ₹ <%= cartItems[i].product.offerPrice %>
-                        </span></td>
-                      <td class="size" data-title="Size" id="size">
-                        <%= cartItems[i].size %>
-                      </td>
-                      <td class="text-center" data-title="Stock">
-                        <div class="detail-qty border radius  m-auto">
-                          <a href="#" class="qty-down"
-                            onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','-1')"><i
-                              class="fi-rs-angle-small-down"></i></a>
-                          <span class="qty-val" id="quantity<%= cartItems[i].product._id %>">
-                            <%= cartItems[i].quantity %>
-                          </span>
-                          <a href="#" class="qty-up" onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','1')" id="upButton<%= cartItems[i].product._id %>"><i
-                              class="fi-rs-angle-small-up"></i></a>
-                        </div>
-                      </td>
-                      <td class="text-right" id="text-right<%= cartItems[i].product._id %>" data-title="Cart">
-                        <span id="individualTotal<%= cartItems[i].product._id %>">
-                          ₹ <%=totalAmountOfEachProduct[i]%>
-                        </span>
-                      </td>
-                      <td class="action" data-title="Remove"><a
-                          onclick="removeItemFromCart('<%=cartItems[i].product._id%>','<%=i+1%>')" class="text-muted"><i
-                            class="fi-rs-trash"></i></a></td>
-                    </tr>
-                    <% } %>
-
-                </tbody>
-              </table>
-            </div>
-            <div class="cart-action text-end" style="margin-top: 40px;">
-              <!-- <a class="btn  mr-10 mb-sm-15" style="background-color: black;"><i class="fi-rs-shuffle mr-10"></i>Update
+  </div>
+  <section class="mt-50 mb-50">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive container">
+            <table
+              class="table shopping-summery text-center clean"
+              id="cartTable"
+            >
+              <thead>
+                <tr class="main-heading">
+                  <th scope="col" class="text-center">Image</th>
+                  <th scope="col" class="text-center">Name</th>
+                  <th scope="col" class="text-center">Price</th>
+                  <th scope="col" class="text-center">Size</th>
+                  <th scope="col" class="text-center">Quantity</th>
+                  <th scope="col" class="text-center">Subtotal</th>
+                  <th scope="col" class="text-center">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let i=0; i < cartItems.length; i++ ) { %>
+                <tr>
+                  <td class="image product-thumbnail">
+                    <img src="<%= cartItems[i].product.image[0] %>" alt="#" />
+                  </td>
+                  <td class="product-des product-name">
+                    <h5 class="product-name">
+                      <a href="shop-product-right.html" style="color: black">
+                        <%= cartItems[i].product.productName %>
+                      </a>
+                    </h5>
+                    <p class="font-xs">
+                      <%= cartItems[i].product.productDescription %>
+                    </p>
+                  </td>
+                  <td
+                    class="price"
+                    data-title="Price"
+                    id="price-span<%= cartItems[i].product._id %>"
+                  >
+                    <span> ₹ <%= cartItems[i].product.offerPrice %> </span>
+                  </td>
+                  <td class="size" data-title="Size" id="size">
+                    <%= cartItems[i].size %>
+                  </td>
+                  <td class="text-center" data-title="Stock">
+                    <div class="detail-qty border radius m-auto">
+                      <a
+                        href="#"
+                        class="qty-down"
+                        onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','-1')"
+                        ><i class="fi-rs-angle-small-down"></i
+                      ></a>
+                      <span
+                        class="qty-val"
+                        id="quantity<%= cartItems[i].product._id %>"
+                      >
+                        <%= cartItems[i].quantity %>
+                      </span>
+                      <a
+                        href="#"
+                        class="qty-up"
+                        onclick="incOrDecQuantity('<%=cartItems[i].product._id%>','1')"
+                        id="upButton<%= cartItems[i].product._id %>"
+                        ><i class="fi-rs-angle-small-up"></i
+                      ></a>
+                    </div>
+                  </td>
+                  <td
+                    class="text-right"
+                    id="text-right<%= cartItems[i].product._id %>"
+                    data-title="Cart"
+                  >
+                    <span id="individualTotal<%= cartItems[i].product._id %>">
+                      ₹ <%=totalAmountOfEachProduct[i]%>
+                    </span>
+                  </td>
+                  <td class="action" data-title="Remove">
+                    <a
+                      onclick="removeItemFromCart('<%=cartItems[i].product._id%>','<%=i+1%>')"
+                      class="text-muted"
+                      ><i class="fi-rs-trash"></i
+                    ></a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          <div class="cart-action text-end" style="margin-top: 40px">
+            <!-- <a class="btn  mr-10 mb-sm-15" style="background-color: black;"><i class="fi-rs-shuffle mr-10"></i>Update
                 Cart</a> -->
-              <a class="btn " style="background-color: black;" href="/userHome"><i
-                  class="fi-rs-shopping-bag mr-10"></i>Continue
-                Shopping</a>
-            </div>
-            <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
-            <div class="row mb-50">
-              <div class="col-lg-6 col-md-12">
-                <!-- <div class="mb-30 mt-50">
+            <a class="btn" style="background-color: black" href="/userHome"
+              ><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a
+            >
+          </div>
+          <div class="divider center_icon mt-50 mb-50">
+            <i class="fi-rs-fingerprint"></i>
+          </div>
+          <div class="row mb-50">
+            <div class="col-lg-6 col-md-12">
+              <!-- <div class="mb-30 mt-50">
                   <div class="heading_s1 mb-3">
                     <h4>Apply Coupon</h4>
                   </div>
@@ -104,140 +133,142 @@
                     </div>
                   </div>
                 </div> -->
-              </div>
-              <% if (cartItems.length>0) { %>
-                <div class="col-lg-6 col-md-12">
-                  <div class="border p-md-4 p-30 border-radius cart-totals">
-                    <div class="heading_s1 mb-3">
-                      <h4>Cart Totals</h4>
-                    </div>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <td class="cart_total_label">Cart Subtotal</td>
-                            <td class="cart_total_amount"><span class="font-lg fw-900 text-dark" id="totalAmount"
-                                style="color: black;">
-                                ₹ <%= totalAmount %>
-                              </span>
-
-
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="cart_total_label">Shipping</td>
-                            <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
-                              Shipping</td>
-                          </tr>
-                          <tr>
-                            <td class="cart_total_label">Total</td>
-                            <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-dark"
-                                  style="color: black;" id="totalAmountFinal">
-                                  ₹ <%= totalAmount %>
-                                </span></strong>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <a href="/checkout" class="btn" style="background-color: black;"> <i
-                        class="fi-rs-box-alt mr-10"></i> Proceed
-                      To
-                      CheckOut</a>
-                  </div>
-                </div>
-                <% } %>
-
             </div>
+            <% if (cartItems.length>0) { %>
+            <div class="col-lg-6 col-md-12">
+              <div class="border p-md-4 p-30 border-radius cart-totals">
+                <div class="heading_s1 mb-3">
+                  <h4>Cart Totals</h4>
+                </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td class="cart_total_label">Cart Subtotal</td>
+                        <td class="cart_total_amount">
+                          <span
+                            class="font-lg fw-900 text-dark"
+                            id="totalAmount"
+                            style="color: black"
+                          >
+                            ₹ <%= totalAmount %>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="cart_total_label">Shipping</td>
+                        <td class="cart_total_amount">
+                          <i class="ti-gift mr-5"></i> Free Shipping
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="cart_total_label">Total</td>
+                        <td class="cart_total_amount">
+                          <strong
+                            ><span
+                              class="font-xl fw-900 text-dark"
+                              style="color: black"
+                              id="totalAmountFinal"
+                            >
+                              ₹ <%= totalAmount %>
+                            </span></strong
+                          >
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <a href="/checkout" class="btn" style="background-color: black">
+                  <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a
+                >
+              </div>
+            </div>
+            <% } %>
           </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+</main>
 
+<script>
+  const incOrDecQuantity = (productId, quantity) => {
+    let Quantity = $("#quantity" + productId).html();
+    $.ajax({
+      url: `/updateCartQuantity?productId=${productId}&quantity=${quantity}`,
+      method: "PATCH",
+      success: (response) => {
+        if (response.status) {
+          Toastify({
+            text: `Quantity Updated`,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+              background: "green",
+            },
+          }).showToast();
+          document.getElementById("totalAmount").innerHTML =
+            "₹" + response.totalSubtotal;
+          document.getElementById("totalAmountFinal").innerHTML =
+            "₹" + response.totalSubtotal;
 
+          console.log(response.cartDetails[0].products);
 
+          $("#quantity" + productId).html(
+            response.cartDetails[0].products.quantity
+          );
+          $("#individualTotal" + productId).html(
+            response.cartDetails[0].products.totalPrice
+          );
+          $("#upButton" + productId).show();
+        } else {
+          Toastify({
+            text: `Stock Limit Exceeded`,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+              background: "red",
+            },
+          }).showToast();
 
-  <script>
-    const incOrDecQuantity = (productId, quantity) => {
-      let Quantity=$("#quantity"+productId).html();
-      $.ajax({
-        url: `/updateCartQuantity?productId=${productId}&quantity=${quantity}`,
-        method: "PATCH",
-        success: (response) => {
-          if (response.status) {
-            Toastify({
-              text: `Quantity Updated`,
-              duration: 3000,
-              gravity: "top",
-              position: "center",
-              stopOnFocus: true,
-              style: {
-                background: "green",
-              },
-            }).showToast();
-            document.getElementById("totalAmount").innerHTML = "₹" + response.totalSubtotal
-            document.getElementById("totalAmountFinal").innerHTML = "₹" + response.totalSubtotal
-           
-              console.log(response.cartDetails[0].products)
-              
-              $("#quantity" + productId).html(response.cartDetails[0].products.quantity) 
-              $("#individualTotal" + productId).html( response.cartDetails[0].products.totalPrice) 
-              $("#upButton"+productId).show()
-          
-
-          } else {
-            Toastify({
-              text: `Stock Limit Exceeded`,
-              duration: 3000,
-              gravity: "top",
-              position: "center",
-              stopOnFocus: true,
-              style: {
-                background: "red",
-              },
-            }).showToast();
-          
-            
-            $("#quantity" + productId).html(Quantity) 
-            $("#upButton"+productId).hide()
-          }
-
+          $("#quantity" + productId).html(Quantity);
+          $("#upButton" + productId).hide();
         }
-      })
-    }
+      },
+    });
+  };
+</script>
 
-  </script>
-
-  <script>
-    const removeItemFromCart = (productId, index) => {
-      $.ajax({
-        url: "/removeCart/" + productId,
-        method: "DELETE",
-        success: (response) => {
-          if (response.status) {
-            Toastify({
-              text: `Product removed from cart`,
-              duration: 3000,
-              gravity: "top",
-              position: "center",
-              stopOnFocus: true,
-              style: {
-                background: "red",
-              },
-            }).showToast();
-            setTimeout(() => {
-              location.reload()
-            }, 600);
-          } else {
+<script>
+  const removeItemFromCart = (productId, index) => {
+    $.ajax({
+      url: "/removeCart/" + productId,
+      method: "DELETE",
+      success: (response) => {
+        if (response.status) {
+          Toastify({
+            text: `Product removed from cart`,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+              background: "red",
+            },
+          }).showToast();
+          setTimeout(() => {
             location.reload();
-          }
+          }, 600);
+        } else {
+          location.reload();
+        }
+      },
+    });
+  };
+</script>
 
-        },
-      })
-    }
-  </script>
-
-
-
-  <%- include("../layouts/userLayout/userHomeFooter") %>
+<%- include("../layouts/userLayout/userHomeFooter") %>

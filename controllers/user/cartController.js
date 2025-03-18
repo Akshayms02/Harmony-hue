@@ -10,21 +10,19 @@ const userCartLoad = async (req, res) => {
     const userData = req.session.user;
 
     const cartItems = await cartHelper.getAllCartItems(userData);
-  
+
     const offerPrice = await offerHelper.findOfferInCart(cartItems);
-   
+
     console.log(offerPrice);
 
     const cartCount = await cartHelper.getCartCount(userData);
 
     const wishListCount = await wishlistHelper.getWishListCount(userData);
-  
 
     const ifCouponAppliedInCart = await cartHelper.clearCoupon(userData);
-   
 
     let totalandSubTotal = await cartHelper.totalSubtotal(userData, cartItems);
-console.log("4")
+    console.log("4");
     let totalAmountOfEachProduct = [];
     for (i = 0; i < cartItems.length; i++) {
       let total =
@@ -65,7 +63,7 @@ const updateCartQuantity = async (req, res) => {
     quantity
   );
   const offerForProduct = await offerHelper.offerCheckForProduct(product);
-  
+
   const cartItems = await cartHelper.getAllCartItems(userId);
   const offerPrice = await offerHelper.findOfferInCart(cartItems);
   // console.log(offerPrice);
@@ -80,10 +78,13 @@ const updateCartQuantity = async (req, res) => {
         },
       },
     ]);
-    console.log(offerForProduct)
+    console.log(offerForProduct);
     console.log(cart);
     if (offerPrice) {
-      cart[0].products.totalPrice = currencyFormatter(parseInt(offerForProduct.offerPrice)*parseInt(cart[0].products.quantity));
+      cart[0].products.totalPrice = currencyFormatter(
+        parseInt(offerForProduct.offerPrice) *
+          parseInt(cart[0].products.quantity)
+      );
     } else {
       cart[0].products.totalPrice = currencyFormatter(
         Math.round(update.price - (update.price * update.discount) / 100) *

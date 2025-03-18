@@ -1,6 +1,6 @@
 const userModel = require("../models/userModel");
 const passwordHelper = require("../helper/passwordHelper");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const loginHelper = (userData) => {
   return new Promise(async (resolve, reject) => {

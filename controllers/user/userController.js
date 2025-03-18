@@ -8,7 +8,7 @@ const userModel = require("../../models/userModel");
 const productModel = require("../../models/productModel");
 const categoryModel = require("../../models/categoryModel");
 const userHelper = require("../../helper/userHelper");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const moment = require("moment");
 
 const loadUserHome = async (req, res, next) => {
@@ -101,7 +101,7 @@ const shopLoad = async (req, res, next) => {
         categories,
         sorted,
         totalPages,
-        payload,
+        payload,normalSorted:false
       });
     } else {
       let userId = req.session.user;
